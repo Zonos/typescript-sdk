@@ -23,7 +23,7 @@ jobs:
           node-version: 18
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn lint:prod
+      - run: yarn lint
 
   TSC:
     name: Check types
