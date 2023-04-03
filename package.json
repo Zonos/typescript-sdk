@@ -1,7 +1,7 @@
 {
   "name": "@zonos/zonos-typescript-sdk",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "dependencies": {
     "graphql": "^16.6.0",
     "graphql-request": "^4.3.0",
@@ -69,7 +69,7 @@
     "build:ci": "ts-node build-utils/build.ts && yarn build:dts",
     "build:dts": "ttsc -p ./tsconfig.emitDeclarationOnly.json",
     "build:prep:publish": "ts-node build-utils/preparePublish.ts",
-    "build": "yarn && yarn ci:concurrent && ts-node build-utils/build.ts && yarn build:dts",
+    "build": "yarn && yarn codegen && yarn ci:concurrent && ts-node build-utils/build.ts && yarn build:dts",
     "postbuild:ci": "yarn postbuild",
     "postbuild:dts": "echo 'done build dts'",
     "postbuild:prep:publish": "echo 'done building for publishing'",
