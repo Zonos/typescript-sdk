@@ -1,4 +1,4 @@
-name: Publish
+name: Node.js Package
 
 on:
   push:
@@ -6,17 +6,21 @@ on:
       - main
 
 jobs:
-  publish:
+  publish-gpr:
+    needs: build
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          registry-url: "https://registry.npmjs.org"
+          registry-url: https://npm.pkg.github.com/
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn build
-      - run: cd dist && npm publish --access public
+      - run: cd dist && npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

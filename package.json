@@ -1,5 +1,5 @@
 {
-  "name": "zonos-typescript-sdk",
+  "name": "@zonos/zonos-typescript-sdk",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -9,6 +9,9 @@
   },
   "engines": {
     "node": "18"
+  },
+  "publishConfig": {
+    "@zonos:registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
