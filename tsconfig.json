@@ -54,6 +54,12 @@
       ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".eslintrc.js", "./jest.config.js"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".eslintrc.js",
+    "./jest.config.js",
+    "prettier.config.js"
+  ],
   "exclude": ["node_modules", "dist"]
 }

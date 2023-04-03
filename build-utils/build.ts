@@ -90,6 +90,7 @@ const generateAllModulesContent = async (
   bundles: OutputChunk[]
 ): Promise<string[]> =>
   bundles.flatMap(bundle => {
+    // ex: folderName/gqlRequest.js
     const [, subFolderPath, fileName] =
       bundle.fileName.split(/(.*\/)*(.*)\.js/g);
     // exclude all bundles that are not entry or just private components
@@ -103,11 +104,13 @@ const generateAllModulesContent = async (
     return [`import './${subFolderPath || ''}${fileName}';`];
   });
 
-const mainModules = globSync('src/*[!.graphql.*].ts*');
+const mainModules = globSync('src/*.ts');
 
 const allModules = mainModules
   /** Exclude dev folders */
-  .filter(item => !item.includes('__tests__'));
+  .filter(item => !item.includes('__tests__'))
+  /** Exclude all.ts */
+  .filter(item => !item.includes('/all.ts'));
 
 const configs: ConfigOptions[] = [
   {

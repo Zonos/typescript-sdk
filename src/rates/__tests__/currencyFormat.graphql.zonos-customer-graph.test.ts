@@ -1,33 +1,42 @@
 import { gqlRequest } from 'src/gqlRequest';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
 import { IResponseError } from 'src/types';
-import { RootCreateMutation } from 'src/types/generated/graphql.zonos-customer-graph.types';
+import { CurrencyFormatQuery } from 'src/types/generated/graphql.zonos-customer-graph.types';
 
-test('example request of root/rootCreate data', async () => {
+test('root/currencyFormat data', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/rootCreate',
+    endpoint: 'zonos-customer-graph/currencyFormat',
     customFetch: async () =>
       mockedFetch({
         response: {
           data: {
-            rootCreate: {
-              id: 'root_b1eca9ea-eef0-4036-a44d-81666084670e',
+            currencyFormat: {
+              decimalDelimiter: '.',
+              thousandsDelimiter: ',',
+              scale: 2,
+              symbol: 'د.إ',
+              symbolLocation: 'BEFORE',
             },
-          } satisfies RootCreateMutation,
+          } satisfies CurrencyFormatQuery,
         },
       }),
+    variables: { input: 'AED' },
   });
   expect(json).toMatchInlineSnapshot(`
     {
-      "rootCreate": {
-        "id": "root_b1eca9ea-eef0-4036-a44d-81666084670e",
+      "currencyFormat": {
+        "decimalDelimiter": ".",
+        "scale": 2,
+        "symbol": "د.إ",
+        "symbolLocation": "BEFORE",
+        "thousandsDelimiter": ",",
       },
     }
   `);
   expect(errors).toMatchInlineSnapshot(`[]`);
 });
 
-test('example request of root/rootCreate error', async () => {
+test('root/rootCreate error', async () => {
   const { json, errors } = await gqlRequest({
     endpoint: 'zonos-customer-graph/rootCreate',
     customFetch: async () =>
