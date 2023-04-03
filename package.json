@@ -1,7 +1,7 @@
 {
   "name": "@zonos/zonos-typescript-sdk",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "dependencies": {
     "graphql": "^16.6.0",
     "graphql-request": "^4.3.0",
