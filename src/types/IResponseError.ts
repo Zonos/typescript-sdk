@@ -1,1 +1,4 @@
-export type IResponseError = { message: string };
+export type IResponseError = {
+  [key: string]: unknown;
+  message: string;
+};

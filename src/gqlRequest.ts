@@ -2,41 +2,29 @@ import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/dist/types';
 
 import {
-  getSdk as getAuthSdk,
-  Sdk as AuthSdk,
-} from 'src/types/generated/graphql.auth.types';
-import {
   getSdk as getZonosCustomerGraphSdk,
   Sdk as ZonosCustomerGraphSdk,
 } from 'src/types/generated/graphql.zonos-customer-graph.types';
 
-type Schema = 'zonos-customer-graph' | 'auth';
+type Schema = 'zonos-customer-graph';
 
 type ZonosCustomerGraphQueryName = keyof ZonosCustomerGraphSdk;
-type AuthQueryName = keyof AuthSdk;
 
 type ZonosCustomerGraphEndpoint =
   `zonos-customer-graph/${ZonosCustomerGraphQueryName}`;
-type AuthEndpoint = `auth/${AuthQueryName}`;
-type Endpoint = ZonosCustomerGraphEndpoint | AuthEndpoint;
+type Endpoint = ZonosCustomerGraphEndpoint;
 
 type SdkMethod<E extends Endpoint> =
   E extends `zonos-customer-graph/${infer RQ}`
     ? RQ extends ZonosCustomerGraphQueryName
       ? ZonosCustomerGraphSdk[RQ]
       : never
-    : E extends `auth/${infer AQ}`
-    ? AQ extends AuthQueryName
-      ? AuthSdk[AQ]
-      : never
     : never;
 
 type QueryNameFromEndpoint<E extends Endpoint> =
-  E extends `${Schema}/${infer Q}`
-    ? Q extends ZonosCustomerGraphQueryName
-      ? Q
-      : Q extends AuthQueryName
-      ? Q
+  E extends `zonos-customer-graph/${infer CQ}`
+    ? CQ extends ZonosCustomerGraphQueryName
+      ? CQ
       : never
     : never;
 
@@ -70,9 +58,6 @@ const getSdk = (schema: Schema) => {
     case 'zonos-customer-graph': {
       return getZonosCustomerGraphSdk;
     }
-    case 'auth': {
-      return getAuthSdk;
-    }
     default:
       throw new Error('Your query schema is missing');
   }
@@ -81,7 +66,7 @@ const getSdk = (schema: Schema) => {
 /**
  * @example
  * const { json, errors } = await gqlRequest({
- *   endpoint: 'auth/getCredentialServiceToken',
+ *   endpoint: 'zonosAuthGraph/getCredentialServiceToken',
  *   variables: { input: { mode: 'LIVE', storeId: 3 } },
  * });
  */
@@ -104,6 +89,8 @@ export const gqlRequest = async <E extends Endpoint>({
   const sdkMethod = sdk[queryName];
   try {
     if (typeof sdkMethod === 'function') {
+      // Remove this ts-ignore if having more than 1 schema in this file
+      // @ts-ignore
       const json: GQLReturnJson<E> = await sdkMethod(variables, requestHeaders);
       return { json, errors: [] };
     }

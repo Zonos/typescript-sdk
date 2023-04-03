@@ -1,30 +1,54 @@
 import { gqlRequest } from 'src/gqlRequest';
+import { mockedFetch } from 'src/testUtils/_mockedFetch';
+import { IResponseError } from 'src/types';
+import { RootCreateMutation } from 'src/types/generated/graphql.zonos-customer-graph.types';
 
-test('example request error', async () => {
+test('example request of root/rootCreate data', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'auth/getCredentialServiceToken',
+    endpoint: 'zonos-customer-graph/rootCreate',
     customFetch: async () =>
-      JSON.stringify({
-        data: null,
-        errors: [
-          {
-            extensions: {
-              errorType: 'INTERNAL',
+      mockedFetch({
+        response: {
+          data: {
+            rootCreate: {
+              id: 'root_b1eca9ea-eef0-4036-a44d-81666084670e',
             },
-            locations: [],
-            message:
-              'javax.ws.rs.NotAuthorizedException: HTTP 401 Unauthorized',
-            path: ['getCredentialServiceToken'],
-          },
-        ],
+          } satisfies RootCreateMutation,
+        },
       }),
-    variables: { input: { mode: 'LIVE', storeId: 3 } },
+  });
+  expect(json).toMatchInlineSnapshot(`
+    {
+      "rootCreate": {
+        "id": "root_b1eca9ea-eef0-4036-a44d-81666084670e",
+      },
+    }
+  `);
+  expect(errors).toMatchInlineSnapshot(`[]`);
+});
+
+test('example request of root/rootCreate error', async () => {
+  const { json, errors } = await gqlRequest({
+    endpoint: 'zonos-customer-graph/rootCreate',
+    customFetch: async () =>
+      mockedFetch({
+        ok: false,
+        response: {
+          data: null,
+          errors: [
+            {
+              message:
+                'HTTP Status 401 - Full authentication is required to access this resource',
+            },
+          ] satisfies IResponseError[],
+        },
+      }),
   });
   expect(json).toMatchInlineSnapshot(`null`);
   expect(errors).toMatchInlineSnapshot(`
     [
       {
-        "message": "{}",
+        "message": "HTTP Status 401 - Full authentication is required to access this resource",
       },
     ]
   `);
