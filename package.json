@@ -69,7 +69,7 @@
     "build:ci": "ts-node build-utils/build.ts && yarn build:dts",
     "build:dts": "ttsc -p ./tsconfig.emitDeclarationOnly.json",
     "build:prep:publish": "ts-node build-utils/preparePublish.ts",
-    "build": "yarn && yarn ci:concurrent && ts-node build-utils/build.ts && yarn build:dts",
+    "build": "yarn && yarn codegen && yarn ci:concurrent && ts-node build-utils/build.ts && yarn build:dts",
     "postbuild:ci": "yarn postbuild",
     "postbuild:dts": "echo 'done build dts'",
     "postbuild:prep:publish": "echo 'done building for publishing'",
