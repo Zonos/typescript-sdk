@@ -21,7 +21,6 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn build
         env:
-          ZONOS_AUTH_GRAPH_URL: ${{ secrets.ZONOS_AUTH_GRAPH_URL }}
           ZONOS_CUSTOMER_GRAPH_URL: ${{ secrets.ZONOS_CUSTOMER_GRAPH_URL }}
       - run: cd dist && npm publish
         env:
