@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Release package
 
 on:
   push:
@@ -7,7 +7,6 @@ on:
 
 jobs:
   publish-gpr:
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
