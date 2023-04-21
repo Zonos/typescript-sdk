@@ -2,10 +2,10 @@ import type { TypeScriptDocumentsPluginConfig } from '@graphql-codegen/typescrip
 
 import type { GenerateConfig } from './codegen';
 
-export const generateZonosCustomerGraph = {
-  'src/types/generated/graphql.zonos-customer-graph.types.ts': {
+export const generateCustomer = {
+  'src/types/generated/graphql.customer.types.ts': {
     schema: `${process.env.ZONOS_CUSTOMER_GRAPH_URL}`,
-    documents: 'src/**/*.graphql.zonos-customer-graph.ts',
+    documents: 'src/**/*.graphql.customer.ts',
     plugins: [
       'typescript',
       'typescript-operations',
@@ -19,7 +19,7 @@ export const generateZonosCustomerGraph = {
       },
     } satisfies TypeScriptDocumentsPluginConfig,
   },
-  'src/types/generated/graphql.zonos-customer-graph.schema.json': {
+  'src/types/generated/graphql.customer.schema.json': {
     schema: `${process.env.ZONOS_CUSTOMER_GRAPH_URL}`,
     plugins: ['introspection'],
   },

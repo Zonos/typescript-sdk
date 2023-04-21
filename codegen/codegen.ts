@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 import type { TypeScriptPluginConfig } from '@graphql-codegen/typescript';
 import type { TypeScriptDocumentsPluginConfig } from '@graphql-codegen/typescript-operations';
 
-import { generateZonosCustomerGraph } from './zonos-customer-graph.codegen';
+import { generateCustomer } from './customer.codegen';
 
 export type GenerateConfig = CodegenConfig['generates'];
 
@@ -36,7 +36,7 @@ const config: CodegenConfig = {
     ...pluginConfigTypescriptOperations,
   },
   generates: {
-    ...generateZonosCustomerGraph,
+    ...generateCustomer,
   },
   hooks: {
     afterAllFileWrite: ['eslint --fix --ignore-pattern "*.schema.json"'],
