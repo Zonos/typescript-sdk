@@ -1,11 +1,11 @@
 import { gqlRequest } from 'src/gqlRequest';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
 import { IResponseError } from 'src/types';
-import { GetLandedCostQuery } from 'src/types/generated/graphql.zonos-customer-graph.types';
+import { GetLandedCostQuery } from 'src/types/generated/graphql.customer.types';
 
-test('zonos-customer-graph/getLandedCost data', async () => {
+test('customer/getLandedCost data', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/getLandedCost',
+    endpoint: 'customer/getLandedCost',
     customFetch: async () =>
       mockedFetch({
         response: {
@@ -32,9 +32,9 @@ test('zonos-customer-graph/getLandedCost data', async () => {
   expect(errors).toMatchInlineSnapshot(`[]`);
 });
 
-test('zonos-customer-graph/getLandedCost error', async () => {
+test('customer/getLandedCost error', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/getLandedCost',
+    endpoint: 'customer/getLandedCost',
     customFetch: async () =>
       mockedFetch({
         ok: false,

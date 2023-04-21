@@ -1,11 +1,11 @@
 import { gqlRequest } from 'src/gqlRequest';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
 import { IResponseError } from 'src/types';
-import { RootCreateMutation } from 'src/types/generated/graphql.zonos-customer-graph.types';
+import { RootCreateMutation } from 'src/types/generated/graphql.customer.types';
 
 test('root/rootCreate data', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/rootCreate',
+    endpoint: 'customer/rootCreate',
     customFetch: async () =>
       mockedFetch({
         response: {
@@ -29,7 +29,7 @@ test('root/rootCreate data', async () => {
 
 test('root/rootCreate error', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/rootCreate',
+    endpoint: 'customer/rootCreate',
     customFetch: async () =>
       mockedFetch({
         ok: false,

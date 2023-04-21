@@ -1,5 +1,5 @@
 {
-  "name": "@zonos/zonos-typescript-sdk",
+  "name": "@zonos/typescript-sdk",
   "version": "0.0.4",
   "private": false,
   "dependencies": {

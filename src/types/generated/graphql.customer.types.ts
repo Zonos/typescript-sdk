@@ -91,19 +91,6 @@ export type BulkJob = {
   uploadCount: Maybe<Scalars['Int']>;
 };
 
-export type BulkJobConnection = {
-  __typename?: 'BulkJobConnection';
-  edges: Maybe<Array<Maybe<BulkJobEdge>>>;
-  pageInfo: Maybe<PageInfo>;
-  totalCount: Maybe<Scalars['Int']>;
-};
-
-export type BulkJobEdge = {
-  __typename?: 'BulkJobEdge';
-  cursor: Maybe<Scalars['String']>;
-  node: Maybe<BulkJob>;
-};
-
 export type BulkJobStatus =
   | 'ERROR'
   | 'FILE_SAVED'
@@ -1972,6 +1959,8 @@ export type CreateShippingZoneInput = {
   countryCodes?: InputMaybe<Array<CountryCode>>;
   /** The `FulfillmentCenter` ID that services the `ShippingZone`. */
   fulfillmentCenter?: InputMaybe<Scalars['ID']>;
+  /** What should dictate what landed cost method should be used. */
+  landedCostConfiguration?: InputMaybe<ZoneLandedCostConfiguration>;
   /** The humanly memorable display name associated with the `ShippingZone` as prescribed by the party who created it. */
   name: Scalars['String'];
   /** A list of shipping profile IDs associated with the `ShippingZone`. */
@@ -2864,8 +2853,6 @@ export type Fee = {
   description: Maybe<Scalars['String']>;
   /** Exchange rate information for foreign currency `Fee` amounts */
   exchangeRate: Maybe<ExchangeRate>;
-  /** Type of fee */
-  feeType: LandedCostFeeType;
   /** Human readable formula indicating how this fee was calculated */
   formula: Scalars['String'];
   /** `Item` this `Fee` amount applies to */
@@ -2876,11 +2863,8 @@ export type Fee = {
   payee: Maybe<Party>;
   /** Party responsible for rendering payment on this `Fee` */
   payor: Maybe<Party>;
-  /**
-   * Type of fee
-   * @deprecated No longer supported
-   */
-  type: Scalars['String'];
+  /** Type of fee */
+  type: LandedCostFeeType;
 };
 
 export type FindShippingRateByAmountInput = {
@@ -3068,6 +3052,71 @@ export type IncotermCode =
   | 'DDP'
   /** Free On Board */
   | 'FOB';
+
+/** Represents the fields that all Invoice types will share */
+export type Invoice = {
+  /** The total amount due for this invoice */
+  amountDue: Scalars['Decimal'];
+  /** The currency the invoice amount is represented in */
+  currencyCode: CurrencyCode;
+  /** The date payment is due for this `CarrierInvoice` */
+  dueDate: Scalars['DateTime'];
+  /** ID from the Node interface */
+  id: Scalars['ID'];
+  /** The creation date of this `CarrierInvoice` by the carrier */
+  invoiceDate: Scalars['DateTime'];
+  /** The invoice number of this `CarrierInvoice` */
+  invoiceNumber: Scalars['String'];
+  /** The URL where we pull the invoice from */
+  invoiceUrl: Maybe<Scalars['String']>;
+  /** Whether the object is in live or test */
+  mode: Mode;
+  /** The status of the payment for this invoice */
+  status: InvoiceStatus;
+  /** Timestamp for when status changed */
+  statusTransitions: Array<InvoiceStatusTransition>;
+};
+
+/** Invoice Connection */
+export type InvoiceConnection = {
+  __typename?: 'InvoiceConnection';
+  /** Field edges */
+  edges: Array<InvoiceEdge>;
+  /** Field pageInfo */
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+/** Invoice Edge */
+export type InvoiceEdge = {
+  __typename?: 'InvoiceEdge';
+  /** Field cursor */
+  cursor: Scalars['String'];
+  /** Field node */
+  node: Invoice;
+};
+
+export type InvoiceFilter = {
+  /** Represents a range of dates, before, or after the due date */
+  dueDateBetween?: InputMaybe<DateTimeRange>;
+  /** Represents a range of dates, before, or after the invoice date */
+  invoiceDateBetween?: InputMaybe<DateTimeRange>;
+  /** The status of payment for a `CarrierInvoice` */
+  status?: InputMaybe<InvoiceStatus>;
+};
+
+/** Statuses that a `CarrierInvoice` can go through */
+export type InvoiceStatus = 'RECEIVED' | 'RECONCILED' | 'VOIDED';
+
+export type InvoiceStatusTransition = {
+  __typename?: 'InvoiceStatusTransition';
+  /** DateTime indicating when this status change occurred */
+  changedAt: Scalars['DateTime'];
+  /** Text describing this status change */
+  note: Maybe<Scalars['String']>;
+  /** Status of this `CarrierInvoice` at the associated DateTime */
+  status: InvoiceStatus;
+};
 
 /**
  * An `Item` represents the input for a shopping cart `Item` to be quoted for Landed Cost, Shipment Rating,
@@ -3419,16 +3468,9 @@ export type ItemsUpdateInput = {
   items: Array<ItemUpdateInput>;
 };
 
-export type Label = Node & {
+export type Label = {
   __typename?: 'Label';
-  /** The `Carrier` which the label is generated for */
-  carrier: Carrier;
-  /** A unique identifier for the label */
   id: Scalars['ID'];
-  /** The URL where the physical label is stored */
-  url: Scalars['String'];
-  /** A flag indicating whether the label has been voided */
-  void: Scalars['Boolean'];
 };
 
 /**
@@ -3439,7 +3481,7 @@ export type Label = Node & {
 export type LandedCost = {
   __typename?: 'LandedCost';
   /** Amount totals for duties, taxes, fees */
-  amountSubtotals: LandedCostAmountSubtotals;
+  amountSubtotals: Maybe<LandedCostAmountSubtotals>;
   /** When this `LandedCost` was created */
   createdAt: Scalars['DateTime'];
   /** The user who created the `LandedCost` */
@@ -3485,7 +3527,9 @@ export type LandedCostAmountSubtotals = {
   __typename?: 'LandedCostAmountSubtotals';
   duties: Scalars['Decimal'];
   fees: Scalars['Decimal'];
+  items: Scalars['Decimal'];
   landedCostTotal: Scalars['Decimal'];
+  shipping: Scalars['Decimal'];
   taxes: Scalars['Decimal'];
 };
 
@@ -3501,21 +3545,16 @@ export type LandedCostCalculationMethod =
   /** Use the Zonos configured profile settings to provide a DDP or DAP quote. */
   | 'ZONOS_CONFIGURED';
 
-/** LandedCost Connection */
 export type LandedCostConnection = {
   __typename?: 'LandedCostConnection';
-  /** Field edges */
   edges: Maybe<Array<Maybe<LandedCostEdge>>>;
-  /** Field pageInfo */
   pageInfo: Maybe<PageInfo>;
+  totalCount: Maybe<Scalars['Int']>;
 };
 
-/** LandedCost Edge */
 export type LandedCostEdge = {
   __typename?: 'LandedCostEdge';
-  /** Field cursor */
   cursor: Maybe<Scalars['String']>;
-  /** Field node */
   node: Maybe<LandedCost>;
 };
 
@@ -3878,6 +3917,21 @@ export type Location = {
 
 export type MatchType = 'EXACT_MATCH' | 'NO_MATCH' | 'PARTIAL_MATCH';
 
+export type Metadata = {
+  __typename?: 'Metadata';
+  /** The key used to identify this `Metadata` object */
+  key: Scalars['String'];
+  /** The value of this `Metadata` object */
+  value: Scalars['String'];
+};
+
+export type MetadataInput = {
+  /** The key used to identify this `Metadata` object */
+  key: Scalars['String'];
+  /** The value of this `Metadata` object */
+  value: Scalars['String'];
+};
+
 export type Mode = 'LIVE' | 'TEST';
 
 export type MultiFactorAuthSetting = 'DISABLED' | 'ENABLED';
@@ -3911,7 +3965,7 @@ export type Mutation = {
   rootCreate: Maybe<Root>;
   shipmentCreate: Maybe<Shipment>;
   /** Allows an API consumer to calculate possible `ShipmentRating`s based on the organization's configured settings. */
-  shipmentRatingCalculateWorkflow: Maybe<Array<Maybe<ShipmentRating>>>;
+  shipmentRatingCalculateWorkflow: Array<ShipmentRating>;
   /** Allows an API consumer to create a `shipmentRating`. */
   shipmentRatingCreateWorkflow: Maybe<ShipmentRating>;
 };
@@ -3965,7 +4019,7 @@ export type MutationOrderUpdateAmountSubtotalsArgs = {
 };
 
 export type MutationPartyCreateWorkflowArgs = {
-  input: Array<PartyCreateSequenceInput>;
+  input: Array<PartyCreateWorkflowInput>;
 };
 
 export type MutationPartyScreenArgs = {
@@ -3973,7 +4027,7 @@ export type MutationPartyScreenArgs = {
 };
 
 export type MutationPddpSubmissionCreateArgs = {
-  input: PddpSubmissionCreate;
+  input: PddpSubmissionCreateInput;
 };
 
 export type MutationShipmentCreateArgs = {
@@ -4199,7 +4253,7 @@ export type Party = {
   updatedBy: Scalars['ID'];
 };
 
-export type PartyCreateSequenceInput = {
+export type PartyCreateWorkflowInput = {
   location?: InputMaybe<CreateLocationInput>;
   person?: InputMaybe<CreatePersonInput>;
   type: PartyType;
@@ -4338,11 +4392,13 @@ export type PddpSubmissionConnection = {
 };
 
 /** The required information to create a PDDP submission */
-export type PddpSubmissionCreate = {
+export type PddpSubmissionCreateInput = {
   /** The ID of the associated IPC Retailer, if not given Zonos' ID will be used */
   ipcRetailerId?: InputMaybe<Scalars['String']>;
   /** The ID of the order for which to submit for PDDP */
   orderId: Scalars['String'];
+  /** The tracking number associated with this submission */
+  trackingNumber: Scalars['String'];
 };
 
 /** An edge in a connection that contains a cursor and the PDDP submission */
@@ -4356,7 +4412,7 @@ export type PddpSubmissionEdge = {
 
 /** Set of filters to make a query for PDDP submissions. */
 export type PddpSubmissionFilter = {
-  /** A date range for wen the PDDP submission was created to filter by */
+  /** A date range for when the PDDP submission was created to filter by */
   createdDate?: InputMaybe<DateTimeRange>;
   /** The destination postal operator, UPU Code */
   destinationPost?: InputMaybe<Scalars['String']>;
@@ -4409,7 +4465,7 @@ export type PddpSubmissionLogEdge = {
 
 /** Set of filters to make a query for PDDP submission logs. */
 export type PddpSubmissionLogFilter = {
-  /** A date range for wen the PDDP submission was created to filter by */
+  /** A date range for when the PDDP submission was created to filter by */
   createdDate?: InputMaybe<DateTimeRange>;
   /** The ID of the associated order */
   orderId?: InputMaybe<Scalars['String']>;
@@ -4468,6 +4524,8 @@ export type Query = {
   /** Returns a list of `FulfillmentCenter` objects for an `Organization` */
   fulfillmentCenters: Maybe<Array<Maybe<FulfillmentCenter>>>;
   getPerson: Maybe<Person>;
+  /** Retrieve an `InvoiceConnection` based on a `InvoiceFilter` criteria */
+  invoices: InvoiceConnection;
   /** Returns an `Item` resource by ID. */
   item: Maybe<Item>;
   itemRestrictionResult: Maybe<ItemRestrictionResult>;
@@ -4654,6 +4712,19 @@ export type QueryGetPersonArgs = {
  *     id: ID!
  * }
  */
+export type QueryInvoicesArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
+  filter: InputMaybe<InvoiceFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
+};
+
+/**
+ * interface Node {
+ *     id: ID!
+ * }
+ */
 export type QueryItemArgs = {
   id: Scalars['ID'];
 };
@@ -4692,9 +4763,11 @@ export type QueryLandedCostArgs = {
  * }
  */
 export type QueryLandedCostsArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
   filter: InputMaybe<LandedCostFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  first: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
 };
 
 /**
@@ -5070,6 +5143,8 @@ export type ServiceLevel = {
   carrier: Carrier;
   /** The code for the ServiceLevel as defined by the external carrier API */
   carrierApiCode: Scalars['String'];
+  /** The code used to generate labels for this ServiceLevel defined by the external carrier API. */
+  carrierLabelApiCode: Maybe<Scalars['String']>;
   /** The enumerated value of ServiceLevel options that can be sent in the API. */
   code: Scalars['String'];
   /** The list of restrictions that exist around countries, weights, dims, and prices for a ServiceLevel. */
@@ -5180,6 +5255,8 @@ export type ServiceLevelCreateInput = {
   carrier: Scalars['ID'];
   /** The code for the `ServiceLevel` as defined by the external carrier API. */
   carrierApiCode: Scalars['String'];
+  /** The code used to generate labels for this ServiceLevel defined by the external carrier API. */
+  carrierLabelApiCode?: InputMaybe<Scalars['String']>;
   /** The enumerated value of `ServiceLevel` options that can be sent in the API. */
   code: Scalars['String'];
   /** The method of delivery that indicates how the clearance is processed with this `ServiceLevel`. */
@@ -5267,6 +5344,8 @@ export type ServiceLevelUpdateInput = {
   availability: ServiceLevelAvailability;
   /** The code for the `ServiceLevel` as defined by the external carrier API. */
   carrierApiCode: Scalars['String'];
+  /** The code used to generate labels for this ServiceLevel defined by the external carrier API. */
+  carrierLabelApiCode?: InputMaybe<Scalars['String']>;
   /** The method of delivery that indicates how the clearance is processed with this `ServiceLevel`. */
   deliveryType?: InputMaybe<DeliveryType>;
   /** A unique identifier for the `ServiceLevel`. */
@@ -5842,6 +5921,8 @@ export type ShippingZone = {
   fulfillmentCenter: Maybe<FulfillmentCenter>;
   /** A unique identifier for the ShippingZone. */
   id: Scalars['ID'];
+  /** What should dictate what landed cost method should be used. */
+  landedCostConfiguration: ZoneLandedCostConfiguration;
   /** Specifies whether the ShippingZone is in live or test mode. */
   mode: Mode;
   /** The humanly-memorable display name for the ShippingZone. */
@@ -5861,6 +5942,8 @@ export type ShippingZoneCreateInput = {
   countryCodes?: InputMaybe<Array<CountryCode>>;
   /** The `FulfillmentCenter` ID that services the `ShippingZone`. */
   fulfillmentCenter?: InputMaybe<Scalars['ID']>;
+  /** What should dictate what landed cost method should be used. */
+  landedCostConfiguration?: InputMaybe<ZoneLandedCostConfiguration>;
   /** The humanly memorable display name associated with the `ShippingZone` as prescribed by the party who created it. */
   name: Scalars['String'];
   /** A list of shipping profile IDs associated with the `ShippingZone`. */
@@ -5874,8 +5957,10 @@ export type ShippingZoneUpdateInput = {
   fulfillmentCenter?: InputMaybe<Scalars['ID']>;
   /** A unique identifier for the ShippingZone. */
   id: Scalars['ID'];
+  /** What should dictate what landed cost method should be used. */
+  landedCostConfiguration?: InputMaybe<ZoneLandedCostConfiguration>;
   /** The humanly-memorable display name for the `ShippingZone`. */
-  name: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
   /** A list of shipping profile IDs associated with the `ShippingZone`. */
   profiles?: InputMaybe<Array<Scalars['ID']>>;
 };
@@ -6211,6 +6296,8 @@ export type UpdateShippingZoneInput = {
   fulfillmentCenter?: InputMaybe<Scalars['ID']>;
   /** A unique identifier for the ShippingZone. */
   id: Scalars['ID'];
+  /** What should dictate what landed cost method should be used. */
+  landedCostConfiguration?: InputMaybe<ZoneLandedCostConfiguration>;
   /** The humanly-memorable display name for the `ShippingZone`. */
   name: Scalars['String'];
   /** A list of shipping profile IDs associated with the `ShippingZone`. */
@@ -6261,6 +6348,12 @@ export type VolumeUnitCode =
   | 'QUART_US_DRY';
 
 export type WeightUnitCode = 'GRAM' | 'KILOGRAM' | 'OUNCE' | 'POUND';
+
+export type ZoneLandedCostConfiguration =
+  /** The landed cost method will be DAP. */
+  | 'DAP_FORCED'
+  /** The landed cost method will be determined by the `LandedCostMethod` on the `ShippingProfile` used in this zone. */
+  | 'SHIPPING_PROFILE';
 
 export type GetLandedCostQueryVariables = Exact<{
   input: Scalars['ID'];

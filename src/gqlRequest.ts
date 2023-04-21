@@ -2,28 +2,26 @@ import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/dist/types';
 
 import {
-  getSdk as getZonosCustomerGraphSdk,
-  Sdk as ZonosCustomerGraphSdk,
-} from 'src/types/generated/graphql.zonos-customer-graph.types';
+  getSdk as getCustomerSdk,
+  Sdk as CustomerSdk,
+} from 'src/types/generated/graphql.customer.types';
 
-type Schema = 'zonos-customer-graph';
+type Schema = 'customer';
 
-type ZonosCustomerGraphQueryName = keyof ZonosCustomerGraphSdk;
+type CustomerQueryName = keyof CustomerSdk;
 
-type ZonosCustomerGraphEndpoint =
-  `zonos-customer-graph/${ZonosCustomerGraphQueryName}`;
-type Endpoint = ZonosCustomerGraphEndpoint;
+type CustomerEndpoint = `customer/${CustomerQueryName}`;
+type Endpoint = CustomerEndpoint;
 
-type SdkMethod<E extends Endpoint> =
-  E extends `zonos-customer-graph/${infer RQ}`
-    ? RQ extends ZonosCustomerGraphQueryName
-      ? ZonosCustomerGraphSdk[RQ]
-      : never
-    : never;
+type SdkMethod<E extends Endpoint> = E extends `customer/${infer RQ}`
+  ? RQ extends CustomerQueryName
+    ? CustomerSdk[RQ]
+    : never
+  : never;
 
 type QueryNameFromEndpoint<E extends Endpoint> =
-  E extends `zonos-customer-graph/${infer CQ}`
-    ? CQ extends ZonosCustomerGraphQueryName
+  E extends `customer/${infer CQ}`
+    ? CQ extends CustomerQueryName
       ? CQ
       : never
     : never;
@@ -55,8 +53,8 @@ type GQLReturn<E extends Endpoint> = {
 
 const getSdk = (schema: Schema) => {
   switch (schema) {
-    case 'zonos-customer-graph': {
-      return getZonosCustomerGraphSdk;
+    case 'customer': {
+      return getCustomerSdk;
     }
     default:
       throw new Error('Your query schema is missing');
@@ -66,7 +64,7 @@ const getSdk = (schema: Schema) => {
 /**
  * @example
  * const { json, errors } = await gqlRequest({
- *   endpoint: 'zonosAuthGraph/getCredentialServiceToken',
+ *   endpoint: 'AuthGraph/getCredentialServiceToken',
  *   variables: { input: { mode: 'LIVE', storeId: 3 } },
  * });
  */

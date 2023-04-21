@@ -1,11 +1,11 @@
 import { gqlRequest } from 'src/gqlRequest';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
 import { IResponseError } from 'src/types';
-import { CurrencyFormatQuery } from 'src/types/generated/graphql.zonos-customer-graph.types';
+import { CurrencyFormatQuery } from 'src/types/generated/graphql.customer.types';
 
 test('root/currencyFormat data', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/currencyFormat',
+    endpoint: 'customer/currencyFormat',
     customFetch: async () =>
       mockedFetch({
         response: {
@@ -38,7 +38,7 @@ test('root/currencyFormat data', async () => {
 
 test('root/rootCreate error', async () => {
   const { json, errors } = await gqlRequest({
-    endpoint: 'zonos-customer-graph/rootCreate',
+    endpoint: 'customer/rootCreate',
     customFetch: async () =>
       mockedFetch({
         ok: false,

@@ -546,92 +546,6 @@
         "possibleTypes": null
       },
       {
-        "kind": "OBJECT",
-        "name": "BulkJobConnection",
-        "description": null,
-        "fields": [
-          {
-            "name": "edges",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BulkJobEdge",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "pageInfo",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "PageInfo",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "totalCount",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "BulkJobEdge",
-        "description": null,
-        "fields": [
-          {
-            "name": "cursor",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "node",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "BulkJob",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "ENUM",
         "name": "BulkJobStatus",
         "description": null,
@@ -11863,6 +11777,18 @@
             "deprecationReason": null
           },
           {
+            "name": "landedCostConfiguration",
+            "description": "What should dictate what landed cost method should be used.",
+            "type": {
+              "kind": "ENUM",
+              "name": "ZoneLandedCostConfiguration",
+              "ofType": null
+            },
+            "defaultValue": "SHIPPING_PROFILE",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "The humanly memorable display name associated with the `ShippingZone` as prescribed by the party who created it.",
             "type": {
@@ -16433,22 +16359,6 @@
             "deprecationReason": null
           },
           {
-            "name": "feeType",
-            "description": "Type of fee",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "LandedCostFeeType",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "formula",
             "description": "Human readable formula indicating how this fee was calculated",
             "args": [],
@@ -16520,13 +16430,13 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "ENUM",
+                "name": "LandedCostFeeType",
                 "ofType": null
               }
             },
-            "isDeprecated": true,
-            "deprecationReason": "No longer supported"
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -17893,6 +17803,428 @@
         "fields": null,
         "inputFields": null,
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INTERFACE",
+        "name": "Invoice",
+        "description": "Represents the fields that all Invoice types will share",
+        "fields": [
+          {
+            "name": "amountDue",
+            "description": "The total amount due for this invoice",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Decimal",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "currencyCode",
+            "description": "The currency the invoice amount is represented in",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CurrencyCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dueDate",
+            "description": "The date payment is due for this `CarrierInvoice`",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": "ID from the Node interface",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "invoiceDate",
+            "description": "The creation date of this `CarrierInvoice` by the carrier",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "invoiceNumber",
+            "description": "The invoice number of this `CarrierInvoice`",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "invoiceUrl",
+            "description": "The URL where we pull the invoice from",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mode",
+            "description": "Whether the object is in live or test",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "Mode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "The status of the payment for this invoice",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "InvoiceStatus",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "statusTransitions",
+            "description": "Timestamp for when status changed",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "InvoiceStatusTransition",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Node",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "InvoiceConnection",
+        "description": "Invoice Connection",
+        "fields": [
+          {
+            "name": "edges",
+            "description": "Field edges",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "InvoiceEdge",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pageInfo",
+            "description": "Field pageInfo",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageInfo",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "totalCount",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "InvoiceEdge",
+        "description": "Invoice Edge",
+        "fields": [
+          {
+            "name": "cursor",
+            "description": "Field cursor",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "node",
+            "description": "Field node",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Invoice",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "InvoiceFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "dueDateBetween",
+            "description": "Represents a range of dates, before, or after the due date",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateTimeRange",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "invoiceDateBetween",
+            "description": "Represents a range of dates, before, or after the invoice date",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateTimeRange",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "The status of payment for a `CarrierInvoice`",
+            "type": {
+              "kind": "ENUM",
+              "name": "InvoiceStatus",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "InvoiceStatus",
+        "description": "Statuses that a `CarrierInvoice` can go through",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "RECEIVED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RECONCILED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOIDED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "InvoiceStatusTransition",
+        "description": null,
+        "fields": [
+          {
+            "name": "changedAt",
+            "description": "DateTime indicating when this status change occurred",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "note",
+            "description": "Text describing this status change",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Status of this `CarrierInvoice` at the associated DateTime",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "InvoiceStatus",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -20119,24 +20451,8 @@
         "description": null,
         "fields": [
           {
-            "name": "carrier",
-            "description": "The `Carrier` which the label is generated for",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Carrier",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "id",
-            "description": "A unique identifier for the label",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -20149,48 +20465,10 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "url",
-            "description": "The URL where the physical label is stored",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "void",
-            "description": "A flag indicating whether the label has been voided",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "inputFields": null,
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node",
-            "ofType": null
-          }
-        ],
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -20204,13 +20482,9 @@
             "description": "Amount totals for duties, taxes, fees",
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "LandedCostAmountSubtotals",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "LandedCostAmountSubtotals",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -20611,7 +20885,39 @@
             "deprecationReason": null
           },
           {
+            "name": "items",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Decimal",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "landedCostTotal",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Decimal",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shipping",
             "description": null,
             "args": [],
             "type": {
@@ -20692,11 +20998,11 @@
       {
         "kind": "OBJECT",
         "name": "LandedCostConnection",
-        "description": "LandedCost Connection",
+        "description": null,
         "fields": [
           {
             "name": "edges",
-            "description": "Field edges",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -20712,11 +21018,23 @@
           },
           {
             "name": "pageInfo",
-            "description": "Field pageInfo",
+            "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
               "name": "PageInfo",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "totalCount",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -20731,11 +21049,11 @@
       {
         "kind": "OBJECT",
         "name": "LandedCostEdge",
-        "description": "LandedCost Edge",
+        "description": null,
         "fields": [
           {
             "name": "cursor",
-            "description": "Field cursor",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -20747,7 +21065,7 @@
           },
           {
             "name": "node",
-            "description": "Field node",
+            "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -21401,7 +21719,7 @@
               "name": "IncotermCode",
               "ofType": null
             },
-            "defaultValue": "DDP",
+            "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -22443,6 +22761,92 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "Metadata",
+        "description": null,
+        "fields": [
+          {
+            "name": "key",
+            "description": "The key used to identify this `Metadata` object",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "value",
+            "description": "The value of this `Metadata` object",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "MetadataInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "key",
+            "description": "The key used to identify this `Metadata` object",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "value",
+            "description": "The value of this `Metadata` object",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "Mode",
         "description": null,
@@ -23007,7 +23411,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "INPUT_OBJECT",
-                        "name": "PartyCreateSequenceInput",
+                        "name": "PartyCreateWorkflowInput",
                         "ofType": null
                       }
                     }
@@ -23079,7 +23483,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "PddpSubmissionCreate",
+                    "name": "PddpSubmissionCreateInput",
                     "ofType": null
                   }
                 },
@@ -23146,12 +23550,20 @@
             "description": "Allows an API consumer to calculate possible `ShipmentRating`s based on the organization's configured settings.",
             "args": [],
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "ShipmentRating",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ShipmentRating",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,
@@ -23221,11 +23633,6 @@
           {
             "kind": "OBJECT",
             "name": "CustomsSpec",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Label",
             "ofType": null
           },
           {
@@ -24805,7 +25212,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "PartyCreateSequenceInput",
+        "name": "PartyCreateWorkflowInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -25824,7 +26231,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "PddpSubmissionCreate",
+        "name": "PddpSubmissionCreateInput",
         "description": "The required information to create a PDDP submission",
         "fields": null,
         "inputFields": [
@@ -25843,6 +26250,22 @@
           {
             "name": "orderId",
             "description": "The ID of the order for which to submit for PDDP",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "trackingNumber",
+            "description": "The tracking number associated with this submission",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -25904,7 +26327,7 @@
         "inputFields": [
           {
             "name": "createdDate",
-            "description": "A date range for wen the PDDP submission was created to filter by",
+            "description": "A date range for when the PDDP submission was created to filter by",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateTimeRange",
@@ -26192,7 +26615,7 @@
         "inputFields": [
           {
             "name": "createdDate",
-            "description": "A date range for wen the PDDP submission was created to filter by",
+            "description": "A date range for when the PDDP submission was created to filter by",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateTimeRange",
@@ -26878,6 +27301,83 @@
             "deprecationReason": null
           },
           {
+            "name": "invoices",
+            "description": "Retrieve an `InvoiceConnection` based on a `InvoiceFilter` criteria",
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "filter",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "InvoiceFilter",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "first",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": "10",
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "last",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "InvoiceConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "item",
             "description": "Returns an `Item` resource by ID.",
             "args": [
@@ -27006,6 +27506,30 @@
             "description": "Returns a list of `LandedCost` resources",
             "args": [
               {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "filter",
                 "description": null,
                 "type": {
@@ -27025,19 +27549,19 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "10",
+                "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
               },
               {
-                "name": "offset",
+                "name": "last",
                 "description": null,
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "0",
+                "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
               }
@@ -28646,6 +29170,18 @@
             "deprecationReason": null
           },
           {
+            "name": "carrierLabelApiCode",
+            "description": "The code used to generate labels for this ServiceLevel defined by the external carrier API.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "code",
             "description": "The enumerated value of ServiceLevel options that can be sent in the API.",
             "args": [],
@@ -29338,6 +29874,18 @@
             "deprecationReason": null
           },
           {
+            "name": "carrierLabelApiCode",
+            "description": "The code used to generate labels for this ServiceLevel defined by the external carrier API.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "code",
             "description": "The enumerated value of `ServiceLevel` options that can be sent in the API.",
             "type": {
@@ -29902,6 +30450,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "carrierLabelApiCode",
+            "description": "The code used to generate labels for this ServiceLevel defined by the external carrier API.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -33512,6 +34072,22 @@
             "deprecationReason": null
           },
           {
+            "name": "landedCostConfiguration",
+            "description": "What should dictate what landed cost method should be used.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ZoneLandedCostConfiguration",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "mode",
             "description": "Specifies whether the ShippingZone is in live or test mode.",
             "args": [],
@@ -33656,6 +34232,18 @@
             "deprecationReason": null
           },
           {
+            "name": "landedCostConfiguration",
+            "description": "What should dictate what landed cost method should be used.",
+            "type": {
+              "kind": "ENUM",
+              "name": "ZoneLandedCostConfiguration",
+              "ofType": null
+            },
+            "defaultValue": "SHIPPING_PROFILE",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "The humanly memorable display name associated with the `ShippingZone` as prescribed by the party who created it.",
             "type": {
@@ -33751,16 +34339,24 @@
             "deprecationReason": null
           },
           {
+            "name": "landedCostConfiguration",
+            "description": "What should dictate what landed cost method should be used.",
+            "type": {
+              "kind": "ENUM",
+              "name": "ZoneLandedCostConfiguration",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "The humanly-memorable display name for the `ShippingZone`.",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -36073,6 +36669,18 @@
             "deprecationReason": null
           },
           {
+            "name": "landedCostConfiguration",
+            "description": "What should dictate what landed cost method should be used.",
+            "type": {
+              "kind": "ENUM",
+              "name": "ZoneLandedCostConfiguration",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "The humanly-memorable display name for the `ShippingZone`.",
             "type": {
@@ -36421,6 +37029,29 @@
           {
             "name": "POUND",
             "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "ZoneLandedCostConfiguration",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "DAP_FORCED",
+            "description": "The landed cost method will be DAP.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHIPPING_PROFILE",
+            "description": "The landed cost method will be determined by the `LandedCostMethod` on the `ShippingProfile` used in this zone.",
             "isDeprecated": false,
             "deprecationReason": null
           }
