@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "yarn"
+          cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: yarn build:ci
 
@@ -37,7 +37,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn codegen && yarn tsc
         env:
-          ZONOS_CUSTOMER_GRAPH_URL: ${{ secrets.ZONOS_CUSTOMER_GRAPH_URL }}
+          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
 
   Test:
     runs-on: ubuntu-latest
@@ -50,4 +50,4 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn codegen && yarn test:prod
         env:
-          ZONOS_CUSTOMER_GRAPH_URL: ${{ secrets.ZONOS_CUSTOMER_GRAPH_URL }}
+          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}

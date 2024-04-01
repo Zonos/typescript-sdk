@@ -21,7 +21,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn build
         env:
-          ZONOS_CUSTOMER_GRAPH_URL: ${{ secrets.ZONOS_CUSTOMER_GRAPH_URL }}
+          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
       - run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

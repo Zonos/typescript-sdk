@@ -1,14 +1,19 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import buble from '@rollup/plugin-buble';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
+import { config } from 'dotenv';
 import fs from 'fs';
 import { globSync } from 'glob';
 import { InputOptions, OutputChunk, OutputOptions, rollup } from 'rollup';
 import progress from 'rollup-plugin-progress';
 import tsPlugin from 'rollup-plugin-typescript2';
 
-import { dependencies, peerDependencies } from '../package.json';
+import { dependencies } from '../package.json';
 import sizes from './plugins/customized-rollup-plugin-sizes';
+
+config();
 
 type RollupOptions = InputOptions & { output?: OutputOptions };
 type ConfigOptions = Omit<RollupOptions, 'input' | 'output'> &
@@ -65,9 +70,16 @@ const bundlePackage = async (
       terser(),
       progress({ clearLine: true }),
       sizes({ details: true }),
+      replace({
+        preventAssignment: true,
+        'process.env.CUSTOMER_GRAPH_URL': JSON.stringify(
+          process.env.CUSTOMER_GRAPH_URL ||
+            'missing-the-CUSTOMER_GRAPH_URL-env-var'
+        ),
+      }),
     ],
     cache: false,
-    external: Object.keys(peerDependencies).concat(Object.keys(dependencies)),
+    external: Object.keys(dependencies),
     maxParallelFileOps: 50,
   };
   const configOptions: ConfigOptions = {
@@ -90,7 +102,7 @@ const generateAllModulesContent = async (
   bundles: OutputChunk[]
 ): Promise<string[]> =>
   bundles.flatMap(bundle => {
-    // ex: folderName/gqlRequest.js
+    // ex: folderName/zonosClientRequest.js
     const [, subFolderPath, fileName] =
       bundle.fileName.split(/(.*\/)*(.*)\.js/g);
     // exclude all bundles that are not entry or just private components

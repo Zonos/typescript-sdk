@@ -1,1 +1,2 @@
-import './gqlRequest';
+import './getZonosClient';
+import './zonosClientRequest';
