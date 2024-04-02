@@ -7,35 +7,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.x
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
-      - run: yarn build:ci
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm build:ci
 
   Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.x
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn lint
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm lint
 
   TSC:
     name: Check types
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.x
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn codegen && yarn tsc
+          cache: pnpm
+      - run: pnpm install
+      # Build the types for the scss files and make sure they are up to date
+      - name: Check scss types are up to date
+        run: pnpm build:scss:types --listDifferent
+      - run: pnpm tsc
         env:
           CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
 
@@ -43,11 +55,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.x
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn codegen && yarn test:prod
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm test:prod
         env:
           CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
