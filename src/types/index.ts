@@ -1,3 +1,3 @@
-import '../all';
+import 'src/all';
 
 export * from './IResponseError';

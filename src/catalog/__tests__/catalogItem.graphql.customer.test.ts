@@ -1,7 +1,9 @@
+import { describe, test } from 'vitest';
+
 import { getZonosClient } from 'src/getZonosClient';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
-import { IResponseError } from 'src/types';
-import {
+import type { IResponseError } from 'src/types';
+import type {
   CatalogItemQuery,
   CatalogItemQueryVariables,
 } from 'src/types/generated/graphql.customer.types';
@@ -110,9 +112,9 @@ describe('catalogItem data', () => {
   };
 
   test('zonosClientRequest', async () => {
-    const { json, errors } = await zonosClientRequest({
-      operationName: 'catalogItem',
+    const { errors, json } = await zonosClientRequest({
       customFetch: async () => mockedFetch({ response: { data } }),
+      operationName: 'catalogItem',
       token: 'test_token',
       variables,
     });
@@ -125,7 +127,7 @@ describe('catalogItem data', () => {
       customFetch: async () => mockedFetch({ response: { data } }),
       token: 'test-token',
     });
-    const { json: clientJson, errors: clientErrors } =
+    const { errors: clientErrors, json: clientJson } =
       await zonosClient.catalogItem({ variables });
     expect(clientJson).toEqual(data);
     expect(clientErrors).toMatchInlineSnapshot(`[]`);
@@ -154,21 +156,21 @@ describe('catalogItem error', () => {
     });
 
   test('zonosClientRequest', async () => {
-    const { json, errors } = await zonosClientRequest({
-      operationName: 'catalogItem',
+    const { errors, json } = await zonosClientRequest({
       customFetch,
+      operationName: 'catalogItem',
       token: 'test-token',
       variables,
     });
-    expect(json).toEqual(null);
+    expect(json).toBeNull();
     expect(errors).toEqual([error]);
   });
 
   test('zonosClient', async () => {
-    const zonosClient = getZonosClient({ token: 'test_token', customFetch });
-    const { json: clientJson, errors: clientErrors } =
+    const zonosClient = getZonosClient({ customFetch, token: 'test_token' });
+    const { errors: clientErrors, json: clientJson } =
       await zonosClient.catalogItem({ variables });
-    expect(clientJson).toEqual(null);
+    expect(clientJson).toBeNull();
     expect(clientErrors).toEqual([error]);
   });
 });

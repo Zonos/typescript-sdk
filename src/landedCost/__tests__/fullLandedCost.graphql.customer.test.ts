@@ -1,7 +1,9 @@
+import { describe, test } from 'vitest';
+
 import { getZonosClient } from 'src/getZonosClient';
 import { mockedFetch } from 'src/testUtils/_mockedFetch';
-import { IResponseError } from 'src/types';
-import {
+import type { IResponseError } from 'src/types';
+import type {
   FullLandedCostMutation,
   FullLandedCostMutationVariables,
 } from 'src/types/generated/graphql.customer.types';
@@ -9,6 +11,24 @@ import { zonosClientRequest } from 'src/zonosClientRequest';
 
 describe('fullLandedCost data', () => {
   const data: FullLandedCostMutation = {
+    cartonizeWorkflow: [
+      {
+        id: 'carton_1eaa7441-3b0b-4a31-b495-a2ee7528dbc0',
+      },
+    ],
+    itemCreateWorkflow: [
+      {
+        amount: 3,
+        countryOfOrigin: 'CN',
+        description: 'Backpack',
+        hsCode: '4202.92',
+        id: 'item_2eabf875-6113-4af5-b7ef-822997e3c4b1',
+        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
+        quantity: 1,
+        restriction: null,
+      },
+    ],
+    landedCostCalculateWorkflow: null,
     partyCreateWorkflow: [
       {
         id: 'party_22297ddd-aed3-4873-b35c-76f1338fbd5d',
@@ -35,23 +55,6 @@ describe('fullLandedCost data', () => {
         type: 'DESTINATION',
       },
     ],
-    itemCreateWorkflow: [
-      {
-        amount: 3,
-        countryOfOrigin: 'CN',
-        description: 'Backpack',
-        hsCode: '4202.92',
-        id: 'item_2eabf875-6113-4af5-b7ef-822997e3c4b1',
-        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
-        quantity: 1,
-        restriction: null,
-      },
-    ],
-    cartonizeWorkflow: [
-      {
-        id: 'carton_1eaa7441-3b0b-4a31-b495-a2ee7528dbc0',
-      },
-    ],
     shipmentRatingCalculateWorkflow: [
       {
         id: 'shipment_rating_e85628d6-8c44-4a7d-a1a7-3c45b7fcf52b',
@@ -66,10 +69,25 @@ describe('fullLandedCost data', () => {
         id: 'shipment_rating_3f235c88-ec20-4f47-850c-951e1ec24e6a',
       },
     ],
-    landedCostCalculateWorkflow: null,
   };
 
   const variables: FullLandedCostMutationVariables = {
+    itemCreateWorkflowInput: [
+      {
+        amount: 3,
+        countryOfOrigin: 'CN',
+        currencyCode: 'USD',
+        description: 'Backpack',
+        hsCode: '4202.92',
+        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
+        quantity: 1,
+      },
+    ],
+    landedCostCalculateWorkflowInput: {
+      calculationMethod: 'DDP',
+      endUse: 'NOT_FOR_RESALE',
+      tariffRate: 'ZONOS_PREFERRED',
+    },
     partyCreateWorkflowInput: [
       {
         location: {
@@ -95,28 +113,12 @@ describe('fullLandedCost data', () => {
         type: 'DESTINATION',
       },
     ],
-    itemCreateWorkflowInput: [
-      {
-        amount: 3,
-        countryOfOrigin: 'CN',
-        currencyCode: 'USD',
-        description: 'Backpack',
-        hsCode: '4202.92',
-        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
-        quantity: 1,
-      },
-    ],
-    landedCostCalculateWorkflowInput: {
-      calculationMethod: 'DDP',
-      endUse: 'NOT_FOR_RESALE',
-      tariffRate: 'ZONOS_PREFERRED',
-    },
   };
 
   test('zonosClientRequest', async () => {
-    const { json, errors } = await zonosClientRequest({
-      operationName: 'fullLandedCost',
+    const { errors, json } = await zonosClientRequest({
       customFetch: async () => mockedFetch({ response: { data } }),
+      operationName: 'fullLandedCost',
       token: 'test_token',
       variables,
     });
@@ -129,7 +131,7 @@ describe('fullLandedCost data', () => {
       customFetch: async () => mockedFetch({ response: { data } }),
       token: 'test_token',
     });
-    const { json: clientJson, errors: clientErrors } =
+    const { errors: clientErrors, json: clientJson } =
       await zonosClient.fullLandedCost({ variables });
     expect(clientJson).toEqual(data);
     expect(clientErrors).toMatchInlineSnapshot(`[]`);
@@ -138,6 +140,22 @@ describe('fullLandedCost data', () => {
 
 describe('fullLandedCost error', () => {
   const variables: FullLandedCostMutationVariables = {
+    itemCreateWorkflowInput: [
+      {
+        amount: 3,
+        countryOfOrigin: 'CN',
+        currencyCode: 'USD',
+        description: 'Backpack',
+        hsCode: '4202.92',
+        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
+        quantity: 1,
+      },
+    ],
+    landedCostCalculateWorkflowInput: {
+      calculationMethod: 'DDP',
+      endUse: 'NOT_FOR_RESALE',
+      tariffRate: 'ZONOS_PREFERRED',
+    },
     partyCreateWorkflowInput: [
       {
         location: {
@@ -163,22 +181,6 @@ describe('fullLandedCost error', () => {
         type: 'DESTINATION',
       },
     ],
-    itemCreateWorkflowInput: [
-      {
-        amount: 3,
-        countryOfOrigin: 'CN',
-        currencyCode: 'USD',
-        description: 'Backpack',
-        hsCode: '4202.92',
-        productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
-        quantity: 1,
-      },
-    ],
-    landedCostCalculateWorkflowInput: {
-      calculationMethod: 'DDP',
-      endUse: 'NOT_FOR_RESALE',
-      tariffRate: 'ZONOS_PREFERRED',
-    },
   };
 
   const error = {
@@ -196,21 +198,21 @@ describe('fullLandedCost error', () => {
     });
 
   test('zonosClientRequest', async () => {
-    const { json, errors } = await zonosClientRequest({
-      operationName: 'fullLandedCost',
+    const { errors, json } = await zonosClientRequest({
       customFetch,
+      operationName: 'fullLandedCost',
       token: 'test_token',
       variables,
     });
-    expect(json).toEqual(null);
+    expect(json).toBeNull();
     expect(errors).toEqual([error]);
   });
 
   test('zonosClient', async () => {
-    const zonosClient = getZonosClient({ token: 'test_token', customFetch });
-    const { json: clientJson, errors: clientErrors } =
+    const zonosClient = getZonosClient({ customFetch, token: 'test_token' });
+    const { errors: clientErrors, json: clientJson } =
       await zonosClient.fullLandedCost({ variables });
-    expect(clientJson).toEqual(null);
+    expect(clientJson).toBeNull();
     expect(clientErrors).toEqual([error]);
   });
 });

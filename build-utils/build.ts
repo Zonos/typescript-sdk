@@ -6,11 +6,16 @@ import terser from '@rollup/plugin-terser';
 import { config } from 'dotenv';
 import fs from 'fs';
 import { globSync } from 'glob';
-import { InputOptions, OutputChunk, OutputOptions, rollup } from 'rollup';
+import { dependencies } from 'package.json';
+import {
+  type InputOptions,
+  type OutputChunk,
+  type OutputOptions,
+  rollup,
+} from 'rollup';
 import progress from 'rollup-plugin-progress';
 import tsPlugin from 'rollup-plugin-typescript2';
 
-import { dependencies } from '../package.json';
 import sizes from './plugins/customized-rollup-plugin-sizes';
 
 config();
@@ -46,6 +51,9 @@ const bundlePackage = async (
   options: ConfigOptions & { output: OutputOptions }
 ): Promise<OutputChunk[]> => {
   const defaultOptions: RollupOptions = {
+    cache: false,
+    external: Object.keys(dependencies),
+    maxParallelFileOps: 50,
     plugins: [
       nodeResolve({
         // Seems to evaluate falsiness, so put something
@@ -62,9 +70,9 @@ const bundlePackage = async (
         exclude: 'node_modules/**',
         include: '**/*.{js,mjs,jsx,ts,tsx,vue}',
         transforms: {
-          modules: false,
           dangerousForOf: true,
           dangerousTaggedTemplateString: true,
+          modules: false,
         },
       }),
       terser(),
@@ -78,9 +86,6 @@ const bundlePackage = async (
         ),
       }),
     ],
-    cache: false,
-    external: Object.keys(dependencies),
-    maxParallelFileOps: 50,
   };
   const configOptions: ConfigOptions = {
     ...defaultOptions,
@@ -108,8 +113,8 @@ const generateAllModulesContent = async (
     // exclude all bundles that are not entry or just private components
     if (
       !bundle.isEntry ||
-      /^_+/.test(fileName) ||
-      /__tests__/.test(subFolderPath)
+      /^_+/.test(fileName || '') ||
+      /__tests__/.test(subFolderPath || '')
     ) {
       return [];
     }
@@ -127,14 +132,14 @@ const allModules = mainModules
 const configs: ConfigOptions[] = [
   {
     input: prepareEntries(allModules),
+    maxParallelFileOps: 200,
     output: {
       dir: 'dist',
-      format: 'cjs',
-      sourcemap: false,
       exports: 'auto',
+      format: 'cjs',
       interop: 'auto',
+      sourcemap: false,
     },
-    maxParallelFileOps: 200,
   },
 ];
 

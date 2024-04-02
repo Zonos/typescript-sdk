@@ -1,7 +1,7 @@
 import { ClientError, GraphQLClient } from 'graphql-request';
-import { GraphQLError } from 'graphql-request/dist/types';
+import type { GraphQLError } from 'graphql-request/dist/types';
 
-import { getSdk, Sdk } from 'src/types/generated/graphql.customer.types';
+import { getSdk, type Sdk } from 'src/types/generated/graphql.customer.types';
 
 type OperationName = keyof Sdk;
 /**
@@ -14,18 +14,18 @@ type SdkMethodVariables<O extends OperationName> = Parameters<Sdk[O]>[0] &
   : { variables?: Parameters<Sdk[O]>[0] };
 
 type ReqParams<O extends OperationName> = {
-  customFetch?: () => Promise<unknown>;
   customUrl?: string;
   operationName: O;
   requestHeaders?: Parameters<Sdk[O]>[1];
   token: string;
+  customFetch?: () => Promise<unknown>;
 } & SdkMethodVariables<O>;
 
 type ReqReturnJson<O extends OperationName> = Awaited<ReturnType<Sdk[O]>>;
 
 type ReqReturn<O extends OperationName> = {
-  json: ReqReturnJson<O> | null;
   errors: GraphQLError[];
+  json: ReqReturnJson<O> | null;
 };
 
 /**
@@ -61,14 +61,14 @@ export const zonosClientRequest = async <E extends OperationName>({
       ...requestHeaders,
       credentialToken: token,
     });
-    return { json, errors: [] };
+    return { errors: [], json };
   } catch (e) {
     if (e instanceof ClientError) {
       return {
-        json: null,
         errors: e.response.errors || [{ message: 'Unknown graphql error' }],
+        json: null,
       };
     }
-    return { json: null, errors: [{ message: JSON.stringify(e) }] };
+    return { errors: [{ message: JSON.stringify(e) }], json: null };
   }
 };

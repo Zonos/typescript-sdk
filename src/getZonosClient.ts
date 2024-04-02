@@ -1,4 +1,4 @@
-import {
+import type {
   CatalogItemQueryVariables,
   ClassificationsCalculateMutationVariables,
   FullLandedCostMutationVariables,
@@ -41,8 +41,28 @@ export const getZonosClient = ({
     variables: CatalogItemQueryVariables;
   }) =>
     zonosClientRequest({
-      operationName: 'catalogItem',
       customFetch,
+      operationName: 'catalogItem',
+      token,
+      variables,
+    }),
+  /**
+   * @description
+   * This mutation is used to classify an item.
+   * @example
+   *  const variables: ClassificationsCalculateMutationVariables = {
+   *     inputs: [{ name: 'backpack' }],
+   *  };
+   *  const { json, errors } = await client.classificationsCalculate({ variables });
+   */
+  classificationsCalculate: async ({
+    variables,
+  }: {
+    variables: ClassificationsCalculateMutationVariables;
+  }) =>
+    zonosClientRequest({
+      customFetch,
+      operationName: 'classificationsCalculate',
       token,
       variables,
     }),
@@ -107,26 +127,6 @@ export const getZonosClient = ({
     zonosClientRequest({
       customFetch,
       operationName: 'fullLandedCost',
-      token,
-      variables,
-    }),
-  /**
-   * @description
-   * This mutation is used to classify an item.
-   * @example
-   *  const variables: ClassificationsCalculateMutationVariables = {
-   *     inputs: [{ name: 'backpack' }],
-   *  };
-   *  const { json, errors } = await client.classificationsCalculate({ variables });
-   */
-  classificationsCalculate: async ({
-    variables,
-  }: {
-    variables: ClassificationsCalculateMutationVariables;
-  }) =>
-    zonosClientRequest({
-      customFetch,
-      operationName: 'classificationsCalculate',
       token,
       variables,
     }),

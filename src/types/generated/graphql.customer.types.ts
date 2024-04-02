@@ -1,5 +1,5 @@
-import { GraphQLClient } from 'graphql-request';
-import * as Dom from 'graphql-request/dist/types.dom';
+import type { GraphQLClient } from 'graphql-request';
+import type * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
 
 export type Maybe<T> = T | null;
@@ -15,13 +15,13 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
 };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
   Boolean: boolean;
-  Int: number;
-  Float: number;
   DateTime: string;
   Decimal: number;
+  Float: number;
+  ID: string;
+  Int: number;
+  String: string;
   ZonedDateTime: string;
 };
 
@@ -9392,20 +9392,8 @@ export type FullLandedCostMutationVariables = Exact<{
 }>;
 
 export type FullLandedCostMutation = { __typename?: 'Mutation' } & {
-  partyCreateWorkflow: Array<
-    { __typename?: 'Party' } & Pick<Party, 'id' | 'type'> & {
-        location: Maybe<
-          { __typename?: 'Location' } & Pick<
-            Location,
-            | 'administrativeArea'
-            | 'administrativeAreaCode'
-            | 'countryCode'
-            | 'line1'
-            | 'locality'
-            | 'postalCode'
-          >
-        >;
-      }
+  cartonizeWorkflow: Maybe<
+    Array<Maybe<{ __typename?: 'Carton' } & Pick<Carton, 'id'>>>
   >;
   itemCreateWorkflow: Array<
     { __typename?: 'Item' } & Pick<
@@ -9422,12 +9410,6 @@ export type FullLandedCostMutation = { __typename?: 'Mutation' } & {
           { __typename?: 'RestrictedItem' } & Pick<RestrictedItem, 'id'>
         >;
       }
-  >;
-  cartonizeWorkflow: Maybe<
-    Array<Maybe<{ __typename?: 'Carton' } & Pick<Carton, 'id'>>>
-  >;
-  shipmentRatingCalculateWorkflow: Array<
-    { __typename?: 'ShipmentRating' } & Pick<ShipmentRating, 'id'>
   >;
   landedCostCalculateWorkflow: Maybe<
     Array<
@@ -9468,6 +9450,24 @@ export type FullLandedCostMutation = { __typename?: 'Mutation' } & {
           }
       >
     >
+  >;
+  partyCreateWorkflow: Array<
+    { __typename?: 'Party' } & Pick<Party, 'id' | 'type'> & {
+        location: Maybe<
+          { __typename?: 'Location' } & Pick<
+            Location,
+            | 'administrativeArea'
+            | 'administrativeAreaCode'
+            | 'countryCode'
+            | 'line1'
+            | 'locality'
+            | 'postalCode'
+          >
+        >;
+      }
+  >;
+  shipmentRatingCalculateWorkflow: Array<
+    { __typename?: 'ShipmentRating' } & Pick<ShipmentRating, 'id'>
   >;
 };
 
