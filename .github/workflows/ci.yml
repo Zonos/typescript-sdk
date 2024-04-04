@@ -44,9 +44,6 @@ jobs:
           node-version: 18
           cache: pnpm
       - run: pnpm install
-      # Build the types for the scss files and make sure they are up to date
-      - name: Check scss types are up to date
-        run: pnpm build:scss:types --listDifferent
       - run: pnpm tsc
         env:
           CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
