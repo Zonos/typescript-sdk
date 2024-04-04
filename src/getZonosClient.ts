@@ -28,7 +28,7 @@ export const getZonosClient = ({
    * This is used for legacy to fetch the catalog item.
    * @example
    *
-   * const variables: CatalogItemQueryVariables = {
+   * const variables: ZonosCatalogItemQueryVariables = {
    *   id: 'catalog_item_7a628c98-9ded-48c8-8831-b227f919e25d',
    *   productId: 'test',
    *   sku: 'test',
@@ -50,7 +50,7 @@ export const getZonosClient = ({
    * @description
    * This mutation is used to classify an item.
    * @example
-   *  const variables: ClassificationsCalculateMutationVariables = {
+   *  const variables: ZonosClassificationsCalculateMutationVariables = {
    *     inputs: [{ name: 'backpack' }],
    *  };
    *  const { json, errors } = await client.classificationsCalculate({ variables });
@@ -75,7 +75,7 @@ export const getZonosClient = ({
    * shipmentRatingCalculateWorkflow
    * landedCostCalculateWorkflow
    * @example
-   * const variables: FullLandedCostMutationVariables = {
+   * const variables: ZonosFullLandedCostMutationVariables = {
    *   partyCreateWorkflowInput: [
    *     {
    *       location: {
