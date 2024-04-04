@@ -48,7 +48,7 @@ export const zonosClientRequest = async <E extends OperationName>({
   variables,
 }: ReqParams<E>): Promise<ReqReturn<E>> => {
   const client = new GraphQLClient(
-    customUrl || `${process.env.CUSTOMER_GRAPH_URL}/${operationName}`,
+    customUrl || process.env.CUSTOMER_GRAPH_URL || '',
     {
       fetch: customFetch || fetch,
     }

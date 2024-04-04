@@ -1,7 +1,7 @@
 import type {
-  CatalogItemQueryVariables,
-  ClassificationsCalculateMutationVariables,
-  FullLandedCostMutationVariables,
+  ZonosCatalogItemQueryVariables,
+  ZonosClassificationsCalculateMutationVariables,
+  ZonosFullLandedCostMutationVariables,
 } from './types/generated/graphql.customer.types';
 import { zonosClientRequest } from './zonosClientRequest';
 
@@ -38,7 +38,7 @@ export const getZonosClient = ({
   catalogItem: async ({
     variables,
   }: {
-    variables: CatalogItemQueryVariables;
+    variables: ZonosCatalogItemQueryVariables;
   }) =>
     zonosClientRequest({
       customFetch,
@@ -58,7 +58,7 @@ export const getZonosClient = ({
   classificationsCalculate: async ({
     variables,
   }: {
-    variables: ClassificationsCalculateMutationVariables;
+    variables: ZonosClassificationsCalculateMutationVariables;
   }) =>
     zonosClientRequest({
       customFetch,
@@ -122,7 +122,7 @@ export const getZonosClient = ({
   fullLandedCost: async ({
     variables,
   }: {
-    variables: FullLandedCostMutationVariables;
+    variables: ZonosFullLandedCostMutationVariables;
   }) =>
     zonosClientRequest({
       customFetch,

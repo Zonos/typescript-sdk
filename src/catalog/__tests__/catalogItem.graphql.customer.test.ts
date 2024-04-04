@@ -1,16 +1,16 @@
 import { describe, test } from 'vitest';
 
 import { getZonosClient } from 'src/getZonosClient';
-import { mockedFetch } from 'src/testUtils/_mockedFetch';
+import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
-  CatalogItemQuery,
-  CatalogItemQueryVariables,
+  ZonosCatalogItemQuery,
+  ZonosCatalogItemQueryVariables,
 } from 'src/types/generated/graphql.customer.types';
 import { zonosClientRequest } from 'src/zonosClientRequest';
 
 describe('catalogItem data', () => {
-  const data: CatalogItemQuery = {
+  const data: ZonosCatalogItemQuery = {
     catalogItem: {
       attributes: [
         {
@@ -105,7 +105,7 @@ describe('catalogItem data', () => {
       sku: 'test',
     },
   };
-  const variables: CatalogItemQueryVariables = {
+  const variables: ZonosCatalogItemQueryVariables = {
     id: 'catalog_item_7a628c98-9ded-48c8-8831-b227f919e25d',
     productId: 'test',
     sku: 'test',
@@ -135,7 +135,7 @@ describe('catalogItem data', () => {
 });
 
 describe('catalogItem error', () => {
-  const variables: CatalogItemQueryVariables = {
+  const variables: ZonosCatalogItemQueryVariables = {
     id: 'catalog_item_7a628c98-9ded-48c8-8831-b227f919e25d',
     productId: 'test',
     sku: 'test',

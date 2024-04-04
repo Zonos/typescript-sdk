@@ -1,16 +1,16 @@
 import { describe, test } from 'vitest';
 
 import { getZonosClient } from 'src/getZonosClient';
-import { mockedFetch } from 'src/testUtils/_mockedFetch';
+import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
-  FullLandedCostMutation,
-  FullLandedCostMutationVariables,
+  ZonosFullLandedCostMutation,
+  ZonosFullLandedCostMutationVariables,
 } from 'src/types/generated/graphql.customer.types';
 import { zonosClientRequest } from 'src/zonosClientRequest';
 
 describe('fullLandedCost data', () => {
-  const data: FullLandedCostMutation = {
+  const data: ZonosFullLandedCostMutation = {
     cartonizeWorkflow: [
       {
         id: 'carton_1eaa7441-3b0b-4a31-b495-a2ee7528dbc0',
@@ -71,7 +71,7 @@ describe('fullLandedCost data', () => {
     ],
   };
 
-  const variables: FullLandedCostMutationVariables = {
+  const variables: ZonosFullLandedCostMutationVariables = {
     itemCreateWorkflowInput: [
       {
         amount: 3,
@@ -139,7 +139,7 @@ describe('fullLandedCost data', () => {
 });
 
 describe('fullLandedCost error', () => {
-  const variables: FullLandedCostMutationVariables = {
+  const variables: ZonosFullLandedCostMutationVariables = {
     itemCreateWorkflowInput: [
       {
         amount: 3,

@@ -1,16 +1,16 @@
 import { describe, test } from 'vitest';
 
 import { getZonosClient } from 'src/getZonosClient';
-import { mockedFetch } from 'src/testUtils/_mockedFetch';
+import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
-  ClassificationsCalculateMutation,
-  ClassificationsCalculateMutationVariables,
+  ZonosClassificationsCalculateMutation,
+  ZonosClassificationsCalculateMutationVariables,
 } from 'src/types/generated/graphql.customer.types';
 import { zonosClientRequest } from 'src/zonosClientRequest';
 
 describe('classificationsCalculate data', () => {
-  const data: ClassificationsCalculateMutation = {
+  const data: ZonosClassificationsCalculateMutation = {
     classificationsCalculate: [
       {
         confidenceScore: 0.623,
@@ -20,15 +20,15 @@ describe('classificationsCalculate data', () => {
       },
     ],
   };
-  const variables: ClassificationsCalculateMutationVariables = {
+  const variables: ZonosClassificationsCalculateMutationVariables = {
     inputs: [{ name: 'backpack' }],
   };
 
   test('zonosClientRequest', async () => {
     const { errors, json } = await zonosClientRequest({
-      customFetch: async () => mockedFetch({ response: { data } }),
+      // customFetch: async () => mockedFetch({ response: { data } }),
       operationName: 'classificationsCalculate',
-      token: 'test_token',
+      token: 'credential_live_d2de8eca-8878-497a-be1b-768cf8a52e2e',
       variables,
     });
     expect(json).toEqual(data);
@@ -37,8 +37,8 @@ describe('classificationsCalculate data', () => {
 
   test('zonosClient', async () => {
     const zonosClient = getZonosClient({
-      customFetch: async () => mockedFetch({ response: { data } }),
-      token: 'test_token',
+      // customFetch: async () => mockedFetch({ response: { data } }),
+      token: 'credential_live_d2de8eca-8878-497a-be1b-768cf8a52e2e',
     });
     const { errors: clientErrors, json: clientJson } =
       await zonosClient.classificationsCalculate({ variables });
@@ -48,7 +48,7 @@ describe('classificationsCalculate data', () => {
 });
 
 describe('classificationsCalculate error', () => {
-  const variables: ClassificationsCalculateMutationVariables = {
+  const variables: ZonosClassificationsCalculateMutationVariables = {
     inputs: [{ name: 'backpack' }],
   };
 

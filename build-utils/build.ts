@@ -4,9 +4,8 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import { config } from 'dotenv';
-import fs from 'fs';
 import { globSync } from 'glob';
-import { dependencies } from 'package.json';
+import { peerDependencies } from 'package.json';
 import {
   type InputOptions,
   type OutputChunk,
@@ -52,7 +51,7 @@ const bundlePackage = async (
 ): Promise<OutputChunk[]> => {
   const defaultOptions: RollupOptions = {
     cache: false,
-    external: Object.keys(dependencies),
+    external: Object.keys(peerDependencies),
     maxParallelFileOps: 50,
     plugins: [
       nodeResolve({
@@ -149,18 +148,9 @@ process.stderr.setMaxListeners(configs.length * 4 + 1);
 
 const build = async () => {
   const bundledPackages = await Promise.all(configs.map(bundlePackage));
-  const moduleContents = await Promise.all(
+  await Promise.all(
     // generate module contents
     bundledPackages.map(generateAllModulesContent)
-  );
-
-  fs.writeFileSync(
-    // generate all modules ts file
-    `./src/all.ts`,
-    `${moduleContents
-      .flat()
-      .sort((a, b) => a.localeCompare(b))
-      .join('\n')}\n`
   );
 };
 

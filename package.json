@@ -2,10 +2,10 @@
   "name": "@zonos/typescript-sdk",
   "version": "0.0.5",
   "private": false,
-  "dependencies": {
-    "graphql": "^16.8.1",
-    "graphql-request": "^4.3.0",
-    "graphql-tag": "^2.12.6"
+  "peerDependencies": {
+    "graphql": "^16.x",
+    "graphql-request": "^4.x",
+    "graphql-tag": "^2.x"
   },
   "engines": {
     "node": "18"
@@ -14,14 +14,17 @@
     "@zonos:registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
+    "graphql": "^16.8.1",
+    "graphql-request": "^4.3.0",
+    "graphql-tag": "^2.12.6",
     "@babel/core": "^7.24.3",
     "@babel/preset-env": "^7.24.3",
     "@babel/preset-typescript": "^7.24.1",
     "@graphql-codegen/add": "^3.2.3",
     "@graphql-codegen/cli": "^2.16.5",
     "@graphql-codegen/introspection": "^2.2.3",
-    "@graphql-codegen/typescript": "^2.8.8",
-    "@graphql-codegen/typescript-graphql-request": "^4.5.9",
+    "@graphql-codegen/typescript": "3.0.4",
+    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@rollup/plugin-buble": "^1.0.3",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -72,9 +75,9 @@
     "prebuild:prep:publish": "echo 'building for publishing'",
     "prebuild": "echo 'start cleaning up' && rm -rf dist && echo 'done cleaning up'",
     "build:ci": "ts-node build-utils/build.ts && pnpm build:dts",
-    "build:dts": "ttsc -p ./tsconfig.emitDeclarationOnly.json",
+    "build:dts": "tspc -p ./tsconfig.emitDeclarationOnly.json",
     "build:prep:publish": "ts-node build-utils/preparePublish.ts",
-    "build": "pnpm i && pnpm codegen && pnpm ci:concurrent && pnpm build:ci && pnpm build:dts",
+    "build": "pnpm i && pnpm codegen && pnpm ci:concurrent && pnpm build:ci && pnpm build:dts && pnpm postbuild",
     "postbuild:ci": "pnpm postbuild",
     "postbuild:dts": "echo 'done build dts'",
     "postbuild:prep:publish": "echo 'done building for publishing'",

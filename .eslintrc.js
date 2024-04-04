@@ -25,27 +25,15 @@ module.exports = {
       },
     },
     {
-      /**
-       * Turn off sort-keys for generated constants file (we don't want to sort because of comments, but want to do other linting)
-       */
-      files: ['src/styles/constants/*.ts', 'build-utils/css/constants/**'],
-      rules: {
-        'sort-destructure-keys/sort-destructure-keys': 'off',
-        'sort-keys': 'off',
-        'sort-keys/sort-keys-fix': 'off',
-        'typescript-custom-sort-keys/interface': 'off',
-      },
-    },
-    {
-      files: ['test-utils/**'],
-      rules: {
-        'import/no-internal-modules': 'off',
-      },
-    },
-    {
       files: ['**.test.ts'],
       rules: {
         'import/no-extraneous-dependencies': 'off',
+      },
+    },
+    {
+      files: ['all.ts'],
+      rules: {
+        'import/no-internal-modules': 'off',
       },
     },
   ],
