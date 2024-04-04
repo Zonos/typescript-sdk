@@ -2,7 +2,6 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 import type { TypeScriptPluginConfig } from '@graphql-codegen/typescript';
 import type { RawGraphQLRequestPluginConfig } from '@graphql-codegen/typescript-graphql-request/typings/config';
 import type { TypeScriptDocumentsPluginConfig } from '@graphql-codegen/typescript-operations';
-import type { DocumentMode } from '@graphql-codegen/visitor-plugin-common';
 
 import { generateCustomer } from './customer.codegen';
 
@@ -22,7 +21,7 @@ const pluginConfigTypescript = {
 
 /** @link https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-graphql-request */
 const pluginConfigTypescriptGraphqlRequest = {
-  documentMode: 'string' as DocumentMode,
+  documentMode: 'string' as RawGraphQLRequestPluginConfig['documentMode'],
   typesPrefix: 'Zonos',
   useTypeImports: true,
 } as const satisfies RawGraphQLRequestPluginConfig;
