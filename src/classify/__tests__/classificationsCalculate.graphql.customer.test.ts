@@ -26,9 +26,9 @@ describe('classificationsCalculate data', () => {
 
   test('zonosClientRequest', async () => {
     const { errors, json } = await zonosClientRequest({
-      // customFetch: async () => mockedFetch({ response: { data } }),
+      customFetch: async () => mockedFetch({ response: { data } }),
       operationName: 'classificationsCalculate',
-      token: 'credential_live_d2de8eca-8878-497a-be1b-768cf8a52e2e',
+      token: 'test_token',
       variables,
     });
     expect(json).toEqual(data);
@@ -37,8 +37,8 @@ describe('classificationsCalculate data', () => {
 
   test('zonosClient', async () => {
     const zonosClient = getZonosClient({
-      // customFetch: async () => mockedFetch({ response: { data } }),
-      token: 'credential_live_d2de8eca-8878-497a-be1b-768cf8a52e2e',
+      customFetch: async () => mockedFetch({ response: { data } }),
+      token: 'test_token',
     });
     const { errors: clientErrors, json: clientJson } =
       await zonosClient.classificationsCalculate({ variables });
