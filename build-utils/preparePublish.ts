@@ -17,7 +17,7 @@ import path from 'path';
 
   sourceObj.devDependencies = {};
 
-  sourceObj.types = 'all.d.ts';
+  sourceObj.types = 'index.d.ts';
 
   writeFileSync(
     `./dist/package.json`,
@@ -27,5 +27,9 @@ import path from 'path';
   copyFileSync(
     path.resolve(`${path.dirname('')}/.npmignore`),
     path.resolve(`${path.dirname('')}/dist/.npmignore`)
+  );
+  copyFileSync(
+    path.resolve(`${path.dirname('')}/README.md`),
+    path.resolve(`${path.dirname('')}/dist/README.md`)
   );
 })();
