@@ -17,7 +17,7 @@ import path from 'path';
 
   sourceObj.devDependencies = {};
 
-  sourceObj.types = 'all.d.ts';
+  sourceObj.types = 'index.d.ts';
 
   writeFileSync(
     `./dist/package.json`,
