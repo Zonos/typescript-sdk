@@ -28,4 +28,8 @@ import path from 'path';
     path.resolve(`${path.dirname('')}/.npmignore`),
     path.resolve(`${path.dirname('')}/dist/.npmignore`)
   );
+  copyFileSync(
+    path.resolve(`${path.dirname('')}/README.md`),
+    path.resolve(`${path.dirname('')}/dist/README.md`)
+  );
 })();
