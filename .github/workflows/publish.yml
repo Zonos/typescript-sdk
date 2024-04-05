@@ -20,7 +20,8 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm build
+        env:
+          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
       - run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
