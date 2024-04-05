@@ -1,13 +1,14 @@
 import { describe, test } from 'vitest';
 
-import { getZonosClient } from 'src/getZonosClient';
 import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
   ZonosClassificationsCalculateMutation,
   ZonosClassificationsCalculateMutationVariables,
 } from 'src/types/generated/graphql.customer.types';
-import { zonosClientRequest } from 'src/zonosClientRequest';
+import { zonosClient } from 'src/zonosClient';
+
+const credentialToken = 'test_token';
 
 describe('classificationsCalculate data', () => {
   const data: ZonosClassificationsCalculateMutation = {
@@ -24,26 +25,14 @@ describe('classificationsCalculate data', () => {
     inputs: [{ name: 'backpack' }],
   };
 
-  test('zonosClientRequest', async () => {
-    const { errors, json } = await zonosClientRequest({
+  test('zonosClient', async () => {
+    const { errors, json } = await zonosClient.classificationsCalculate({
+      credentialToken,
       customFetch: async () => mockedFetch({ response: { data } }),
-      operationName: 'classificationsCalculate',
-      token: 'test_token',
       variables,
     });
     expect(json).toEqual(data);
     expect(errors).toMatchInlineSnapshot(`[]`);
-  });
-
-  test('zonosClient', async () => {
-    const zonosClient = getZonosClient({
-      customFetch: async () => mockedFetch({ response: { data } }),
-      token: 'test_token',
-    });
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.classificationsCalculate({ variables });
-    expect(clientJson).toEqual(data);
-    expect(clientErrors).toMatchInlineSnapshot(`[]`);
   });
 });
 
@@ -66,22 +55,13 @@ describe('classificationsCalculate error', () => {
       },
     });
 
-  test('zonosClientRequest', async () => {
-    const { errors, json } = await zonosClientRequest({
+  test('zonosClient', async () => {
+    const { errors, json } = await zonosClient.classificationsCalculate({
+      credentialToken,
       customFetch,
-      operationName: 'classificationsCalculate',
-      token: 'test_token',
       variables,
     });
     expect(json).toBeNull();
     expect(errors).toEqual([error]);
-  });
-
-  test('zonosClient', async () => {
-    const zonosClient = getZonosClient({ customFetch, token: 'test_token' });
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.classificationsCalculate({ variables });
-    expect(clientJson).toBeNull();
-    expect(clientErrors).toEqual([error]);
   });
 });

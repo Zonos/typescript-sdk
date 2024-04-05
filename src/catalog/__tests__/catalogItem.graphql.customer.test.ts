@@ -1,13 +1,14 @@
 import { describe, test } from 'vitest';
 
-import { getZonosClient } from 'src/getZonosClient';
 import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
   ZonosCatalogItemQuery,
   ZonosCatalogItemQueryVariables,
 } from 'src/types/generated/graphql.customer.types';
-import { zonosClientRequest } from 'src/zonosClientRequest';
+import { zonosClient } from 'src/zonosClient';
+
+const credentialToken = 'test_token';
 
 describe('catalogItem data', () => {
   const data: ZonosCatalogItemQuery = {
@@ -111,26 +112,14 @@ describe('catalogItem data', () => {
     sku: 'test',
   };
 
-  test('zonosClientRequest', async () => {
-    const { errors, json } = await zonosClientRequest({
+  test('zonosClient', async () => {
+    const { errors, json } = await zonosClient.catalogItem({
+      credentialToken,
       customFetch: async () => mockedFetch({ response: { data } }),
-      operationName: 'catalogItem',
-      token: 'test_token',
       variables,
     });
     expect(json).toEqual(data);
     expect(errors).toMatchInlineSnapshot(`[]`);
-  });
-
-  test('zonosClient', async () => {
-    const zonosClient = getZonosClient({
-      customFetch: async () => mockedFetch({ response: { data } }),
-      token: 'test-token',
-    });
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.catalogItem({ variables });
-    expect(clientJson).toEqual(data);
-    expect(clientErrors).toMatchInlineSnapshot(`[]`);
   });
 });
 
@@ -155,22 +144,13 @@ describe('catalogItem error', () => {
       },
     });
 
-  test('zonosClientRequest', async () => {
-    const { errors, json } = await zonosClientRequest({
+  test('zonosClient', async () => {
+    const { errors, json } = await zonosClient.catalogItem({
+      credentialToken,
       customFetch,
-      operationName: 'catalogItem',
-      token: 'test-token',
       variables,
     });
     expect(json).toBeNull();
     expect(errors).toEqual([error]);
-  });
-
-  test('zonosClient', async () => {
-    const zonosClient = getZonosClient({ customFetch, token: 'test_token' });
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.catalogItem({ variables });
-    expect(clientJson).toBeNull();
-    expect(clientErrors).toEqual([error]);
   });
 });

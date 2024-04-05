@@ -1,28 +1,20 @@
+import { zonosClientRequest } from './_zonosClientRequest';
 import type {
   ZonosCatalogItemQueryVariables,
   ZonosClassificationsCalculateMutationVariables,
   ZonosFullLandedCostMutationVariables,
 } from './types/generated/graphql.customer.types';
-import { zonosClientRequest } from './zonosClientRequest';
 
 /**
  * @description
- * This function is a wrapper around zonosClientRequest to provide a more user-friendly
- * interface for making requests to the Zonos Graph.
- * @param token your credential token to access the Zonos Graph
- * @param customFetch a custom fetch function to use instead of the default fetch
+ * This function provides an interface with examples for making requests to the Zonos Graph.
  * @example
- *  const zonosClient = getZonosClient({ token: 'test-token' });
+ *  // Replace 'your_credential_token' with your actual Zonos API credential token
+ *  const credentialToken = 'your_credential_token';
  *  const variables = { productId: 'test-product-id', sku: 'test-sku' };
- *  const { json, errors } = await zonosClient.catalogItem({ variables });
+ *  const { json, errors } = await zonosClient.catalogItem({ credentialToken, variables });
  */
-export const getZonosClient = ({
-  customFetch,
-  token,
-}: {
-  token: string;
-  customFetch?: () => Promise<unknown>;
-}) => ({
+export const zonosClient = {
   /**
    * @description
    * This is used for legacy to fetch the catalog item.
@@ -33,18 +25,22 @@ export const getZonosClient = ({
    *   productId: 'test',
    *   sku: 'test',
    * };
-   * const { json, errors } = await client.getCatalogItem({ variables });
+   * const { json, errors } =
+   *   await client.getCatalogItem({
+   *     credentialToken: 'test_token',
+   *     variables
+   *   });
    */
-  catalogItem: async ({
-    variables,
-  }: {
+  catalogItem: async (params: {
+    credentialToken: string;
+    customUrl?: string;
+    headers?: HeadersInit;
     variables: ZonosCatalogItemQueryVariables;
+    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
-      customFetch,
+      ...params,
       operationName: 'catalogItem',
-      token,
-      variables,
     }),
   /**
    * @description
@@ -53,18 +49,22 @@ export const getZonosClient = ({
    *  const variables: ZonosClassificationsCalculateMutationVariables = {
    *     inputs: [{ name: 'backpack' }],
    *  };
-   *  const { json, errors } = await client.classificationsCalculate({ variables });
+   *  const { json, errors } =
+   *    await client.classificationsCalculate({
+   *      credentialToken: 'test_token',
+   *      variables
+   *    });
    */
-  classificationsCalculate: async ({
-    variables,
-  }: {
+  classificationsCalculate: async (params: {
+    credentialToken: string;
+    customUrl?: string;
+    headers?: HeadersInit;
     variables: ZonosClassificationsCalculateMutationVariables;
+    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
-      customFetch,
+      ...params,
       operationName: 'classificationsCalculate',
-      token,
-      variables,
     }),
   /**
    * @description
@@ -118,16 +118,22 @@ export const getZonosClient = ({
    *     tariffRate: 'ZONOS_PREFERRED',
    *   },
    * };
+   *
+   * const { errors: clientErrors, json: clientJson } =
+   *   await zonosClient.fullLandedCost({
+   *     credentialToken: 'test_token',
+   *     variables,
+   *   });
    */
-  fullLandedCost: async ({
-    variables,
-  }: {
+  fullLandedCost: async (params: {
+    credentialToken: string;
+    customUrl?: string;
+    headers?: HeadersInit;
     variables: ZonosFullLandedCostMutationVariables;
+    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
-      customFetch,
+      ...params,
       operationName: 'fullLandedCost',
-      token,
-      variables,
     }),
-});
+};

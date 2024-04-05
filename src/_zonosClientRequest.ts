@@ -14,10 +14,10 @@ type SdkMethodVariables<O extends OperationName> = Parameters<Sdk[O]>[0] &
   : { variables?: Parameters<Sdk[O]>[0] };
 
 type ReqParams<O extends OperationName> = {
+  credentialToken: string;
   customUrl?: string;
+  headers?: HeadersInit;
   operationName: O;
-  requestHeaders?: Parameters<Sdk[O]>[1];
-  token: string;
   customFetch?: () => Promise<unknown>;
 } & SdkMethodVariables<O>;
 
@@ -35,18 +35,18 @@ type ReqReturn<O extends OperationName> = {
  * @example
  * const { json, errors } = await zonosClientRequest({
  *   operationName: 'catalogItem',
- *   token: 'test-token',
+ *   credentialToken: 'test_token',
  *   variables: { productId: 'test-product-id', sku: 'test-sku' },
  * });
  */
-export const zonosClientRequest = async <E extends OperationName>({
+export const zonosClientRequest = async <O extends OperationName>({
+  credentialToken,
   customFetch,
   customUrl,
+  headers,
   operationName,
-  requestHeaders,
-  token,
   variables,
-}: ReqParams<E>): Promise<ReqReturn<E>> => {
+}: ReqParams<O>): Promise<ReqReturn<O>> => {
   const client = new GraphQLClient(
     customUrl || process.env.CUSTOMER_GRAPH_URL || '',
     {
@@ -58,8 +58,8 @@ export const zonosClientRequest = async <E extends OperationName>({
   try {
     // @ts-ignore
     const json: GQLReturnJson<E> = await sdkMethod(variables, {
-      ...requestHeaders,
-      credentialToken: token,
+      credentialToken,
+      ...headers,
     });
     return { errors: [], json };
   } catch (e) {
