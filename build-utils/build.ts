@@ -1,14 +1,23 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import buble from '@rollup/plugin-buble';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
-import fs from 'fs';
+import { config } from 'dotenv';
 import { globSync } from 'glob';
-import { InputOptions, OutputChunk, OutputOptions, rollup } from 'rollup';
+import { peerDependencies } from 'package.json';
+import {
+  type InputOptions,
+  type OutputChunk,
+  type OutputOptions,
+  rollup,
+} from 'rollup';
 import progress from 'rollup-plugin-progress';
 import tsPlugin from 'rollup-plugin-typescript2';
 
-import { dependencies, peerDependencies } from '../package.json';
 import sizes from './plugins/customized-rollup-plugin-sizes';
+
+config();
 
 type RollupOptions = InputOptions & { output?: OutputOptions };
 type ConfigOptions = Omit<RollupOptions, 'input' | 'output'> &
@@ -41,6 +50,9 @@ const bundlePackage = async (
   options: ConfigOptions & { output: OutputOptions }
 ): Promise<OutputChunk[]> => {
   const defaultOptions: RollupOptions = {
+    cache: false,
+    external: Object.keys(peerDependencies),
+    maxParallelFileOps: 50,
     plugins: [
       nodeResolve({
         // Seems to evaluate falsiness, so put something
@@ -57,18 +69,22 @@ const bundlePackage = async (
         exclude: 'node_modules/**',
         include: '**/*.{js,mjs,jsx,ts,tsx,vue}',
         transforms: {
-          modules: false,
           dangerousForOf: true,
           dangerousTaggedTemplateString: true,
+          modules: false,
         },
       }),
       terser(),
       progress({ clearLine: true }),
       sizes({ details: true }),
+      replace({
+        preventAssignment: true,
+        'process.env.CUSTOMER_GRAPH_URL': JSON.stringify(
+          process.env.CUSTOMER_GRAPH_URL ||
+            'missing-the-CUSTOMER_GRAPH_URL-env-var'
+        ),
+      }),
     ],
-    cache: false,
-    external: Object.keys(peerDependencies).concat(Object.keys(dependencies)),
-    maxParallelFileOps: 50,
   };
   const configOptions: ConfigOptions = {
     ...defaultOptions,
@@ -90,14 +106,14 @@ const generateAllModulesContent = async (
   bundles: OutputChunk[]
 ): Promise<string[]> =>
   bundles.flatMap(bundle => {
-    // ex: folderName/gqlRequest.js
+    // ex: folderName/zonosClientRequest.js
     const [, subFolderPath, fileName] =
       bundle.fileName.split(/(.*\/)*(.*)\.js/g);
     // exclude all bundles that are not entry or just private components
     if (
       !bundle.isEntry ||
-      /^_+/.test(fileName) ||
-      /__tests__/.test(subFolderPath)
+      /^_+/.test(fileName || '') ||
+      /__tests__/.test(subFolderPath || '')
     ) {
       return [];
     }
@@ -115,14 +131,14 @@ const allModules = mainModules
 const configs: ConfigOptions[] = [
   {
     input: prepareEntries(allModules),
+    maxParallelFileOps: 200,
     output: {
       dir: 'dist',
-      format: 'cjs',
-      sourcemap: false,
       exports: 'auto',
+      format: 'cjs',
       interop: 'auto',
+      sourcemap: false,
     },
-    maxParallelFileOps: 200,
   },
 ];
 
@@ -132,18 +148,9 @@ process.stderr.setMaxListeners(configs.length * 4 + 1);
 
 const build = async () => {
   const bundledPackages = await Promise.all(configs.map(bundlePackage));
-  const moduleContents = await Promise.all(
+  await Promise.all(
     // generate module contents
     bundledPackages.map(generateAllModulesContent)
-  );
-
-  fs.writeFileSync(
-    // generate all modules ts file
-    `./src/all.ts`,
-    `${moduleContents
-      .flat()
-      .sort((a, b) => a.localeCompare(b))
-      .join('\n')}\n`
   );
 };
 

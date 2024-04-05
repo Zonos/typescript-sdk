@@ -4,13 +4,6 @@ import type { GenerateConfig } from './codegen';
 
 export const generateCustomer = {
   'src/types/generated/graphql.customer.types.ts': {
-    schema: `${process.env.ZONOS_CUSTOMER_GRAPH_URL}`,
-    documents: 'src/**/*.graphql.customer.ts',
-    plugins: [
-      'typescript',
-      'typescript-operations',
-      'typescript-graphql-request',
-    ],
     config: {
       scalars: {
         DateTime: 'string',
@@ -18,9 +11,15 @@ export const generateCustomer = {
         ZonedDateTime: 'string',
       },
     } satisfies TypeScriptDocumentsPluginConfig,
-  },
-  'src/types/generated/graphql.customer.schema.json': {
-    schema: `${process.env.ZONOS_CUSTOMER_GRAPH_URL}`,
-    plugins: ['introspection'],
+    documents: 'src/**/*.graphql.customer.ts',
+    plugins: [
+      'typescript',
+      'typescript-operations',
+      'typescript-graphql-request',
+      {
+        add: { content: '/* eslint-disable */' },
+      },
+    ],
+    schema: `${process.env.CUSTOMER_GRAPH_URL}`,
   },
 } satisfies GenerateConfig;
