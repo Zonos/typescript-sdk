@@ -23,3 +23,4 @@ jobs:
       - run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          CUSTOMER_GRAPH_URL: ${{ secrets.CUSTOMER_GRAPH_URL }}
