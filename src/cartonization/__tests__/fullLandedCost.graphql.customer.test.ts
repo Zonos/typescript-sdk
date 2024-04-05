@@ -117,14 +117,13 @@ describe('fullLandedCost data', () => {
   };
 
   test('zonosClient', async () => {
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.fullLandedCost({
-        credentialToken,
-        customFetch: async () => mockedFetch({ response: { data } }),
-        variables,
-      });
-    expect(clientJson).toEqual(data);
-    expect(clientErrors).toMatchInlineSnapshot(`[]`);
+    const { errors, json } = await zonosClient.fullLandedCost({
+      credentialToken,
+      customFetch: async () => mockedFetch({ response: { data } }),
+      variables,
+    });
+    expect(json).toEqual(data);
+    expect(errors).toMatchInlineSnapshot(`[]`);
   });
 });
 
@@ -188,13 +187,12 @@ describe('fullLandedCost error', () => {
     });
 
   test('zonosClient', async () => {
-    const { errors: clientErrors, json: clientJson } =
-      await zonosClient.fullLandedCost({
-        credentialToken,
-        customFetch,
-        variables,
-      });
-    expect(clientJson).toBeNull();
-    expect(clientErrors).toEqual([error]);
+    const { errors, json } = await zonosClient.fullLandedCost({
+      credentialToken,
+      customFetch,
+      variables,
+    });
+    expect(json).toBeNull();
+    expect(errors).toEqual([error]);
   });
 });

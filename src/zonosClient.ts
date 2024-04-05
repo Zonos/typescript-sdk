@@ -33,10 +33,10 @@ export const zonosClient = {
    */
   catalogItem: async (params: {
     credentialToken: string;
+    customFetch?: typeof fetch;
     customUrl?: string;
     headers?: HeadersInit;
     variables: ZonosCatalogItemQueryVariables;
-    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
       ...params,
@@ -57,10 +57,10 @@ export const zonosClient = {
    */
   classificationsCalculate: async (params: {
     credentialToken: string;
+    customFetch?: typeof fetch;
     customUrl?: string;
     headers?: HeadersInit;
     variables: ZonosClassificationsCalculateMutationVariables;
-    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
       ...params,
@@ -127,10 +127,10 @@ export const zonosClient = {
    */
   fullLandedCost: async (params: {
     credentialToken: string;
+    customFetch?: typeof fetch;
     customUrl?: string;
     headers?: HeadersInit;
     variables: ZonosFullLandedCostMutationVariables;
-    customFetch?: () => Promise<unknown>;
   }) =>
     zonosClientRequest({
       ...params,

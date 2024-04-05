@@ -14,11 +14,19 @@ type SdkMethodVariables<O extends OperationName> = Parameters<Sdk[O]>[0] &
   : { variables?: Parameters<Sdk[O]>[0] };
 
 type ReqParams<O extends OperationName> = {
+  /** @param credentialToken The token used to authenticate with the Zonos Graph */
   credentialToken: string;
+  /**
+   * @param customFetch Optional custom fetch function to send your own request,
+   * or insert middleware between the generated query and the request.
+   * */
+  customFetch?: typeof fetch;
+  /** @param customUrl Optional custom URL to use for the request instead of the built-in URL */
   customUrl?: string;
+  /** @param headers Optional additional headers for the request */
   headers?: HeadersInit;
+  /** @param operationName The name of the operation to call on the graph */
   operationName: O;
-  customFetch?: () => Promise<unknown>;
 } & SdkMethodVariables<O>;
 
 type ReqReturnJson<O extends OperationName> = Awaited<ReturnType<Sdk[O]>>;

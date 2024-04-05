@@ -27,6 +27,8 @@ import { zonosClient } from '@zonos/typescript-sdk';
 const credentialToken = 'your_credential_token';
 ```
 
+## Common Queries and Mutations
+
 <details>
 <summary>
 
@@ -163,6 +165,31 @@ For more details on the `itemCreateWorkflowInput`, visit the [Input.ItemCreateWo
 For more details on the `landedCostCalculateWorkflowInput`, visit the [Input.LandedCostCalculateWorkflowInput](https://zonos.com/developer/types/LandedCostWorkFlowInput) documentation.
 
 For more details on the `partyCreateWorkflowInput`, visit the [Input.PartyCreateWorkflowInput](https://zonos.com/developer/types/PartyCreateWorkflowInput) documentation.
+
+</details>
+
+<details>
+<summary>
+
+## Zonos Client optional parameters
+
+</summary>
+
+The Zonos Client provides methods for executing queries and mutations, and it handles the underlying HTTP requests to the Zonos API. It requires a `credentialToken` and a `variables` object as input parameters. In addition, it supports optional parameters such as `customUrl`, `headers`, and `customFetch`.
+
+```typescript
+  /** @param credentialToken The token used to authenticate with the Zonos Graph */
+  credentialToken: string;
+  /**
+   * @param customFetch Optional custom fetch function to send your own request,
+   * or insert middleware between the generated query and the request.
+   * */
+  customFetch?: typeof fetch;
+  /** @param customUrl Optional custom URL to use for the request instead of the built-in URL */
+  customUrl?: string;
+  /** @param headers Optional additional headers for the request */
+  headers?: HeadersInit;
+```
 
 </details>
 

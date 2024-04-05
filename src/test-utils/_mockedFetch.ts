@@ -10,7 +10,7 @@ export const mockedFetch = async ({
    */
   ok?: boolean;
   response: unknown | unknown[];
-}): Promise<IMockedFetch> =>
+}) =>
   Promise.resolve({
     data: response,
     headers: new Headers({ 'content-type': 'application/json' }),
@@ -18,4 +18,4 @@ export const mockedFetch = async ({
     ok,
     status: 200,
     text: () => Promise.resolve(JSON.stringify(response)),
-  });
+  } as IMockedFetch as Response);
