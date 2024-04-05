@@ -9696,34 +9696,6 @@ export type ZonosZonosStripeCharge = {
   units: Scalars['Int'];
 };
 
-export type ZonosCartonizeWorkflowMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ZonosCartonizeWorkflowMutation = (
-  { __typename?: 'Mutation' }
-  & { partyCreateWorkflow: Array<(
-    { __typename?: 'Party' }
-    & Pick<ZonosParty, 'id'>
-  )>, itemCreateWorkflow: Array<(
-    { __typename?: 'Item' }
-    & Pick<ZonosItem, 'id'>
-  )>, cartonizeWorkflow: Maybe<Array<Maybe<(
-    { __typename?: 'Carton' }
-    & Pick<ZonosCarton, 'dimensionalUnit' | 'height' | 'id' | 'length' | 'weight' | 'weightUnit' | 'width'>
-    & { items: Maybe<Array<(
-      { __typename?: 'CartonItem' }
-      & Pick<ZonosCartonItem, 'quantity'>
-      & { item: (
-        { __typename?: 'Item' }
-        & Pick<ZonosItem, 'id' | 'productId'>
-      ) }
-    )>>, packagingOption: Maybe<(
-      { __typename?: 'PackagingOption' }
-      & Pick<ZonosPackagingOption, 'name'>
-    )> }
-  )>>> }
-);
-
 export type ZonosCatalogItemQueryVariables = Exact<{
   id: InputMaybe<Scalars['ID']>;
   productId: InputMaybe<Scalars['String']>;
@@ -9842,35 +9814,6 @@ export type ZonosFullLandedCostMutation = (
 );
 
 
-export const CartonizeWorkflowDocument = `
-    mutation cartonizeWorkflow {
-  partyCreateWorkflow(input: []) {
-    id
-  }
-  itemCreateWorkflow(input: []) {
-    id
-  }
-  cartonizeWorkflow {
-    dimensionalUnit
-    height
-    id
-    items {
-      item {
-        id
-        productId
-      }
-      quantity
-    }
-    length
-    packagingOption {
-      name
-    }
-    weight
-    weightUnit
-    width
-  }
-}
-    `;
 export const CatalogItemDocument = `
     query catalogItem($id: ID, $productId: String, $sku: String) {
   catalogItem(id: $id, productId: $productId, sku: $sku) {
@@ -10022,9 +9965,6 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    cartonizeWorkflow(variables?: ZonosCartonizeWorkflowMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ZonosCartonizeWorkflowMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ZonosCartonizeWorkflowMutation>(CartonizeWorkflowDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'cartonizeWorkflow', 'mutation', variables);
-    },
     catalogItem(variables?: ZonosCatalogItemQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ZonosCatalogItemQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ZonosCatalogItemQuery>(CatalogItemDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'catalogItem', 'query', variables);
     },
