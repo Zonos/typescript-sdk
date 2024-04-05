@@ -1,6 +1,6 @@
 {
   "name": "@zonos/typescript-sdk",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "private": false,
   "peerDependencies": {
     "graphql": "^16.x",
