@@ -92,7 +92,7 @@ For more details on the `classificationsCalculate` mutation and its parameters, 
 
 </summary>
 
-To calculate the full landed cost of an item, use the `fullLandedCost` method. This method requires a `credentialToken` and a `variables` object containing the `itemCreateWorkflowInput` array, the `landedCostCalculateWorkflowInput` object, and the `partyCreateWorkflowInput` array.
+To calculate the full landed cost of items, use the `fullLandedCost` method. This method requires a `credentialToken` and a `variables` object containing the `itemCreateWorkflowInput` array, the `landedCostCalculateWorkflowInput` object, and the `partyCreateWorkflowInput` array.
 
 #### Example:
 
@@ -100,13 +100,22 @@ To calculate the full landed cost of an item, use the `fullLandedCost` method. T
 const variables = {
   itemCreateWorkflowInput: [
     {
-      amount: 3,
+      amount: 20,
       countryOfOrigin: 'CN',
       currencyCode: 'USD',
       description: 'Backpack',
       hsCode: '4202.92',
       productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
       quantity: 1,
+    },
+    {
+      amount: 1,
+      countryOfOrigin: 'CN',
+      currencyCode: 'USD',
+      description: 'Fancy pen',
+      hsCode: '4202.92',
+      productId: 'g12345d1-f04e-11ee-bc4f-8c1393819393',
+      quantity: 4,
     },
   ],
   landedCostCalculateWorkflowInput: {
