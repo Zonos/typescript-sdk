@@ -16,6 +16,7 @@
   "publishConfig": {
     "@zonos:registry": "https://registry.npmjs.org"
   },
+  "packageManager": "pnpm@8.15.8",
   "devDependencies": {
     "graphql": "^16.8.1",
     "graphql-request": "^4.3.0",

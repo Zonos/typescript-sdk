@@ -3,8 +3,6 @@ import { describe, test } from 'vitest';
 import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
-  InputMaybe,
-  Scalars,
   ZonosFullLandedCostMutationVariables,
   ZonosLandedCostOnlyMutation,
   ZonosLandedCostOnlyMutationVariables,
