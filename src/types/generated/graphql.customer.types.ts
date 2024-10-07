@@ -9766,6 +9766,12 @@ export type ZonosFullLandedCostMutationVariables = Exact<{
   landedCostCalculateWorkflowInput: ZonosLandedCostWorkFlowInput;
   partyCreateWorkflowInput: Array<ZonosPartyCreateWorkflowInput> | ZonosPartyCreateWorkflowInput;
 }>;
+export type ZonosLandedCostOnlyMutationVariables = Exact<{
+  itemCreateWorkflowInput: Array<ZonosItemCreateWorkflowInput> | ZonosItemCreateWorkflowInput;
+  landedCostCalculateWorkflowInput: ZonosLandedCostWorkFlowInput;
+  partyCreateWorkflowInput: Array<ZonosPartyCreateWorkflowInput> | ZonosPartyCreateWorkflowInput;
+  shipmentRatingCreateWorkflowInput: Array<ZonosShipmentRatingCreateWorkflowInput> | ZonosShipmentRatingCreateWorkflowInput;
+}>;
 
 
 export type ZonosFullLandedCostMutation = (
@@ -9812,6 +9818,52 @@ export type ZonosFullLandedCostMutation = (
     ) }
   )>>> }
 );
+
+
+export type ZonosLandedCostOnlyMutation = (
+  { __typename?: 'Mutation' }
+  & { partyCreateWorkflow: Array<(
+    { __typename?: 'Party' }
+    & Pick<ZonosParty, 'id' | 'type'>
+    & { location: Maybe<(
+      { __typename?: 'Location' }
+      & Pick<ZonosLocation, 'administrativeArea' | 'administrativeAreaCode' | 'countryCode' | 'line1' | 'locality' | 'postalCode'>
+      )> }
+    )>, itemCreateWorkflow: Array<(
+    { __typename?: 'Item' }
+    & Pick<ZonosItem, 'amount' | 'countryOfOrigin' | 'description' | 'hsCode' | 'id' | 'productId' | 'quantity'>
+    & { restriction: Maybe<(
+      { __typename?: 'RestrictedItem' }
+      & Pick<ZonosRestrictedItem, 'id'>
+      )> }
+    )>, cartonizeWorkflow: Maybe<Array<Maybe<(
+    { __typename?: 'Carton' }
+    & Pick<ZonosCarton, 'id'>
+    )>>>, shipmentRatingCreateWorkflow: Array<(
+    { __typename?: 'ShipmentRating' }
+    & Pick<ZonosShipmentRating, 'id'>
+    )>, landedCostCalculateWorkflow: Maybe<Array<Maybe<(
+    { __typename?: 'LandedCost' }
+    & Pick<ZonosLandedCost, 'currencyCode' | 'id' | 'method' | 'rootId'>
+    & { amountSubtotals: Maybe<(
+      { __typename?: 'LandedCostAmountSubtotals' }
+      & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'taxes'>
+      )>, deMinimis: Array<(
+      { __typename?: 'DeMinimis' }
+      & Pick<ZonosDeMinimis, 'threshold' | 'type'>
+      )>, remittance: Array<(
+      { __typename?: 'LandedCostRemittance' }
+      & Pick<ZonosLandedCostRemittance, 'amount'>
+      )>, shipmentRating: (
+      { __typename?: 'ShipmentRating' }
+      & Pick<ZonosShipmentRating, 'displayName' | 'id' | 'maxTransitAt' | 'minTransitAt'>
+      & { shippingProfile: Maybe<(
+        { __typename?: 'ShippingProfile' }
+        & Pick<ZonosShippingProfile, 'customServiceLevelCode' | 'landedCostMethod'>
+        )> }
+      ) }
+    )>>> }
+  );
 
 
 export const CatalogItemDocument = `
@@ -9894,6 +9946,68 @@ export const ClassificationsCalculateDocument = `
   }
 }
     `;
+export const LandedCostOnlyDocument = `
+    mutation fullLandedCost($itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!, $shipmentRatingCreateWorkflowInput: [ShipmentRatingCreateWorkflowInput!]!) {
+  partyCreateWorkflow(input: $partyCreateWorkflowInput) {
+    id
+    location {
+      administrativeArea
+      administrativeAreaCode
+      countryCode
+      line1
+      locality
+      postalCode
+    }
+    type
+  }
+  itemCreateWorkflow(input: $itemCreateWorkflowInput) {
+    amount
+    countryOfOrigin
+    description
+    hsCode
+    id
+    productId
+    quantity
+    restriction {
+      id
+    }
+  }
+  cartonizeWorkflow {
+    id
+  }
+  shipmentRatingCreateWorkflow(input: $shipmentRatingCreateWorkflowInput) {
+    id
+  }
+  landedCostCalculateWorkflow(input: $landedCostCalculateWorkflowInput) {
+    amountSubtotals {
+      duties
+      fees
+      shipping
+      taxes
+    }
+    currencyCode
+    deMinimis {
+      threshold
+      type
+    }
+    id
+    method
+    remittance {
+      amount
+    }
+    rootId
+    shipmentRating {
+      displayName
+      id
+      maxTransitAt
+      minTransitAt
+      shippingProfile {
+        customServiceLevelCode
+        landedCostMethod
+      }
+    }
+  }
+}    `;
 export const FullLandedCostDocument = `
     mutation fullLandedCost($itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!) {
   partyCreateWorkflow(input: $partyCreateWorkflowInput) {
@@ -9973,6 +10087,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     fullLandedCost(variables: ZonosFullLandedCostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ZonosFullLandedCostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<ZonosFullLandedCostMutation>(FullLandedCostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'fullLandedCost', 'mutation', variables);
+    },
+    landedCostOnly(variables: ZonosLandedCostOnlyMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ZonosLandedCostOnlyMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ZonosLandedCostOnlyMutation>(LandedCostOnlyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'landedCostOnly', 'mutation', variables);
     }
   };
 }
