@@ -103,8 +103,8 @@ export const zonosClient = {
    *   shipmentRatingCreateWorkflowInput: {
    *   amount: 20,
    *   currencyCode: 'USD',
-   *   displayName: 'custom:custom',
-   *   serviceLevelCode: 'custom:custom',
+   *   displayName: 'USPS Priority Express International',
+   *   serviceLevelCode: 'usps.priority_express_international',
    *   },
    *   itemCreateWorkflowInput: [
    *     {
