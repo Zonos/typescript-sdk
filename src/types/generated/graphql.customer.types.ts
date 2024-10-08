@@ -31,17 +31,6 @@ export type ZonosAlcoholRecipientType =
   | 'CONSUMER'
   | 'LICENSEE';
 
-export type ZonosAmountInclusiveDetail = {
-  __typename?: 'AmountInclusiveDetail';
-  calculated: ZonosPriceBreakdown;
-  converted: Scalars['Decimal'];
-  /** the details of the landed cost quote where the subtotals comes from */
-  landedCostQuote: ZonosLandedCost;
-  manual: Maybe<Scalars['Decimal']>;
-  preferred: ZonosPriceBreakdown;
-  rounded: Scalars['Decimal'];
-};
-
 export type ZonosAmountRange = {
   max?: InputMaybe<Scalars['Decimal']>;
   min?: InputMaybe<Scalars['Decimal']>;
@@ -189,10 +178,7 @@ export type ZonosBulkJobStatus =
   | 'INITIALIZED'
   | 'PROCESSING';
 
-/**
- * A `Carrier` is a shipping provider that Zonos supports through its products and services.
- * Carriers enable the shipping of goods from one country to another based on the availability of a `ServiceLevel` to the country.
- */
+/** A `Carrier` is a shipping provider that Zonos supports through its products and services. Carriers enable the shipping of goods from one country to another based on the availability of a `ServiceLevel` to the country. */
 export type ZonosCarrier = {
   __typename?: 'Carrier';
   /** A unique identifier tied to a Carrier. */
@@ -218,15 +204,9 @@ export type ZonosCarrier = {
   updatedBy: Scalars['ID'];
 };
 
-/**
- * A `CarrierAccount` is an account number that is associated with a carrier for a given customer or group of customers.
- * Rates may vary across carrier accounts, depending on the customer and volume with the carrier.
- * Shipments cannot be created without a `carrierAccount`.
- */
+/** A `CarrierAccount` is an account number that is associated with a carrier for a given customer or group of customers. Rates may vary across carrier accounts, depending on the customer and volume with the carrier. Shipments cannot be created without a `carrierAccount`. */
 export type ZonosCarrierAccount = {
   __typename?: 'CarrierAccount';
-  /** A monetary amount specified by the merchant as a buffer for any additional fees. */
-  additionalFee: Maybe<Scalars['Decimal']>;
   /** The `Carrier` associated with this CarrierAccount. */
   carrier: ZonosCarrier;
   /** When the CarrierAccount was created. */
@@ -249,8 +229,6 @@ export type ZonosCarrierAccount = {
   rateType: Maybe<ZonosCarrierAccountRateType>;
   /** Indicates whether this CarrierAccount was registered through Zonos APIs or another source */
   registrationType: ZonosCarrierAccountRegistrationType;
-  /** Describes the `additionalFee` as a percentage. */
-  shippingPercentIncrease: Maybe<Scalars['Decimal']>;
   /** When the CarrierAccount was most recently updated. */
   updatedAt: Scalars['DateTime'];
   /** The user who most recently updated the CarrierAccount. */
@@ -270,9 +248,9 @@ export type ZonosCarrierAccountApiUsage =
 export type ZonosCarrierAccountCredential = {
   __typename?: 'CarrierAccountCredential';
   /** The type of credential that applies to the value. */
-  type: Maybe<ZonosCarrierCredentialTypeCode>;
+  type: ZonosCarrierCredentialTypeCode;
   /** The code used as the `Credential` token. */
-  value: Maybe<Scalars['String']>;
+  value: Scalars['String'];
 };
 
 export type ZonosCarrierAccountIntegrationType =
@@ -292,6 +270,187 @@ export type ZonosCarrierAccountsFilter = {
   carrierCode?: InputMaybe<Scalars['String']>;
   /** ID of the `Carrier` the account is associated with */
   carrierId?: InputMaybe<Scalars['ID']>;
+};
+
+/** Enum value indicating if Zonos supports the Carrier API for Rating and/or Labels */
+export type ZonosCarrierApiSupportType =
+  | 'SUPPORTED'
+  | 'UNSUPPORTED';
+
+export type ZonosCarrierBillingInvoice = {
+  __typename?: 'CarrierBillingInvoice';
+  /** The total amount due for this invoice */
+  amount: Scalars['Decimal'];
+  /** The carrier reference number for this invoice */
+  carrierReferenceNumber: Scalars['String'];
+  /** When the `CarrierBillingInvoice` was created in the system */
+  createdAt: Scalars['DateTime'];
+  /** User who added the invoice to the system */
+  createdBy: Scalars['ID'];
+  /** The currency the invoice amount is represented in */
+  currencyCode: ZonosCurrencyCode;
+  /** The date payment is due for this `CarrierBillingInvoice` */
+  dueAt: Scalars['DateTime'];
+  /** ID prefixed with carrier_billing_invoice_ */
+  id: Scalars['ID'];
+  /** The Invoice processor details */
+  invoiceProcessorDetail: Maybe<ZonosInvoiceProcessorDetail>;
+  /** Paginated individual line items represented on this `CarrierBillingInvoice` */
+  lineItems: Array<ZonosCarrierBillingInvoiceLineItem>;
+  /** Any metadata associated with this `CarrierBillingInvoice` */
+  metadata: Maybe<Array<ZonosMetadata>>;
+  /** Whether the object is in live or test */
+  mode: ZonosMode;
+  /** The `Organization` identifier associated with the CarrierBillingInvoice. */
+  organizationId: Scalars['ID'];
+  /** The status of the payment for this invoice */
+  status: ZonosCarrierBillingInvoiceStatus;
+  /** Timestamp for when status changed */
+  statusTransitions: Array<ZonosCarrierBillingInvoiceStatusTransition>;
+  /** When the `CarrierBillingInvoice` was updated */
+  updatedAt: Scalars['DateTime'];
+  /** The user that updated the `CarrierBillingInvoice` */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosCarrierBillingInvoiceConnection = {
+  __typename?: 'CarrierBillingInvoiceConnection';
+  /** Field edges */
+  edges: Array<ZonosCarrierBillingInvoiceEdge>;
+  /** Field pageInfo */
+  pageInfo: ZonosPageInfo;
+};
+
+export type ZonosCarrierBillingInvoiceCreateInput = {
+  /** The total amount due for this invoice */
+  amount: Scalars['Decimal'];
+  /** The currency the amounts of this invoice are represented in */
+  currencyCode: ZonosCurrencyCode;
+  /** The date the payment of this `CarrierBillingInvoice` is due. If null, the `CarrierBillingInvoice` will be due immediately */
+  dueAt?: InputMaybe<Scalars['DateTime']>;
+  /** The URL for the invoice if available */
+  invoiceUrl?: InputMaybe<Scalars['String']>;
+  /** The line items contained within this invoice */
+  lineItems: Array<ZonosCarrierBillingInvoiceLineItemInput>;
+  /** Any metadata associated with this `CarrierBillingInvoiceLineItem` */
+  metadata?: InputMaybe<Array<ZonosMetadataInput>>;
+  /** The payor carrier account number */
+  payorAccountNumber: Scalars['String'];
+  /** The reference number for this invoice */
+  referenceNumber: Scalars['String'];
+};
+
+export type ZonosCarrierBillingInvoiceEdge = {
+  __typename?: 'CarrierBillingInvoiceEdge';
+  /** Cursor pointing to this edge for use in pagination */
+  cursor: Scalars['String'];
+  /** The `CarrierBillingInvoice` object located at this edge in the current pagination connection */
+  node: ZonosCarrierBillingInvoice;
+};
+
+export type ZonosCarrierBillingInvoiceFilter = {
+  /** Represents a range of dates, before, or after the creation date */
+  createdAtBetween?: InputMaybe<ZonosDateTimeRange>;
+  /** Represents a range of dates, before, or after the due date */
+  dueAtBetween?: InputMaybe<ZonosDateTimeRange>;
+  /** The payor carrier account number */
+  payorAccountNumber?: InputMaybe<Scalars['String']>;
+  /** The status of payment for a `CarrierBillingInvoice` */
+  status?: InputMaybe<ZonosCarrierBillingInvoiceStatus>;
+};
+
+export type ZonosCarrierBillingInvoiceLineItem = {
+  __typename?: 'CarrierBillingInvoiceLineItem';
+  /** The amount due for this invoice line */
+  amount: Scalars['Decimal'];
+  /** The charge type for the this`CarrierBillingInvoiceLineItem` */
+  chargeType: ZonosCarrierInvoiceLineItemChargeType;
+  /** When the `CarrierBillingInvoice` was created in the system */
+  createdAt: Scalars['DateTime'];
+  /** User who added the invoice to the system */
+  createdBy: Scalars['ID'];
+  /** The currency the invoice line item amount is represented in */
+  currencyCode: Maybe<ZonosCurrencyCode>;
+  /** A description of the invoice line */
+  description: Maybe<Scalars['String']>;
+  /** ID prefixed with carrier_invoice_line_item_ */
+  id: Scalars['ID'];
+  /** Any metadata associated with this `CarrierBillingInvoiceLineItem` */
+  metadata: Maybe<Array<ZonosMetadata>>;
+  /** The carrier reference(s) for this invoice line */
+  references: Maybe<Array<ZonosCarrierBillingInvoiceLineItemReference>>;
+  /** The carrier service level code for this invoice line if applicable */
+  serviceLevel: Maybe<Scalars['String']>;
+  /** The carrier tracking number for this invoice line */
+  trackingNumber: Scalars['String'];
+  /** When the `CarrierBillingInvoice` was updated */
+  updatedAt: Scalars['DateTime'];
+  /** The user that updated the `CarrierBillingInvoice` */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosCarrierBillingInvoiceLineItemInput = {
+  /** The amount due for this invoice line */
+  amount: Scalars['Decimal'];
+  /** The charge type for the this`CarrierBillingInvoiceLineItem` */
+  chargeType: ZonosCarrierInvoiceLineItemChargeType;
+  /** The currency the invoice line item amount is represented in */
+  currencyCode?: InputMaybe<ZonosCurrencyCode>;
+  /** A description of the invoice line */
+  description?: InputMaybe<Scalars['String']>;
+  /** Any metadata associated with this `CarrierBillingInvoiceLineItem` */
+  metadata?: InputMaybe<Array<ZonosMetadataInput>>;
+  /** The carrier reference(s) for this invoice line */
+  references?: InputMaybe<Array<ZonosCarrierBillingInvoiceLineItemReferenceInput>>;
+  /** The carrier service level for this invoice line */
+  serviceLevel?: InputMaybe<Scalars['String']>;
+  /** The carrier tracking number for this invoice line */
+  trackingNumber: Scalars['String'];
+};
+
+export type ZonosCarrierBillingInvoiceLineItemReference = {
+  __typename?: 'CarrierBillingInvoiceLineItemReference';
+  referenceType: ZonosCarrierBillingInvoiceLineItemReferenceType;
+  value: Scalars['String'];
+};
+
+export type ZonosCarrierBillingInvoiceLineItemReferenceInput = {
+  referenceType: ZonosCarrierBillingInvoiceLineItemReferenceType;
+  value: Scalars['String'];
+};
+
+export type ZonosCarrierBillingInvoiceLineItemReferenceType =
+  | 'ACCOUNT_ORDER_NUMBER'
+  | 'SHIPMENT_REFERENCE_NUMBER'
+  | 'ZONOS_ORDER_ID';
+
+/** Statuses that a `CarrierBillingInvoice` can go through */
+export type ZonosCarrierBillingInvoiceStatus =
+  /** Invoice drafted pending finalize */
+  | 'DRAFT'
+  /** Invoice creation failed */
+  | 'FAILED'
+  /** Invoice created pending payment */
+  | 'OPEN'
+  /** Invoice paid */
+  | 'PAID'
+  /** Invoice pending creation */
+  | 'PENDING'
+  /** Invoice has not been paid and is uncollectable by the system. You may void the invoice and attempt collection another way */
+  | 'UNCOLLECTIBLE'
+  /** Invoice has been voided */
+  | 'VOIDED';
+
+export type ZonosCarrierBillingInvoiceStatusTransition = {
+  __typename?: 'CarrierBillingInvoiceStatusTransition';
+  /** DateTime indicating when this status change occurred */
+  createdAt: Scalars['DateTime'];
+  /** ID of the `User` who changed this status */
+  createdBy: Scalars['ID'];
+  /** Text describing this status change */
+  note: Maybe<Scalars['String']>;
+  /** Status of this `CarrierBillingInvoice` at the associated createdAt */
+  status: ZonosCarrierBillingInvoiceStatus;
 };
 
 /** Carrier Connection */
@@ -345,57 +504,6 @@ export type ZonosCarrierEdge = {
   cursor: Maybe<Scalars['String']>;
   /** Field node */
   node: Maybe<ZonosCarrier>;
-};
-
-export type ZonosCarrierInvoice = ZonosInvoice & ZonosNode & {
-  __typename?: 'CarrierInvoice';
-  /** The total amount due for this invoice */
-  amountDue: Scalars['Decimal'];
-  /** The carrier who created this invoice */
-  carrier: ZonosInvoiceCarrier;
-  /** When the `carrierInvoice` was created in the system */
-  createdAt: Scalars['DateTime'];
-  /** User who added the invoice to the system */
-  createdBy: Scalars['ID'];
-  /** The currency the invoice amount is represented in */
-  currencyCode: ZonosCurrencyCode;
-  /** The date payment is due for this `CarrierInvoice` */
-  dueDate: Scalars['DateTime'];
-  /** ID prefixed with carrier_invoice_ */
-  id: Scalars['ID'];
-  /** The creation date of this `CarrierInvoice` by the carrier */
-  invoiceDate: Scalars['DateTime'];
-  /** The invoice number of this `CarrierInvoice` */
-  invoiceNumber: Scalars['String'];
-  /** The URL where we pull the invoice from */
-  invoiceUrl: Maybe<Scalars['String']>;
-  /** Paginated individual line items represented on this `CarrierInvoice` */
-  lineItems: ZonosCarrierInvoiceLineItemConnection;
-  /** Whether the object is in live or test */
-  mode: ZonosMode;
-  /** The `Organization` this CarrierInvoice belongs to (may be null if multiple organizations are on the same invoice) */
-  organization: Maybe<ZonosOrganization>;
-  /** The parties associated with the invoice */
-  parties: Maybe<Array<ZonosCarrierInvoiceParty>>;
-  /** The prefix this invoice was processed with */
-  prefix: Maybe<Scalars['String']>;
-  /** The status of the payment for this invoice */
-  status: ZonosInvoiceStatus;
-  /** Timestamp for when status changed */
-  statusTransitions: Array<ZonosInvoiceStatusTransition>;
-  /** When the `carrierInvoice` was updated */
-  updatedAt: Scalars['DateTime'];
-  /** The user that updated the `carrierInvoice` */
-  updatedBy: Scalars['ID'];
-};
-
-
-export type ZonosCarrierInvoiceLineItemsArgs = {
-  after: InputMaybe<Scalars['String']>;
-  before: InputMaybe<Scalars['String']>;
-  filter: InputMaybe<ZonosCarrierInvoiceLineItemFilter>;
-  first: InputMaybe<Scalars['Int']>;
-  last: InputMaybe<Scalars['Int']>;
 };
 
 export type ZonosCarrierInvoiceAccountNumberMapping = ZonosNode & {
@@ -480,118 +588,6 @@ export type ZonosCarrierInvoiceAccountNumberMappingUpdateInput = {
   organization?: InputMaybe<Scalars['ID']>;
 };
 
-/** CarrierInvoice Connection */
-export type ZonosCarrierInvoiceConnection = {
-  __typename?: 'CarrierInvoiceConnection';
-  /** Field edges */
-  edges: Array<ZonosCarrierInvoiceEdge>;
-  /** Field pageInfo */
-  pageInfo: ZonosPageInfo;
-  totalCount: Scalars['Int'];
-};
-
-export type ZonosCarrierInvoiceCreateInput = {
-  /** The total amount due for this invoice */
-  amountDue: Scalars['Decimal'];
-  /** The carrier this invoice is billed from */
-  carrier: ZonosInvoiceCarrier;
-  /** The currency that the amounts of this invoice are represented in */
-  currencyCode: ZonosCurrencyCode;
-  /** The due date for the payment of this `CarrierInvoice` */
-  dueDate: Scalars['DateTime'];
-  /** The date this `CarrierInvoice` was created */
-  invoiceDate: Scalars['DateTime'];
-  /** The invoice number of this invoice */
-  invoiceNumber: Scalars['String'];
-  /** The URL for the invoice if available */
-  invoiceUrl?: InputMaybe<Scalars['String']>;
-  /** The line items contained within this invoice */
-  lineItems: Array<ZonosCarrierInvoiceLineItemInput>;
-  /** The ID of the `Organization` this invoice belongs to. (May be null if the invoice contains lines from multiple organizations */
-  organizationId?: InputMaybe<Scalars['ID']>;
-  /** the `party` details associated with the `carrierInvoice' */
-  parties?: InputMaybe<Array<ZonosCarrierInvoicePartyCreateInput>>;
-  /** The status of payment for this invoice */
-  status: ZonosInvoiceStatus;
-};
-
-/** CarrierInvoice Edge */
-export type ZonosCarrierInvoiceEdge = {
-  __typename?: 'CarrierInvoiceEdge';
-  /** Field cursor */
-  cursor: Scalars['String'];
-  /** Field node */
-  node: ZonosCarrierInvoice;
-};
-
-export type ZonosCarrierInvoiceFileInfoInput = {
-  /** The content type of the file being uploaded */
-  contentType: Scalars['String'];
-  /** The name of the file being uploaded */
-  fileName: Scalars['String'];
-};
-
-export type ZonosCarrierInvoiceFilter = {
-  /** The carrier that generated the invoice */
-  carrier?: InputMaybe<ZonosInvoiceCarrier>;
-  /** Represents a range of dates, before, or after the creation date */
-  createdAtBetween?: InputMaybe<ZonosDateTimeRange>;
-  /** Represents a range of dates, before, or after the due date */
-  dueDateBetween?: InputMaybe<ZonosDateTimeRange>;
-  /** Represents a range of dates, before, or after the invoice date */
-  invoiceDateBetween?: InputMaybe<ZonosDateTimeRange>;
-  /** The prefix the files for this invoice were uploaded with */
-  prefix?: InputMaybe<Scalars['String']>;
-  /** The status of payment for a `CarrierInvoice` */
-  status?: InputMaybe<ZonosInvoiceStatus>;
-};
-
-export type ZonosCarrierInvoiceLineItem = {
-  __typename?: 'CarrierInvoiceLineItem';
-  /** The amount due for this invoice line */
-  amount: Scalars['Decimal'];
-  /** When the `carrierInvoice` was created in the system */
-  createdAt: Scalars['DateTime'];
-  /** User who added the invoice to the system */
-  createdBy: Scalars['ID'];
-  /** The currency the invoice line item amount is represented in */
-  currencyCode: Maybe<ZonosCurrencyCode>;
-  /** Customer number this line item applies to */
-  customerNumber: Maybe<Scalars['String']>;
-  /** A description of the invoice line */
-  description: Maybe<Scalars['String']>;
-  /** ID prefixed with carrier_invoice_line_item_ */
-  id: Scalars['ID'];
-  /** The individual line item charges that make up the CarrierInvoiceLineItem amount */
-  lineItemCharges: Array<ZonosCarrierInvoiceLineItemCharge>;
-  /** Any metadata associated with this `CarrierInvoiceLineItem` */
-  metadata: Maybe<Array<ZonosMetadata>>;
-  /** The parties associated with this invoice line */
-  parties: Array<ZonosCarrierInvoiceParty>;
-  /** The `Reconciliation` object associated with this invoice line */
-  reconciliation: Maybe<ZonosReconciliation>;
-  /** The organization ID associated to this invoice line */
-  reconciliationOrganization: Maybe<Scalars['ID']>;
-  /** The carrier service level code for this invoice line if applicable */
-  serviceLevel: Maybe<Scalars['String']>;
-  /** The carrier shipment reference for this invoice line */
-  shipmentReference: Maybe<Scalars['String']>;
-  /** The status of this invoice line item */
-  status: ZonosInvoiceStatus;
-  /** The carrier tracking number for this invoice line */
-  trackingNumber: Scalars['String'];
-  /** When the `carrierInvoice` was updated */
-  updatedAt: Scalars['DateTime'];
-  /** The user that updated the `carrierInvoice` */
-  updatedBy: Scalars['ID'];
-  /** The weight of the CarrierInvoiceLineItem */
-  weight: Maybe<Scalars['Decimal']>;
-  /** The weight unit code of the weight. Required if weight is present */
-  weightUnit: Maybe<ZonosWeightUnitCode>;
-  /** The ID of the legacy order this `CarrierInvoiceLineItem` is associated with */
-  zonosOrderNumber: Maybe<Scalars['String']>;
-};
-
 export type ZonosCarrierInvoiceLineItemBillingCreateInput = {
   /** The amount that needs to be billed to reconcile the line item */
   amount: Scalars['Decimal'];
@@ -605,26 +601,7 @@ export type ZonosCarrierInvoiceLineItemBillingCreateInput = {
   organizationId: Scalars['ID'];
 };
 
-export type ZonosCarrierInvoiceLineItemCharge = {
-  __typename?: 'CarrierInvoiceLineItemCharge';
-  /** The amount of the line item charge */
-  amount: Scalars['Decimal'];
-  /** The description of the charge */
-  description: Scalars['String'];
-  /** The type enum associated with this invoice line */
-  type: ZonosCarrierInvoiceLineItemChargeType;
-};
-
-export type ZonosCarrierInvoiceLineItemChargeInput = {
-  /** The amount of the line item charge */
-  amount: Scalars['Decimal'];
-  /** The description of the charge */
-  description: Scalars['String'];
-  /** The type enum associated with this invoice line */
-  type: ZonosCarrierInvoiceLineItemChargeType;
-};
-
-/** Assigned type of `CarrierInvoiceLineItemCharge` */
+/** Enum value representing the type of charge for a line item */
 export type ZonosCarrierInvoiceLineItemChargeType =
   | 'DEFERMENT_FEE'
   | 'DISBURSEMENT_FEE'
@@ -635,64 +612,6 @@ export type ZonosCarrierInvoiceLineItemChargeType =
   | 'PROCESSING_FEE'
   | 'SHIPPING';
 
-/** CarrierInvoiceLineItem Connection */
-export type ZonosCarrierInvoiceLineItemConnection = {
-  __typename?: 'CarrierInvoiceLineItemConnection';
-  /** Field edges */
-  edges: Array<ZonosCarrierInvoiceLineItemEdge>;
-  /** Field pageInfo */
-  pageInfo: ZonosPageInfo;
-  totalCount: Scalars['Int'];
-};
-
-/** CarrierInvoiceLineItem Edge */
-export type ZonosCarrierInvoiceLineItemEdge = {
-  __typename?: 'CarrierInvoiceLineItemEdge';
-  /** Field cursor */
-  cursor: Scalars['String'];
-  /** Field node */
-  node: ZonosCarrierInvoiceLineItem;
-};
-
-export type ZonosCarrierInvoiceLineItemFilter = {
-  invoiceId?: InputMaybe<Scalars['ID']>;
-  /** Filter matching `CarrierInvoice` records based on matching shipmentReference field */
-  shipmentReference?: InputMaybe<Scalars['String']>;
-  /** Filter matching `CarrierInvoice` records based on matching trackingNumber field */
-  trackingNumber?: InputMaybe<Scalars['String']>;
-  /** Filter matching `CarrierInvoice` records based on `CarrierInvoiceLineItemChargeType` records based on matching line items with LineItemType */
-  type?: InputMaybe<ZonosCarrierInvoiceLineItemChargeType>;
-};
-
-export type ZonosCarrierInvoiceLineItemInput = {
-  /** The amount due for this invoice line */
-  amount: Scalars['Decimal'];
-  /** The currency the invoice line item amount is represented in */
-  currencyCode?: InputMaybe<ZonosCurrencyCode>;
-  /** Customer number this line item applies to */
-  customerNumber?: InputMaybe<Scalars['String']>;
-  /** A description of the invoice line */
-  description?: InputMaybe<Scalars['String']>;
-  /** The individual line item charges that make up the CarrierInvoiceLineItem amount */
-  lineItemCharges: Array<ZonosCarrierInvoiceLineItemChargeInput>;
-  /** Any metadata associated with this `CarrierInvoiceLineItem` */
-  metadata?: InputMaybe<Array<ZonosMetadataInput>>;
-  /** The parties associated with this invoice line */
-  parties?: InputMaybe<Array<ZonosCarrierInvoicePartyCreateInput>>;
-  /** The organization ID associated to this invoice line */
-  reconciliationOrganization?: InputMaybe<Scalars['ID']>;
-  /** The carrier service level for this invoice line */
-  serviceLevel?: InputMaybe<Scalars['String']>;
-  /** The carrier shipment reference for this invoice line */
-  shipmentReference?: InputMaybe<Scalars['String']>;
-  /** The carrier tracking number for this invoice line */
-  trackingNumber: Scalars['String'];
-  /** The weight of the CarrierInvoiceLineItem */
-  weight?: InputMaybe<Scalars['Decimal']>;
-  /** The weight unit code of the weight. Required if weight is present */
-  weightUnit?: InputMaybe<ZonosWeightUnitCode>;
-};
-
 export type ZonosCarrierInvoiceLineItemReconcileInput = {
   /** ID of the `CarrierInvoiceLineItem` this `Reconciliation` object will be associated with */
   lineItemId: Scalars['ID'];
@@ -700,111 +619,245 @@ export type ZonosCarrierInvoiceLineItemReconcileInput = {
   orderId?: InputMaybe<Scalars['ID']>;
 };
 
-export type ZonosCarrierInvoiceLineItemUpdateInput = {
-  /** The ID of the `CarrierInvoiceLineItem` object to update */
-  id: Scalars['ID'];
-  /** The ID of the legacy order this `CarrierInvoiceLineItem` is associated with */
-  zonosOrderNumber?: InputMaybe<Scalars['String']>;
-};
-
 export type ZonosCarrierInvoiceLocation = {
   __typename?: 'CarrierInvoiceLocation';
+  /** The state or province full name */
   administrativeArea: Maybe<Scalars['String']>;
+  /** Abbreviated code for the state or province */
   administrativeAreaCode: Maybe<Scalars['String']>;
+  /** The two-letter ISO country code */
   countryCode: ZonosCountryCode;
+  /** Latitude of this location */
   latitude: Maybe<Scalars['Decimal']>;
+  /** Address line 1 */
   line1: Maybe<Scalars['String']>;
+  /** Address line 2 */
   line2: Maybe<Scalars['String']>;
+  /** Address line 3 */
   line3: Maybe<Scalars['String']>;
+  /** Address line 4 */
   line4: Maybe<Scalars['String']>;
+  /** Locality (city) of this location */
   locality: Maybe<Scalars['String']>;
+  /** Longitude of the location */
   longitude: Maybe<Scalars['Decimal']>;
+  /** Plus code associated with the location */
   plusCode: Maybe<Scalars['String']>;
+  /** Postal code for the location */
   postalCode: Maybe<Scalars['String']>;
+  /** The type of property; COMMERCIAL or RESIDENTIAL */
   propertyType: Maybe<ZonosPropertyType>;
 };
 
 export type ZonosCarrierInvoiceLocationCreateInput = {
+  /** The state or province full name */
   administrativeArea?: InputMaybe<Scalars['String']>;
+  /** Abbreviated code for the state or province */
   administrativeAreaCode?: InputMaybe<Scalars['String']>;
+  /** The two-letter ISO country code */
   countryCode?: InputMaybe<ZonosCountryCode>;
+  /** Latitude of the location */
   latitude?: InputMaybe<Scalars['Decimal']>;
+  /** Address line 1 */
   line1?: InputMaybe<Scalars['String']>;
+  /** Address line 2 */
   line2?: InputMaybe<Scalars['String']>;
+  /** Address line 3 */
   line3?: InputMaybe<Scalars['String']>;
+  /** Adress line 4 */
   line4?: InputMaybe<Scalars['String']>;
+  /** Locality (city) of the location */
   locality?: InputMaybe<Scalars['String']>;
+  /** Longitude of the location */
   longitude?: InputMaybe<Scalars['Decimal']>;
+  /** Plus code associated with the location */
   plusCode?: InputMaybe<Scalars['String']>;
+  /** Postal code for the location */
   postalCode?: InputMaybe<Scalars['String']>;
+  /** The type of property i.e. COMMERCIAL or RESIDENTIAL */
   propertyType?: InputMaybe<ZonosPropertyType>;
 };
 
 export type ZonosCarrierInvoiceParty = {
   __typename?: 'CarrierInvoiceParty';
+  /** Timestamp of when this `CarrierInvoiceParty` was created */
   createdAt: Scalars['DateTime'];
+  /** ID of the `User` who created this `CarrierInvoiceParty` */
+  createdBy: Scalars['ID'];
+  /** Location object related to this `CarrierInvoiceParty` */
   location: Maybe<ZonosCarrierInvoiceLocation>;
+  /** Object with details of the person related to this `CarrierInvoiceParty` */
   person: Maybe<ZonosCarrierInvoicePerson>;
+  /** The type of party i.e. ORIGIN, DESTINATION */
   type: Maybe<ZonosPartyType>;
+  /** Timestamp of when this `CarrierInvoiceParty` was most recently updated */
+  updatedAt: Scalars['DateTime'];
+  /** ID of the `User` who most recently updated this `CarrierInvoiceParty` */
+  updatedBy: Scalars['ID'];
 };
 
 export type ZonosCarrierInvoicePartyCreateInput = {
+  /** Input for location details */
   location?: InputMaybe<ZonosCarrierInvoiceLocationCreateInput>;
+  /** Input for details of the person associated with the invoice */
   person?: InputMaybe<ZonosCarrierInvoicePersonCreateInput>;
+  /** The type of party i.e. ORIGIN, DESTINATION */
   type: ZonosPartyType;
 };
 
 export type ZonosCarrierInvoicePerson = {
   __typename?: 'CarrierInvoicePerson';
+  /** Name of the company this person is associated with */
   companyName: Maybe<Scalars['String']>;
+  /** E-mail address for this person */
   email: Maybe<Scalars['String']>;
+  /** First name of the person */
   firstName: Maybe<Scalars['String']>;
+  /** Last name of the person */
   lastName: Maybe<Scalars['String']>;
-  mode: ZonosMode;
+  /** Phone number associated with this person */
   phone: Maybe<Scalars['String']>;
 };
 
 export type ZonosCarrierInvoicePersonCreateInput = {
+  /** Name of the company this person is associated with */
   companyName?: InputMaybe<Scalars['String']>;
+  /** E-mail address for this person */
   email?: InputMaybe<Scalars['String']>;
+  /** First name of the person */
   firstName?: InputMaybe<Scalars['String']>;
+  /** Last name of the person */
   lastName?: InputMaybe<Scalars['String']>;
+  /** Phone number associated with this person */
   phone?: InputMaybe<Scalars['String']>;
-};
-
-export type ZonosCarrierInvoiceProcessInput = {
-  /** The carrier that the invoice was billed from */
-  carrier: ZonosInvoiceCarrier;
-  /** The filename of the object to process */
-  fileName?: InputMaybe<Scalars['String']>;
-  /** The prefix of the object(s) to process */
-  prefix?: InputMaybe<Scalars['String']>;
-};
-
-export type ZonosCarrierInvoiceUpdateInput = {
-  /** The ID of the `CarrierInvoice` to update */
-  id: Scalars['ID'];
-  /** A note regarding the status change */
-  note?: InputMaybe<Scalars['String']>;
-  /** The status of the payment for this invoice */
-  status: ZonosInvoiceStatus;
-};
-
-export type ZonosCarrierInvoiceUploadUrlInput = {
-  /** The carrier this invoices was created by */
-  carrier: ZonosInvoiceCarrier;
-  /** Object containing informatino about the file being uploaded */
-  fileInfo: Array<ZonosCarrierInvoiceFileInfoInput>;
-  /** The ID of the `Organization` the invoice belongs to */
-  organizationId?: InputMaybe<Scalars['ID']>;
 };
 
 /** A search for a specific `Carrier` or group of carriers. */
 export type ZonosCarriersFilter = {
+  /** Enum value to filter by supported or unsupported API carrier accounts */
+  apiSupport?: InputMaybe<ZonosCarrierApiSupportType>;
   /** A unique identifier tied to a `Carrier`. */
   code?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   /** The humanly memorable display name for the `Carrier`. */
   name?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+/** A `Cart` represents a collection of `Item`s. */
+export type ZonosCart = {
+  __typename?: 'Cart';
+  /** A list of `CartAdjustment`s. */
+  adjustments: Array<ZonosCartAdjustment>;
+  /** When this `Cart` was created. */
+  createdAt: Scalars['DateTime'];
+  /** The user that created this `Cart`. */
+  createdBy: Scalars['ID'];
+  /** The `Cart`'s unique identifier. */
+  id: Scalars['ID'];
+  /** The `Items` to add to the cart. */
+  items: Array<ZonosItem>;
+  /** metadata for the cart */
+  metadata: Array<ZonosCartMetadata>;
+  /** The organization's id that the cart belongs to */
+  organizationId: Scalars['ID'];
+  /** When this `Cart` was most recently updated. */
+  updatedAt: Scalars['DateTime'];
+  /** User who most recently updated this `Cart`. */
+  updatedBy: Scalars['ID'];
+};
+
+/** A `CartAdjustment` represents a change/discount to the `Cart`'s amounts. */
+export type ZonosCartAdjustment = {
+  __typename?: 'CartAdjustment';
+  /** The amount of the adjustment */
+  amount: Scalars['Decimal'];
+  /** Currency the `Adjustment` amount is in. */
+  currencyCode: ZonosCurrencyCode;
+  /** A description of the adjustment */
+  description: Scalars['String'];
+  /** the product id for an item specific adjustment */
+  productId: Maybe<Scalars['String']>;
+  /** The sku for an item specific adjustment */
+  sku: Maybe<Scalars['String']>;
+  /** The type of adjustment */
+  type: ZonosCartAdjustmentType;
+};
+
+export type ZonosCartAdjustmentInput = {
+  /** The amount of the adjustment */
+  amount: Scalars['Decimal'];
+  /** Currency the `Adjustment` amount is in. */
+  currencyCode: ZonosCurrencyCode;
+  /** A description of the adjustment */
+  description?: InputMaybe<Scalars['String']>;
+  /** the product id for an item specific adjustment */
+  productId?: InputMaybe<Scalars['String']>;
+  /** The sku for an item specific adjustment */
+  sku?: InputMaybe<Scalars['String']>;
+  /** The type of adjustment */
+  type: ZonosCartAdjustmentType;
+};
+
+export type ZonosCartAdjustmentType =
+  | 'CART_TOTAL'
+  | 'ITEM'
+  | 'SHIPPING';
+
+/** An auto-generated type for paginating through multiple `Cart`s. */
+export type ZonosCartConnection = {
+  __typename?: 'CartConnection';
+  /** A list of `edges`. */
+  edges: Array<ZonosCartEdge>;
+  /** Pagination information about the connection. */
+  pageInfo: ZonosPageInfo;
+  /** The total count of the carts in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosCartCreateInput = {
+  /** A list of `CartAdjustment`s. */
+  adjustments?: InputMaybe<Array<ZonosCartAdjustmentInput>>;
+  /** The `Item` to add to the cart. */
+  items: Array<ZonosItemInput>;
+  /** metadata for the cart */
+  metadata?: InputMaybe<Array<ZonosCartMetadataInput>>;
+};
+
+/** An auto-generated type used in pagination. */
+export type ZonosCartEdge = {
+  __typename?: 'CartEdge';
+  /** A string used to identify this object in the current pagination connection. */
+  cursor: Scalars['String'];
+  /** The object located at this `Edge`. */
+  node: ZonosCart;
+};
+
+/** Metadata for the cart */
+export type ZonosCartMetadata = {
+  __typename?: 'CartMetadata';
+  /** The key for the metadata */
+  key: Scalars['String'];
+  /** The value for the metadata */
+  value: Scalars['String'];
+};
+
+export type ZonosCartMetadataInput = {
+  /** The key for the metadata */
+  key: Scalars['String'];
+  /** The value for the metadata */
+  value: Scalars['String'];
+};
+
+export type ZonosCartUpdateInput = {
+  /** A list of `CartAdjustment`s. */
+  adjustments?: InputMaybe<Array<ZonosCartAdjustmentInput>>;
+  /** The id of the cart to update */
+  id: Scalars['ID'];
+  /** The `Item` to add to the cart. */
+  itemsAdd?: InputMaybe<Array<ZonosItemInput>>;
+  /** The `Item` to remove from the cart. */
+  itemsRemove?: InputMaybe<Array<Scalars['ID']>>;
+  /** metadata for the cart */
+  metadata?: InputMaybe<Array<ZonosCartMetadataInput>>;
 };
 
 export type ZonosCarton = {
@@ -944,6 +997,29 @@ export type ZonosCartonItem = {
   width: Scalars['Decimal'];
 };
 
+export type ZonosCartonizationSettings = {
+  __typename?: 'CartonizationSettings';
+  /** Timestamp of when the CartonizationSettings were created */
+  createdAt: Scalars['DateTime'];
+  /** ID of the user who created the CartonizationSettings */
+  createdBy: Scalars['ID'];
+  /** Indicates if dynamic packaging is enabled/disabled during cartonization */
+  dynamicPackaging: ZonosDynamicPackagingStatus;
+  /** Unique identifier for the CartonizationSettings */
+  id: Scalars['ID'];
+  /** ID of the `Organization` these CartonizationSettings belong to */
+  organizationId: Scalars['ID'];
+  /** Timestamp of when the CartonizationSettings were most recently updated */
+  updatedAt: Scalars['DateTime'];
+  /** ID of the user who most recently updated the CartonizationSettings */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosCartonizationSettingsUpdateInput = {
+  /** Indicates if dynamic packaging is enabled/disabled during cartonization */
+  dynamicPackaging: ZonosDynamicPackagingStatus;
+};
+
 export type ZonosCartonizeInput = {
   /** The id of the `root` that will own the carton */
   rootId: Scalars['ID'];
@@ -967,7 +1043,7 @@ export type ZonosCatalogItem = {
   catalogItemReferences: Array<ZonosCatalogItemReference>;
   /** The `CatalogItem` location. */
   catalogItemUrl: Maybe<Scalars['String']>;
-  /** The classificationId if an catalogItem was created through classification */
+  /** The classificationId if a catalogItem was created through classification */
   classification: Maybe<Scalars['ID']>;
   /** Country configuration for the item. */
   configurations: Maybe<Array<Maybe<ZonosCatalogItemConfiguration>>>;
@@ -995,6 +1071,8 @@ export type ZonosCatalogItem = {
   imageUrl: Maybe<Scalars['String']>;
   /** Country inclusive pricing for the item */
   inclusivePrices: Maybe<Array<ZonosCatalogItemInclusivePrice>>;
+  /** The item's key that is used to identify the catalog item. */
+  itemKey: Scalars['String'];
   /** Determines whether or not an item can be physically shipped. */
   itemType: Maybe<ZonosItemType>;
   /** The `CatalogItem` material composition. */
@@ -1058,7 +1136,7 @@ export type ZonosCatalogItemConfiguration = {
   /** Allows user to remove items from duties, taxes, or fee calculations */
   dutyTaxFeeConfiguration: Maybe<ZonosDutyTaxFeeConfiguration>;
   /** The id of the configuration catalog item */
-  id: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
   /** Ship to country */
   shipToCountry: Maybe<ZonosCountryCode>;
   /** When this `CatalogItem` was most recently updated. */
@@ -1092,7 +1170,7 @@ export type ZonosCatalogItemConfigurationUpdateInput = {
   /** Allows user to remove items from duties, taxes, or fee calculations */
   dutyTaxFeeConfiguration?: InputMaybe<ZonosDutyTaxFeeConfiguration>;
   /** The id of the hsCode item */
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   /** Ship to country */
   shipToCountry: ZonosCountryCode;
 };
@@ -1120,10 +1198,22 @@ export type ZonosCatalogItemExportJobCreateInput = {
 };
 
 export type ZonosCatalogItemFilter = {
+  /** Filter to catalogItems with `amount` set. */
   hasAmount?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the metadata key and value. */
+  metadata?: InputMaybe<Array<ZonosKeyValueFilterInput>>;
+  /** Fuzzy search by the `CatalogItem` name. */
+  name?: InputMaybe<Scalars['String']>;
+  /** Filter by the `CatalogItem` productId. @deprecated use `productIds` instead. */
   productId?: InputMaybe<Scalars['String']>;
+  /** Filter by productIds. */
+  productIds?: InputMaybe<Array<Scalars['String']>>;
+  /** Filter by the `CatalogItem` shipToCountry. */
   shipToCountry?: InputMaybe<ZonosCountryCode>;
+  /** Filter by the `CatalogItem` sku. @deprecated use `skus` instead. */
   sku?: InputMaybe<Scalars['String']>;
+  /** Filter by skus. */
+  skus?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type ZonosCatalogItemHsCode = {
@@ -1136,8 +1226,10 @@ export type ZonosCatalogItemHsCode = {
   createdBy: Scalars['ID'];
   /** The HsCode of the item. */
   hsCode: Maybe<Scalars['String']>;
+  /** The source of the hsCode for this HsCode */
+  hsCodeSource: Maybe<ZonosHsCodeSource>;
   /** The id of the hsCode catalog item */
-  id: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
   /** Ship to country */
   shipToCountry: Maybe<ZonosCountryCode>;
   /** When this `CatalogItem` was most recently updated. */
@@ -1151,6 +1243,8 @@ export type ZonosCatalogItemHsCodeInput = {
   classification?: InputMaybe<Scalars['ID']>;
   /** The hsCode for this country */
   hsCode?: InputMaybe<Scalars['String']>;
+  /** The source of the hsCode for this HsCode */
+  hsCodeSource?: InputMaybe<ZonosHsCodeSource>;
   /** Product ID of the `CatalogItem`. */
   productId?: InputMaybe<Scalars['String']>;
   /** Ship to country */
@@ -1166,8 +1260,10 @@ export type ZonosCatalogItemHsCodeUpdateInput = {
   classification?: InputMaybe<Scalars['ID']>;
   /** The hsCode for this country */
   hsCode?: InputMaybe<Scalars['String']>;
+  /** The source of the hsCode for this HsCode */
+  hsCodeSource?: InputMaybe<ZonosHsCodeSource>;
   /** The id of the hsCode item */
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   /** Ship to country */
   shipToCountry: ZonosCountryCode;
 };
@@ -1178,25 +1274,46 @@ export type ZonosCatalogItemInclusivePrice = {
   amount: Maybe<Scalars['Decimal']>;
   /** The amount of inclusive price. */
   amountInclusive: Maybe<Scalars['Decimal']>;
-  /** The details of the inclusive price. */
-  amountInclusiveDetail: Maybe<ZonosAmountInclusiveDetail>;
+  /** Calculated amount */
+  calculated: ZonosInclusivePriceBreakdown;
   /** When this `CatalogItem` was created. */
   createdAt: Scalars['DateTime'];
   /** The user who created the `CatalogItem`. */
   createdBy: Scalars['ID'];
   /** The currency that the amount of this `CatalogItem` is in. */
   currencyCode: Maybe<ZonosCurrencyCode>;
-  /** The exchange rate we used to convert the amounts for inclusive pricing. */
-  exchangeRate: Maybe<ZonosExchangeRate>;
+  /** The exchange rate id used to convert the amounts for inclusive pricing. */
+  exchangeRateId: Scalars['ID'];
   /** The id of the configuration catalog item */
-  id: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  /** the inclusive price history id we used to calculate (can be prefixed ip_country_history or ip_history) */
+  inclusivePriceHistoryId: Scalars['ID'];
+  /** the inclusive price setting id we used to calculate */
+  inclusivePriceSettingId: Scalars['ID'];
+  /** The itemKey of the catalog item */
+  itemKey: Scalars['String'];
+  /** the landed cost quote id used to create the inclusive price */
+  landedCostQuoteId: Scalars['ID'];
+  /** The organization id of the catalog item inclusive price */
+  organizationId: Scalars['String'];
+  /** the preferred amount */
+  preferred: ZonosInclusivePriceBreakdown;
   /** Ship to country */
   shipToCountry: ZonosCountryCode;
+  /** Whether this price has been sync to a merchant catalog */
+  status: ZonosCatalogItemInclusivePriceStatus;
   /** When this `CatalogItem` was most recently updated. */
   updatedAt: Scalars['DateTime'];
   /** The user who most recently updated the `CatalogItem`. */
   updatedBy: Scalars['ID'];
 };
+
+export type ZonosCatalogItemInclusivePriceStatus =
+  | 'ACTIVE'
+  | 'ARCHIVED'
+  | 'FAILED'
+  | 'IGNORED'
+  | 'PENDING';
 
 /** A representation of a `CatalogItem` to be created. */
 export type ZonosCatalogItemInput = {
@@ -1270,6 +1387,64 @@ export type ZonosCatalogItemSource =
   | 'LEGACY_MIGRATION'
   | 'USER_PROVIDED';
 
+/** A representation of a `CatalogItem` to be updated. */
+export type ZonosCatalogItemUpdateInput = {
+  /** The amount of a `CatalogItem`. */
+  amount?: InputMaybe<Scalars['Decimal']>;
+  /** Other item attributes. */
+  attributes?: InputMaybe<Array<ZonosItemAttributeInput>>;
+  /** The marketing name associated with an item. */
+  brand?: InputMaybe<Scalars['String']>;
+  /** Catalog items that are referenced by this CatalogItem */
+  catalogItemReferences?: InputMaybe<Array<ZonosCatalogItemReferenceInput>>;
+  /** The `CatalogItem` page url. */
+  catalogItemUrl?: InputMaybe<Scalars['String']>;
+  /** The classificationId if an catalogItem was created through classification */
+  classification?: InputMaybe<Scalars['ID']>;
+  /** Where a `CatalogItem` is created. */
+  countryOfOrigin?: InputMaybe<ZonosCountryCode>;
+  /** The currency that the amount of this `CatalogItem` is in. */
+  currencyCode?: InputMaybe<ZonosCurrencyCode>;
+  /** The description of the item for customs */
+  customsDescription?: InputMaybe<Scalars['String']>;
+  /** The primary description of a `CatalogItem`. */
+  description?: InputMaybe<Scalars['String']>;
+  /** Allows user to remove items from duties, taxes, or fee calculations */
+  dutyTaxFeeConfiguration?: InputMaybe<ZonosDutyTaxFeeConfiguration>;
+  /** The default hsCode for the product */
+  hsCode?: InputMaybe<Scalars['String']>;
+  /** When providing a country-specific HS code the ship-to country is needed. @deprecated use `CatalogItemHsCodeInput` instead */
+  hsCodeShipToCountry?: InputMaybe<ZonosCountryCode>;
+  /** The url of an image. */
+  imageUrl?: InputMaybe<Scalars['String']>;
+  /** Determines whether or not an item can be physically shipped. */
+  itemType?: InputMaybe<ZonosItemType>;
+  /** The `CatalogItem` material composition. */
+  material?: InputMaybe<Scalars['String']>;
+  /** A `CatalogItem` physical measurements. */
+  measurements?: InputMaybe<Array<ZonosItemMeasurementInput>>;
+  /** Other `CatalogItem` details ie: vendor_id. */
+  metadata?: InputMaybe<Array<ZonosItemMetadataInput>>;
+  /** The name of a `CatalogItem`. */
+  name?: InputMaybe<Scalars['String']>;
+  /** How to pack the `CatalogItem` for shipment. */
+  packingPreference?: InputMaybe<ZonosPackingPreference>;
+  /** Product ID of this `CatalogItem`. */
+  productId?: InputMaybe<Scalars['String']>;
+  /** Optional administrative area where this `CatalogItem` originates. Required by some countries. */
+  provinceOfOrigin?: InputMaybe<Scalars['String']>;
+  /** A list of restricted country code */
+  restrictedCountries?: InputMaybe<Array<ZonosCountryCode>>;
+  /** SKU of this `CatalogItem`. */
+  sku?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosCatalogItemUpdateMethod =
+  /** ALL: Updates all fields of the catalog item based on the input provided. This method sets fields to null if null values are provided in the input, ensuring the catalog item exactly mirrors the input. */
+  | 'ALL'
+  /** NON_NULL: Updates existing catalog item fields with non-null values provided in the input. Fields in the input that are null are ignored, and corresponding existing fields are not modified. */
+  | 'NON_NULL';
+
 export type ZonosCatalogSetting = {
   __typename?: 'CatalogSetting';
   /** The date and time the `CatalogSetting` was created. */
@@ -1278,7 +1453,10 @@ export type ZonosCatalogSetting = {
   createdBy: Scalars['ID'];
   /** The id of the `CatalogSetting`. */
   id: Scalars['ID'];
-  /** determines whether inclusive price is active */
+  /**
+   * determines whether inclusive price is active
+   * @deprecated No longer supported
+   */
   inclusivePriceStatus: Maybe<ZonosInclusivePriceStatus>;
   /** The unique key preference for finding a `CatalogItem`. */
   itemKeyPreference: ZonosItemKeyPreference;
@@ -1305,9 +1483,23 @@ export type ZonosCatalogSettingCreateInput = {
   status: ZonosCatalogStatus;
 };
 
+export type ZonosCatalogSettingMigrateResponse = {
+  __typename?: 'CatalogSettingMigrateResponse';
+  catalogSetting: ZonosCatalogSetting;
+  itemKeyPreferenceResult: ZonosItemKeyPreference;
+};
+
+export type ZonosCatalogSettingMigrationAction =
+  | 'EVALUATE'
+  | 'MIGRATE';
+
+export type ZonosCatalogSettingMigrationInput = {
+  /** The action to perform */
+  action: ZonosCatalogSettingMigrationAction;
+  organizationId: Scalars['ID'];
+};
+
 export type ZonosCatalogSettingUpdateInput = {
-  /** The inclusive price status. */
-  inclusivePriceStatus?: InputMaybe<ZonosInclusivePriceStatus>;
   /** The unique key preference for finding a `CatalogItem`. */
   itemKeyPreference?: InputMaybe<ZonosItemKeyPreference>;
   /** The native currency for an organization. */
@@ -1376,12 +1568,61 @@ export type ZonosClassificationAlternate = {
   tariffAlternates: Array<ZonosHsCode>;
 };
 
+export type ZonosClassificationBulkExportJob = {
+  __typename?: 'ClassificationBulkExportJob';
+  /** Creation date of the job. */
+  createdAt: Scalars['DateTime'];
+  /** ID of the user who created the job. */
+  createdBy: Scalars['ID'];
+  /** The url where the csv has been uploaded to */
+  exportUrl: Scalars['String'];
+  /** Unique identifier of the job. */
+  id: Scalars['ID'];
+  /** ID of the associated organization. */
+  organizationId: Scalars['ID'];
+  /** Count of processed items in the job. */
+  processedCount: Scalars['Int'];
+  /** Current status of the job. */
+  status: ZonosClassificationBulkExportJobStatus;
+  /** Total count of items to process in the job. */
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosClassificationBulkExportJobConnection = {
+  __typename?: 'ClassificationBulkExportJobConnection';
+  edges: Array<ZonosClassificationBulkExportJobEdge>;
+  pageInfo: ZonosPageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosClassificationBulkExportJobEdge = {
+  __typename?: 'ClassificationBulkExportJobEdge';
+  cursor: Scalars['String'];
+  node: ZonosClassificationBulkExportJob;
+};
+
+export type ZonosClassificationBulkExportJobStatus =
+  | 'COMPLETED'
+  | 'ERROR'
+  | 'INITIALIZED'
+  | 'PROCESSING';
+
+export type ZonosClassificationBulkExportJobsFilter = {
+  /** Current status of the Bulk Export Job */
+  status?: InputMaybe<ZonosClassificationBulkExportJobStatus>;
+};
+
 export type ZonosClassificationBulkJob = {
   __typename?: 'ClassificationBulkJob';
   /** The classifications associated with a bulk job */
   classifications: Maybe<ZonosClassificationConnection>;
   /** The list of Country Codes where we will make classifications */
   classifyToCountries: Array<ZonosCountryCode>;
+  /**
+   * The confidence score for each classification to be returned
+   * @deprecated No longer supported
+   */
+  confidenceScoreDisplayStatus: Maybe<ZonosConfidenceScoreDisplayStatus>;
   /** When this `Bulk Classification` was created. */
   createdAt: Scalars['DateTime'];
   /** The user who created the Bulk Classification. */
@@ -1435,6 +1676,15 @@ export type ZonosClassificationBulkJobEdge = {
   node: Maybe<ZonosClassificationBulkJob>;
 };
 
+export type ZonosClassificationBulkJobExportCreateInput = {
+  confidenceScoreDisplayStatus?: InputMaybe<ZonosConfidenceScoreDisplayStatus>;
+  id: Scalars['ID'];
+};
+
+export type ZonosClassificationBulkJobExportInput = {
+  confidenceScoreDisplayStatus?: InputMaybe<ZonosConfidenceScoreDisplayStatus>;
+};
+
 export type ZonosClassificationBulkJobStatus =
   | 'CLASSIFIED'
   | 'COMPLETED'
@@ -1481,13 +1731,25 @@ export type ZonosClassificationCalculateInput = {
   productId?: InputMaybe<Scalars['String']>;
 };
 
+export type ZonosClassificationCalculateOrigin =
+  /** Get all classifications this is the default. */
+  | 'ALL'
+  /** The classification was created by a batch request. */
+  | 'BULK'
+  /** The classification was created by an individual request. */
+  | 'SINGLE';
+
 export type ZonosClassificationCalculateSource =
-  /** The  requesting source of the classification is external. */
+  /** The bulk method of the classification of the external source. */
+  | 'BULK'
+  /** The requesting source of the classification is external. */
   | 'EXTERNAL'
   /** The requesting source of the classification is internal. */
   | 'INTERNAL'
   /** The requesting source of the classification is legacy. */
-  | 'LEGACY';
+  | 'LEGACY'
+  /** The single method of the classification of the external source. */
+  | 'SINGLE';
 
 export type ZonosClassificationConfiguration = {
   __typename?: 'ClassificationConfiguration';
@@ -1499,6 +1761,8 @@ export type ZonosClassificationConfiguration = {
   hsCodeProvidedTreatment: Maybe<ZonosHsCodeProvidedTreatment>;
   /** The unique key identifying the item to be classified. */
   itemKey: Maybe<Scalars['String']>;
+  /** The product profile for an organization, this profile will help us to understand what types of goods a merchant specializes in. */
+  marketProfile: Maybe<Scalars['String']>;
   /** The product id provided at time of classification input */
   productId: Maybe<Scalars['String']>;
   /** The ship to countries for this `Classification`. */
@@ -1516,6 +1780,8 @@ export type ZonosClassificationConfigurationInput = {
   hsCodeType?: InputMaybe<ZonosHsCodeType>;
   /** The unique key identifying the item to be classified. */
   itemKey?: InputMaybe<Scalars['String']>;
+  /** The product profile for an organization, this profile will help us to understand what types of goods a merchant specializes in. */
+  marketProfile?: InputMaybe<Scalars['String']>;
   /** A user provided Id to link the the classification output */
   productId?: InputMaybe<Scalars['String']>;
   /** The ship to countries for this `Classification`. */
@@ -1552,6 +1818,8 @@ export type ZonosClassificationFilter = {
   productId?: InputMaybe<Scalars['String']>;
   /** Filter results by CountryCode */
   shipToCountry?: InputMaybe<ZonosCountryCode>;
+  /** Filter by classification job origin */
+  source?: InputMaybe<ZonosClassificationCalculateOrigin>;
 };
 
 export type ZonosClassificationJobLink = {
@@ -1560,14 +1828,57 @@ export type ZonosClassificationJobLink = {
   classification: ZonosClassification;
 };
 
+export type ZonosClassificationMarketProfileCalculateInput = {
+  /** The organization id to create the market profile for. */
+  organizationId: Scalars['String'];
+  /** The url of the organizations website. */
+  url: Scalars['String'];
+};
+
+export type ZonosClassificationMethod =
+  /** The classification was created by a batch request. */
+  | 'AUGMENTED'
+  /** The classification was created by an individual request. */
+  | 'CALCULATED';
+
 export type ZonosClassificationRequestField =
   | 'CATEGORY'
   | 'DESCRIPTION'
   | 'NAME';
 
+export type ZonosClassificationSetting = {
+  __typename?: 'ClassificationSetting';
+  /** The date and time when the setting was created. */
+  createdAt: Scalars['DateTime'];
+  /** The ID of the user who created the setting. */
+  createdBy: Scalars['ID'];
+  /** The unique identifier of the ManualClassificationSetting. */
+  id: Scalars['ID'];
+  /** The product profile for an organization, this profile will help us to understand what types of goods a merchant specializes in. */
+  marketProfile: Scalars['String'];
+  /** The ID of the organization this setting applies to. */
+  organizationId: Scalars['ID'];
+  /** The date and time when the setting was last updated. */
+  updatedAt: Scalars['DateTime'];
+  /** The ID of the user who last updated the setting. */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosClassificationSettingCreateInput = {
+  /** The product profile for an organization, this profile will help us to understand what types of goods a merchant specializes in. */
+  marketProfile: Scalars['String'];
+};
+
+export type ZonosClassificationSettingUpdateInput = {
+  /** The product profile for an organization, this profile will help us to understand what types of goods a merchant specializes in. */
+  marketProfile: Scalars['String'];
+};
+
 export type ZonosClassificationStageUploadInput = {
   /** The list of Country Codes where we will make classifications */
   classifyToCountries?: InputMaybe<Array<ZonosCountryCode>>;
+  /** The confidence score for each classification to be returned */
+  confidenceScoreDisplayStatus?: InputMaybe<ZonosConfidenceScoreDisplayStatus>;
   /** The fileName of the Bulk Job */
   fileName?: InputMaybe<Scalars['String']>;
 };
@@ -1819,6 +2130,8 @@ export type ZonosCollectInvoiceStatusTransition = {
   __typename?: 'CollectInvoiceStatusTransition';
   /** When this status transition was created. */
   createdAt: Scalars['DateTime'];
+  /** Who updated the status */
+  createdBy: Scalars['ID'];
   /** Any additional information required for this status transition. */
   note: Maybe<Scalars['String']>;
   /** The status of this status transition. */
@@ -1902,7 +2215,7 @@ export type ZonosCollectSubmissionFileInfoInput = {
 };
 
 export type ZonosCollectSubmissionFilter = {
-  /** The minimum and maximum value of the  amounts to search for `CollectSubmission`s. */
+  /** The minimum and maximum value of the amounts to search for `CollectSubmission`s. */
   amountBetween?: InputMaybe<ZonosAmountRange>;
   /** Represents a range of dates, before, or after the creation date */
   createdAtBetween?: InputMaybe<ZonosDateTimeRange>;
@@ -2079,10 +2392,11 @@ export type ZonosCollectUploadStatus =
   | 'SUCCEEDED'
   | 'SUCCEEDED_WITH_ERRORS';
 
-/**
- * A constraint is an object that is required when applying a `countryConstraint` to a `serviceLevel`.
- * These constraints are typically based on price, quantity, volume, or weight.
- */
+export type ZonosConfidenceScoreDisplayStatus =
+  | 'DISABLED'
+  | 'ENABLED';
+
+/** A constraint is an object that is required when applying a `countryConstraint` to a `serviceLevel`. These constraints are typically based on price, quantity, volume, or weight. */
 export type ZonosConstraint = {
   __typename?: 'Constraint';
   /** When this Constraint was created. */
@@ -2761,10 +3075,7 @@ export type ZonosCountryCode =
   | 'ZM'
   | 'ZW';
 
-/**
- * A `CountryConstraint` can be assigned to a `ServiceLevel` to limit countries that are supported by a given `ServiceLevel`.
- * These can also be used to limit shipments supported by the `serviceLevel` and origin/destination based on value, weight, quantity, or volume of given items in a shipment.
- */
+/** A `CountryConstraint` can be assigned to a `ServiceLevel` to limit countries that are supported by a given `ServiceLevel`. These can also be used to limit shipments supported by the `serviceLevel` and origin/destination based on value, weight, quantity, or volume of given items in a shipment. */
 export type ZonosCountryConstraint = {
   __typename?: 'CountryConstraint';
   /** Represents a constraint around a specific attribute that applies to all countries. */
@@ -2791,6 +3102,95 @@ export type ZonosCountryConstraint = {
   updatedBy: Scalars['ID'];
   /** The `WeightUnitCode` required by the CountryConstraint. */
   weightUnit: Maybe<ZonosWeightUnitCode>;
+};
+
+export type ZonosCountryFieldLabel = {
+  __typename?: 'CountryFieldLabel';
+  /** The country code */
+  countryCode: ZonosCountryCode;
+  /** The field labels for the location */
+  location: ZonosCountryLocationFieldLabel;
+  /** The field labels for the person */
+  person: ZonosCountryPersonFieldLabel;
+};
+
+export type ZonosCountryFieldLabelCreateInput = {
+  /** The country code */
+  countryCode: ZonosCountryCode;
+  /** The field labels for the location */
+  location: ZonosCountryLocationFieldLabelCreateInput;
+  /** The field labels for the person */
+  person: ZonosCountryPersonFieldLabelCreateInput;
+};
+
+export type ZonosCountryLocationFieldLabel = {
+  __typename?: 'CountryLocationFieldLabel';
+  /** The administrative area field label */
+  administrativeArea: ZonosFieldFormat;
+  /** The administrative area code field label */
+  administrativeAreaCode: ZonosFieldFormat;
+  /** The country code field label */
+  countryCode: ZonosFieldFormat;
+  /** The first line field label */
+  line1: ZonosFieldFormat;
+  /** The second line field label */
+  line2: ZonosFieldFormat;
+  /** The third line field label */
+  line3: ZonosFieldFormat;
+  /** The fourth line field label */
+  line4: ZonosFieldFormat;
+  /** The locality field label */
+  locality: ZonosFieldFormat;
+  /** The postal code field label */
+  postalCode: ZonosFieldFormat;
+};
+
+export type ZonosCountryLocationFieldLabelCreateInput = {
+  /** The administrative area field label */
+  administrativeArea: ZonosFieldFormatCreateInput;
+  /** The administrative area code field label */
+  administrativeAreaCode: ZonosFieldFormatCreateInput;
+  /** The country code field label */
+  countryCode: ZonosFieldFormatCreateInput;
+  /** The first line field label */
+  line1: ZonosFieldFormatCreateInput;
+  /** The second line field label */
+  line2: ZonosFieldFormatCreateInput;
+  /** The third line field label */
+  line3: ZonosFieldFormatCreateInput;
+  /** The fourth line field label */
+  line4: ZonosFieldFormatCreateInput;
+  /** The locality field label */
+  locality: ZonosFieldFormatCreateInput;
+  /** The postal code field label */
+  postalCode: ZonosFieldFormatCreateInput;
+};
+
+export type ZonosCountryPersonFieldLabel = {
+  __typename?: 'CountryPersonFieldLabel';
+  /** The company name field label */
+  companyName: ZonosFieldFormat;
+  /** The email field label */
+  email: ZonosFieldFormat;
+  /** The first name field label */
+  firstName: ZonosFieldFormat;
+  /** The last name field label */
+  lastName: ZonosFieldFormat;
+  /** The phone field label */
+  phone: ZonosFieldFormat;
+};
+
+export type ZonosCountryPersonFieldLabelCreateInput = {
+  /** The company name field label */
+  companyName: ZonosFieldFormatCreateInput;
+  /** The email field label */
+  email: ZonosFieldFormatCreateInput;
+  /** The first name field label */
+  firstName: ZonosFieldFormatCreateInput;
+  /** The last name field label */
+  lastName: ZonosFieldFormatCreateInput;
+  /** The phone field label */
+  phone: ZonosFieldFormatCreateInput;
 };
 
 export type ZonosCreateCartonInput = {
@@ -2866,25 +3266,6 @@ export type ZonosCreateLocationInput = {
   propertyType?: InputMaybe<ZonosPropertyType>;
 };
 
-export type ZonosCreatePackagingOptionInput = {
-  /** The measurement units of the height, length and width */
-  dimensionalUnit: ZonosDimensionalUnitCode;
-  /** The numeric height of the `packagingOption` */
-  height: Scalars['Decimal'];
-  /** The numeric length of the `packagingOption` */
-  length: Scalars['Decimal'];
-  /** A memorable name for the package option. If one is not provided it will be named based on the length X width X height (ie. 10x8x4) */
-  name?: InputMaybe<Scalars['String']>;
-  /** The packaging style (box, polybag, letter, etc) */
-  type: ZonosPackagingType;
-  /** The weight capacity of the `packagingOption` */
-  weightCapacity: Scalars['Decimal'];
-  /** The type of weight associated with the `packagingOption` */
-  weightUnit: ZonosWeightUnitCode;
-  /** The numeric width of the `packagingOption` */
-  width: Scalars['Decimal'];
-};
-
 export type ZonosCreatePartyInput = {
   location?: InputMaybe<ZonosCreateLocationInput>;
   person?: InputMaybe<ZonosCreatePersonInput>;
@@ -2899,8 +3280,14 @@ export type ZonosCreatePaymentsSettingsInput = {
   endOfDayBehavior: ZonosEndOfDayBehavior;
   /** How often payouts occur, in days. */
   frequencyDays: Scalars['Int'];
+  /** Specifies which system to use for billing Lcg Fees */
+  lcgBillingMethod: ZonosLcgBillingMethod;
   /** The minimum balance required to trigger a payout, in USD. */
   minimum: Scalars['Int'];
+  /** Specifies which system to use for billing order complete fees */
+  orderCompleteBillingMethod: ZonosOrderCompleteBillingMethod;
+  /** Specifies which system to use for billing order transaction fees */
+  orderTransactionBillingMethod: ZonosOrderTransactionBillingMethod;
 };
 
 export type ZonosCreatePersonInput = {
@@ -2913,7 +3300,10 @@ export type ZonosCreatePersonInput = {
 };
 
 export type ZonosCreateShippingSettingsInput = {
+  /** A rough estimate of item weight when calculating shipping, if no per-item weights are provided. */
   defaultWeightMultiplier: Scalars['Decimal'];
+  /** ID of the `Preferred Packaging Option` for this `Organization`. */
+  preferredPackagingOptionId?: InputMaybe<Scalars['ID']>;
 };
 
 /** Options for where the credentials are stored. */
@@ -3116,6 +3506,37 @@ export type ZonosCurrencySymbolLocation =
   /** display before the currency amount */
   | 'BEFORE';
 
+export type ZonosCustomDeclarationInput = {
+  /** The custom declaration text to be used when creating labels */
+  customDeclarationStatement?: InputMaybe<Scalars['String']>;
+  /** The Id of the custom declaration */
+  id?: InputMaybe<Scalars['ID']>;
+  /** The origin country code for which the declaration applies */
+  shipFromCountry?: InputMaybe<Array<ZonosCountryCode>>;
+  /** The destination country code(s) for which the declaration applies */
+  shipToCountry?: InputMaybe<Array<ZonosCountryCode>>;
+};
+
+export type ZonosCustomDeclarationStatement = {
+  __typename?: 'CustomDeclarationStatement';
+  /** The custom declaration text to be used when creating labels */
+  createdAt: Scalars['DateTime'];
+  /** The user who created the custom declaration */
+  createdBy: Scalars['ID'];
+  /** The custom declaration text to be used when creating labels */
+  customDeclarationStatement: Scalars['String'];
+  /** The Id of the custom declaration */
+  id: Scalars['ID'];
+  /** The origin country code(s) for which the declaration applies */
+  shipFromCountry: Array<ZonosCountryCode>;
+  /** The distination country code(s) for which the declaration applies */
+  shipToCountry: Array<ZonosCountryCode>;
+  /** The timestamp when the custom declaration was updated */
+  updatedAt: Scalars['DateTime'];
+  /** The user who updated the custom declaration */
+  updatedBy: Scalars['ID'];
+};
+
 export type ZonosCustomerInvoiceFile = {
   __typename?: 'CustomerInvoiceFile';
   fileUrl: Scalars['String'];
@@ -3137,6 +3558,7 @@ export type ZonosCustomsDescription = {
   hsCode: Scalars['String'];
   id: Scalars['String'];
   imageUrl: Maybe<Scalars['String']>;
+  itemId: Maybe<Scalars['String']>;
   material: Maybe<Scalars['String']>;
   mode: ZonosMode;
   name: Scalars['String'];
@@ -3145,12 +3567,41 @@ export type ZonosCustomsDescription = {
   updatedBy: Maybe<Scalars['String']>;
 };
 
+export type ZonosCustomsDescriptionCombineAndCreateInput = {
+  /** The items on the shipment. */
+  items: Array<ZonosCustomsDescriptionCombineAndCreateItemInput>;
+  /** The ship to countries for this shipment. */
+  shipToCountry?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosCustomsDescriptionCombineAndCreateItemInput = {
+  /** The category hierarchy associated with an item for classification. */
+  categories?: InputMaybe<Array<Scalars['String']>>;
+  /** This is the full description associated with an item. */
+  description?: InputMaybe<Scalars['String']>;
+  /** This is the hsCode to be used on the commercial invoice. */
+  hsCode: Scalars['String'];
+  /** The location of an image related to an item. */
+  imageUrl?: InputMaybe<Scalars['String']>;
+  /** The items physical age */
+  itemAge?: InputMaybe<Scalars['String']>;
+  /** The id of the item. */
+  itemId?: InputMaybe<Scalars['String']>;
+  /** The material composition of an item for classification. */
+  material?: InputMaybe<Scalars['String']>;
+  /** The product name or short description. */
+  name: Scalars['String'];
+  /** The product id provided at time of classification input */
+  productId?: InputMaybe<Scalars['String']>;
+};
+
 export type ZonosCustomsDescriptionsCreateInput = {
   categories?: InputMaybe<Array<Scalars['String']>>;
   description?: InputMaybe<Scalars['String']>;
   hsCodeProvided?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['String']>;
   itemAge?: InputMaybe<Scalars['String']>;
+  itemId?: InputMaybe<Scalars['String']>;
   material?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   productId?: InputMaybe<Scalars['String']>;
@@ -3162,6 +3613,10 @@ export type ZonosCustomsDocument = {
   createdAt: Scalars['DateTime'];
   /** The type of CustomsDocument i.e. CERTIFICATE_OF_ORIGIN, COMMERCIAL_INVOICE */
   documentType: ZonosCustomsDocumentType;
+  /** External ID of the CustomsDocument. Only applicable if this document was uploaded to a carrier. */
+  externalId: Maybe<Scalars['String']>;
+  /** Name of the file */
+  fileName: Maybe<Scalars['String']>;
   /** Indicates the file type of the CustomsDocument i.e. PDF, TXT */
   fileType: ZonosCustomsDocumentFileType;
   /** The URL of where the CustomsDocument file is stored */
@@ -3169,6 +3624,11 @@ export type ZonosCustomsDocument = {
   /** A unique ID associated with the CustomsDocument */
   id: Scalars['ID'];
 };
+
+export type ZonosCustomsDocumentCarrier =
+  | 'DHL'
+  | 'FEDEX'
+  | 'UPS';
 
 export type ZonosCustomsDocumentConnection = {
   __typename?: 'CustomsDocumentConnection';
@@ -3201,7 +3661,9 @@ export type ZonosCustomsDocumentEdge = {
 };
 
 export type ZonosCustomsDocumentFileType =
+  | 'JPG'
   | 'PDF'
+  | 'PNG'
   | 'TXT';
 
 export type ZonosCustomsDocumentFilter = {
@@ -3510,6 +3972,19 @@ export type ZonosDeMinimis = {
   type: ZonosDeMinimisType;
 };
 
+export type ZonosDeMinimisInput = {
+  /** Human-readable formula indicating how this `DeMinimis` was calculated. */
+  formula: Scalars['String'];
+  /** INCOTERM used to assess the `DeMinimis` value. */
+  method: ZonosIncotermCode;
+  /** Human-readable description of the `DeMinimis`. */
+  note: Scalars['String'];
+  /** Whether the `DeMimimis` is above or below the threshold. */
+  threshold: ZonosDeMinimisThreshold;
+  /** What this `DeMinimis` applies to. */
+  type: ZonosDeMinimisType;
+};
+
 export type ZonosDeMinimisThreshold =
   /** De minimis was above threshold */
   | 'ABOVE'
@@ -3526,31 +4001,31 @@ export type ZonosDeMinimisType =
 
 export type ZonosDeleteJob = {
   __typename?: 'DeleteJob';
-  /**  Creation date of the job.  */
+  /** Creation date of the job. */
   createdAt: Scalars['DateTime'];
-  /**  ID of the user who created the job.  */
+  /** ID of the user who created the job. */
   createdBy: Scalars['ID'];
-  /**  Unique identifier of the delete job.  */
+  /** Unique identifier of the delete job. */
   id: Scalars['String'];
-  /**  ID of the associated organization.  */
+  /** ID of the associated organization. */
   organization: Scalars['ID'];
-  /**  Count of catalog items that have been deleted.  */
+  /** Count of catalog items that have been deleted. */
   processedCount: Scalars['Int'];
-  /**  Current status of the job.  */
+  /** Current status of the job. */
   status: ZonosDeleteJobStatus;
-  /**  Total count of catalog items that will be deleted.  */
+  /** Total count of catalog items that will be deleted. */
   totalCount: Scalars['Int'];
-  /**  Last update date of the job.  */
+  /** Last update date of the job. */
   updatedAt: Scalars['DateTime'];
-  /**  ID of the user who last updated the job.  */
+  /** ID of the user who last updated the job. */
   updatedBy: Scalars['ID'];
 };
 
 export type ZonosDeleteJobEdge = {
   __typename?: 'DeleteJobEdge';
-  /**  Cursor for pagination.  */
+  /** Cursor for pagination. */
   cursor: Scalars['String'];
-  /**  The delete job at the end of the edge.  */
+  /** The delete job at the end of the edge. */
   node: ZonosDeleteJob;
 };
 
@@ -3562,16 +4037,16 @@ export type ZonosDeleteJobStatus =
 
 export type ZonosDeleteJobsConnection = {
   __typename?: 'DeleteJobsConnection';
-  /**  A list of delete job edges.  */
+  /** A list of delete job edges. */
   edges: Array<ZonosDeleteJobEdge>;
-  /**  Information for pagination.  */
+  /** Information for pagination. */
   pageInfo: Maybe<ZonosPageInfo>;
-  /**  Total count of delete jobs.  */
+  /** Total count of delete jobs. */
   totalCount: Scalars['Int'];
 };
 
 export type ZonosDeleteJobsFilter = {
-  /**  Filters delete jobs by their status.  */
+  /** Filters delete jobs by their status. */
   status?: InputMaybe<ZonosDeleteJobStatus>;
 };
 
@@ -3606,8 +4081,11 @@ export type ZonosDeniedParty = {
   startsAt: Maybe<Scalars['DateTime']>;
 };
 
+/** The suggested action to take when a party match is found. */
 export type ZonosDeniedPartyAction =
+  /** No action is required as there were no matches found on the party screening. */
   | 'NO_MATCHES'
+  /** The `PartyScreening`.`matches` should be reviewed to see the potential denied party matches. */
   | 'REVIEW';
 
 /** DeniedParty Connection */
@@ -3616,7 +4094,7 @@ export type ZonosDeniedPartyConnection = {
   /** Field edges */
   edges: Maybe<Array<Maybe<ZonosDeniedPartyEdge>>>;
   /** Field pageInfo */
-  pageInfo: Maybe<ZonosPageInfo>;
+  pageInfo: ZonosPageInfo;
 };
 
 /** DeniedParty Edge */
@@ -3720,6 +4198,31 @@ export type ZonosDuty = {
   type: ZonosLandedCostFeeType;
 };
 
+export type ZonosDutyInput = {
+  /** `Duty` price amount. */
+  amount: Scalars['Decimal'];
+  /** Currency the `Duty` amount is in. '@deprecated' use currencyCode instead. */
+  currency?: InputMaybe<ZonosCurrencyCode>;
+  /** Currency the `Duty` amount is in. */
+  currencyCode?: InputMaybe<ZonosCurrencyCode>;
+  /** Human-readable description of this `Duty`. */
+  description?: InputMaybe<Scalars['String']>;
+  /** Exchange rate information for foreign currency `Duty` amounts. */
+  exchangeRate?: InputMaybe<Scalars['ID']>;
+  /** Human-readable formula indicating how this `Duty` was calculated. */
+  formula: Scalars['String'];
+  /** `Item` this `Duty` amount applies to. */
+  item?: InputMaybe<Scalars['ID']>;
+  /** Additional note for this `Duty`. */
+  note?: InputMaybe<Scalars['String']>;
+  /** `Party` responsible for receiving payment on this `Duty` amount. */
+  payee?: InputMaybe<Scalars['ID']>;
+  /** `Party` responsible for rendering payment on this `Duty` amount. */
+  payor?: InputMaybe<Scalars['ID']>;
+  /** Type of `Duty`. */
+  type?: InputMaybe<ZonosLandedCostFeeType>;
+};
+
 export type ZonosDutyRate = {
   __typename?: 'DutyRate';
   items: Array<ZonosDutyRateItem>;
@@ -3763,6 +4266,10 @@ export type ZonosDutyTaxFeeConfiguration =
   | 'INCLUDE_ALL'
   | 'INCLUDE_TAX';
 
+export type ZonosDynamicPackagingStatus =
+  | 'DISABLED'
+  | 'ENABLED';
+
 /** Determines the base visual style for an AppearanceSettings object. */
 export type ZonosElementsUiStyle =
   | 'ROUNDED'
@@ -3779,240 +4286,47 @@ export type ZonosEndOfDayBehavior =
   | 'REQUIRED';
 
 export type ZonosErrorDetail =
-  /**
-   * The deadline expired before the operation could complete.
-   *
-   * For operations that change the state of the system, this error
-   * may be returned even if the operation has completed successfully.
-   * For example, a successful response from a server could have been
-   * delayed long enough for the deadline to expire.
-   *
-   * HTTP Mapping: 504 Gateway Timeout
-   * Error Type: UNAVAILABLE
-   */
+  /** The deadline expired before the operation could complete. For operations that change the state of the system, this error may be returned even if the operation has completed successfully. For example, a successful response from a server could have been delayed long enough for the deadline to expire. HTTP Mapping: 504 Gateway Timeout Error Type: UNAVAILABLE */
   | 'DEADLINE_EXCEEDED'
-  /**
-   * The server detected that the client is exhibiting a behavior that
-   * might be generating excessive load.
-   *
-   * HTTP Mapping: 429 Too Many Requests or 420 Enhance Your Calm
-   * Error Type: UNAVAILABLE
-   */
+  /** The server detected that the client is exhibiting a behavior that might be generating excessive load. HTTP Mapping: 429 Too Many Requests or 420 Enhance Your Calm Error Type: UNAVAILABLE */
   | 'ENHANCE_YOUR_CALM'
-  /**
-   * The requested field is not found in the schema.
-   *
-   * This differs from `NOT_FOUND` in that `NOT_FOUND` should be used when a
-   * query is valid, but is unable to return a result (if, for example, a
-   * specific video id doesn't exist). `FIELD_NOT_FOUND` is intended to be
-   * returned by the server to signify that the requested field is not known to exist.
-   * This may be returned in lieu of failing the entire query.
-   * See also `PERMISSION_DENIED` for cases where the
-   * requested field is invalid only for the given user or class of users.
-   *
-   * HTTP Mapping: 404 Not Found
-   * Error Type: BAD_REQUEST
-   */
+  /** The requested field is not found in the schema. This differs from `NOT_FOUND` in that `NOT_FOUND` should be used when a query is valid, but is unable to return a result (if, for example, a specific video id doesn't exist). `FIELD_NOT_FOUND` is intended to be returned by the server to signify that the requested field is not known to exist. This may be returned in lieu of failing the entire query. See also `PERMISSION_DENIED` for cases where the requested field is invalid only for the given user or class of users. HTTP Mapping: 404 Not Found Error Type: BAD_REQUEST */
   | 'FIELD_NOT_FOUND'
-  /**
-   * The client specified an invalid argument.
-   *
-   * Note that this differs from `FAILED_PRECONDITION`.
-   * `INVALID_ARGUMENT` indicates arguments that are problematic
-   * regardless of the state of the system (e.g., a malformed file name).
-   *
-   * HTTP Mapping: 400 Bad Request
-   * Error Type: BAD_REQUEST
-   */
+  /** The client specified an invalid argument. Note that this differs from `FAILED_PRECONDITION`. `INVALID_ARGUMENT` indicates arguments that are problematic regardless of the state of the system (e.g., a malformed file name). HTTP Mapping: 400 Bad Request Error Type: BAD_REQUEST */
   | 'INVALID_ARGUMENT'
-  /**
-   * The provided cursor is not valid.
-   *
-   * The most common usage for this error is when a client is paginating
-   * through a list that uses stateful cursors. In that case, the provided
-   * cursor may be expired.
-   *
-   * HTTP Mapping: 404 Not Found
-   * Error Type: NOT_FOUND
-   */
+  /** The provided cursor is not valid. The most common usage for this error is when a client is paginating through a list that uses stateful cursors. In that case, the provided cursor may be expired. HTTP Mapping: 404 Not Found Error Type: NOT_FOUND */
   | 'INVALID_CURSOR'
-  /**
-   * Unable to perform operation because a required resource is missing.
-   *
-   * Example: Client is attempting to refresh a list, but the specified
-   * list is expired. This requires an action by the client to get a new list.
-   *
-   * If the user is simply trying GET a resource that is not found,
-   * use the NOT_FOUND error type. FAILED_PRECONDITION.MISSING_RESOURCE
-   * is to be used particularly when the user is performing an operation
-   * that requires a particular resource to exist.
-   *
-   * HTTP Mapping: 400 Bad Request or 500 Internal Server Error
-   * Error Type: FAILED_PRECONDITION
-   */
+  /** Unable to perform operation because a required resource is missing. Example: Client is attempting to refresh a list, but the specified list is expired. This requires an action by the client to get a new list. If the user is simply trying GET a resource that is not found, use the NOT_FOUND error type. FAILED_PRECONDITION.MISSING_RESOURCE is to be used particularly when the user is performing an operation that requires a particular resource to exist. HTTP Mapping: 400 Bad Request or 500 Internal Server Error Error Type: FAILED_PRECONDITION */
   | 'MISSING_RESOURCE'
-  /**
-   * Service Error.
-   *
-   * There is a problem with an upstream service.
-   *
-   * This may be returned if a gateway receives an unknown error from a service
-   * or if a service is unreachable.
-   * If a request times out which waiting on a response from a service,
-   * `DEADLINE_EXCEEDED` may be returned instead.
-   * If a service returns a more specific error Type, the specific error Type may
-   * be returned instead.
-   *
-   * HTTP Mapping: 502 Bad Gateway
-   * Error Type: UNAVAILABLE
-   */
+  /** Service Error. There is a problem with an upstream service. This may be returned if a gateway receives an unknown error from a service or if a service is unreachable. If a request times out which waiting on a response from a service, `DEADLINE_EXCEEDED` may be returned instead. If a service returns a more specific error Type, the specific error Type may be returned instead. HTTP Mapping: 502 Bad Gateway Error Type: UNAVAILABLE */
   | 'SERVICE_ERROR'
-  /**
-   * Request failed due to network errors.
-   *
-   * HTTP Mapping: 503 Unavailable
-   * Error Type: UNAVAILABLE
-   */
+  /** Request failed due to network errors. HTTP Mapping: 503 Unavailable Error Type: UNAVAILABLE */
   | 'TCP_FAILURE'
-  /**
-   * Request throttled based on server concurrency limits.
-   *
-   * HTTP Mapping: 503 Unavailable
-   * Error Type: UNAVAILABLE
-   */
+  /** Request throttled based on server concurrency limits. HTTP Mapping: 503 Unavailable Error Type: UNAVAILABLE */
   | 'THROTTLED_CONCURRENCY'
-  /**
-   * Request throttled based on server CPU limits
-   *
-   * HTTP Mapping: 503 Unavailable.
-   * Error Type: UNAVAILABLE
-   */
+  /** Request throttled based on server CPU limits HTTP Mapping: 503 Unavailable. Error Type: UNAVAILABLE */
   | 'THROTTLED_CPU'
-  /**
-   * The operation is not implemented or is not currently supported/enabled.
-   *
-   * HTTP Mapping: 501 Not Implemented
-   * Error Type: BAD_REQUEST
-   */
+  /** The operation is not implemented or is not currently supported/enabled. HTTP Mapping: 501 Not Implemented Error Type: BAD_REQUEST */
   | 'UNIMPLEMENTED'
-  /**
-   * Unknown error.
-   *
-   * This error should only be returned when no other error detail applies.
-   * If a client sees an unknown errorDetail, it will be interpreted as UNKNOWN.
-   *
-   * HTTP Mapping: 500 Internal Server Error
-   */
+  /** Unknown error. This error should only be returned when no other error detail applies. If a client sees an unknown errorDetail, it will be interpreted as UNKNOWN. HTTP Mapping: 500 Internal Server Error */
   | 'UNKNOWN';
 
 export type ZonosErrorType =
-  /**
-   * Bad Request.
-   *
-   * There is a problem with the request.
-   * Retrying the same request is not likely to succeed.
-   * An example would be a query or argument that cannot be deserialized.
-   *
-   * HTTP Mapping: 400 Bad Request
-   */
+  /** Bad Request. There is a problem with the request. Retrying the same request is not likely to succeed. An example would be a query or argument that cannot be deserialized. HTTP Mapping: 400 Bad Request */
   | 'BAD_REQUEST'
-  /**
-   * The operation was rejected because the system is not in a state
-   * required for the operation's execution.  For example, the directory
-   * to be deleted is non-empty, an rmdir operation is applied to
-   * a non-directory, etc.
-   *
-   * Service implementers can use the following guidelines to decide
-   * between `FAILED_PRECONDITION` and `UNAVAILABLE`:
-   *
-   * - Use `UNAVAILABLE` if the client can retry just the failing call.
-   * - Use `FAILED_PRECONDITION` if the client should not retry until
-   * the system state has been explicitly fixed.  E.g., if an "rmdir"
-   *      fails because the directory is non-empty, `FAILED_PRECONDITION`
-   * should be returned since the client should not retry unless
-   * the files are deleted from the directory.
-   *
-   * HTTP Mapping: 400 Bad Request or 500 Internal Server Error
-   */
+  /** The operation was rejected because the system is not in a state required for the operation's execution. For example, the directory to be deleted is non-empty, an rmdir operation is applied to a non-directory, etc. Service implementers can use the following guidelines to decide between `FAILED_PRECONDITION` and `UNAVAILABLE`: - Use `UNAVAILABLE` if the client can retry just the failing call. - Use `FAILED_PRECONDITION` if the client should not retry until the system state has been explicitly fixed. E.g., if an "rmdir" fails because the directory is non-empty, `FAILED_PRECONDITION` should be returned since the client should not retry unless the files are deleted from the directory. HTTP Mapping: 400 Bad Request or 500 Internal Server Error */
   | 'FAILED_PRECONDITION'
-  /**
-   * Internal error.
-   *
-   * An unexpected internal error was encountered. This means that some
-   * invariants expected by the underlying system have been broken.
-   * This error code is reserved for serious errors.
-   *
-   * HTTP Mapping: 500 Internal Server Error
-   */
+  /** Internal error. An unexpected internal error was encountered. This means that some invariants expected by the underlying system have been broken. This error code is reserved for serious errors. HTTP Mapping: 500 Internal Server Error */
   | 'INTERNAL'
-  /**
-   * The requested entity was not found.
-   *
-   * This could apply to a resource that has never existed (e.g. bad resource id),
-   * or a resource that no longer exists (e.g. cache expired.)
-   *
-   * Note to server developers: if a request is denied for an entire class
-   * of users, such as gradual feature rollout or undocumented allowlist,
-   * `NOT_FOUND` may be used. If a request is denied for some users within
-   * a class of users, such as user-based access control, `PERMISSION_DENIED`
-   * must be used.
-   *
-   * HTTP Mapping: 404 Not Found
-   */
+  /** The requested entity was not found. This could apply to a resource that has never existed (e.g. bad resource id), or a resource that no longer exists (e.g. cache expired.) Note to server developers: if a request is denied for an entire class of users, such as gradual feature rollout or undocumented allowlist, `NOT_FOUND` may be used. If a request is denied for some users within a class of users, such as user-based access control, `PERMISSION_DENIED` must be used. HTTP Mapping: 404 Not Found */
   | 'NOT_FOUND'
-  /**
-   * The caller does not have permission to execute the specified
-   * operation.
-   *
-   * `PERMISSION_DENIED` must not be used for rejections
-   * caused by exhausting some resource or quota.
-   * `PERMISSION_DENIED` must not be used if the caller
-   * cannot be identified (use `UNAUTHENTICATED`
-   * instead for those errors).
-   *
-   * This error Type does not imply the
-   * request is valid or the requested entity exists or satisfies
-   * other pre-conditions.
-   *
-   * HTTP Mapping: 403 Forbidden
-   */
+  /** The caller does not have permission to execute the specified operation. `PERMISSION_DENIED` must not be used for rejections caused by exhausting some resource or quota. `PERMISSION_DENIED` must not be used if the caller cannot be identified (use `UNAUTHENTICATED` instead for those errors). This error Type does not imply the request is valid or the requested entity exists or satisfies other pre-conditions. HTTP Mapping: 403 Forbidden */
   | 'PERMISSION_DENIED'
-  /**
-   * The request does not have valid authentication credentials.
-   *
-   * This is intended to be returned only for routes that require
-   * authentication.
-   *
-   * HTTP Mapping: 401 Unauthorized
-   */
+  /** The request does not have valid authentication credentials. This is intended to be returned only for routes that require authentication. HTTP Mapping: 401 Unauthorized */
   | 'UNAUTHENTICATED'
-  /**
-   * Currently Unavailable.
-   *
-   * The service is currently unavailable.  This is most likely a
-   * transient condition, which can be corrected by retrying with
-   * a backoff.
-   *
-   * HTTP Mapping: 503 Unavailable
-   */
+  /** Currently Unavailable. The service is currently unavailable. This is most likely a transient condition, which can be corrected by retrying with a backoff. HTTP Mapping: 503 Unavailable */
   | 'UNAVAILABLE'
-  /**
-   * Unknown error.
-   *
-   * For example, this error may be returned when
-   * an error code received from another address space belongs to
-   * an error space that is not known in this address space.  Also
-   * errors raised by APIs that do not return enough error information
-   * may be converted to this error.
-   *
-   * If a client sees an unknown errorType, it will be interpreted as UNKNOWN.
-   * Unknown errors MUST NOT trigger any special behavior. These MAY be treated
-   * by an implementation as being equivalent to INTERNAL.
-   *
-   * When possible, a more specific error should be provided.
-   *
-   * HTTP Mapping: 520 Unknown Error
-   */
+  /** Unknown error. For example, this error may be returned when an error code received from another address space belongs to an error space that is not known in this address space. Also errors raised by APIs that do not return enough error information may be converted to this error. If a client sees an unknown errorType, it will be interpreted as UNKNOWN. Unknown errors MUST NOT trigger any special behavior. These MAY be treated by an implementation as being equivalent to INTERNAL. When possible, a more specific error should be provided. HTTP Mapping: 520 Unknown Error */
   | 'UNKNOWN';
 
 export type ZonosExchangeRate = {
@@ -4041,6 +4355,11 @@ export type ZonosExchangeRateCreateInput = {
   type: ZonosExchangeRateType;
 };
 
+export type ZonosExchangeRateLinkInput = {
+  exchangeRateIds: Array<Scalars['ID']>;
+  referenceId: Scalars['String'];
+};
+
 export type ZonosExchangeRateType =
   /** Zonos guaranteed rate */
   | 'GUARANTEED'
@@ -4049,45 +4368,45 @@ export type ZonosExchangeRateType =
 
 export type ZonosExportJob = {
   __typename?: 'ExportJob';
-  /**  Creation date of the job.  */
+  /** Creation date of the job. */
   createdAt: Scalars['DateTime'];
-  /**  ID of the user who created the job.  */
+  /** ID of the user who created the job. */
   createdBy: Scalars['ID'];
-  /**  Expiration date of the job.  */
+  /** Expiration date of the job. */
   expiresAt: Scalars['DateTime'];
-  /**  Unique identifier of the job.  */
+  /** Unique identifier of the job. */
   id: Scalars['ID'];
-  /**  ID of the associated organization.  */
+  /** ID of the associated organization. */
   organization: Scalars['ID'];
-  /**  Count of processed items in the job.  */
+  /** Count of processed items in the job. */
   processedCount: Scalars['Int'];
-  /**  Current status of the job.  */
+  /** Current status of the job. */
   status: ZonosExportJobStatus;
-  /**  Total count of items to process in the job.  */
+  /** Total count of items to process in the job. */
   totalCount: Scalars['Int'];
-  /**  Last update date of the job.  */
+  /** Last update date of the job. */
   updatedAt: Scalars['DateTime'];
-  /**  ID of the user who last updated the job.  */
+  /** ID of the user who last updated the job. */
   updatedBy: Scalars['ID'];
-  /**  URL to access the export job results.  */
+  /** URL to access the export job results. */
   url: Scalars['String'];
 };
 
 export type ZonosExportJobConnection = {
   __typename?: 'ExportJobConnection';
-  /**  A list of export job edges.  */
+  /** A list of export job edges. */
   edges: Array<ZonosExportJobEdge>;
-  /**  Information for pagination.  */
+  /** Information for pagination. */
   pageInfo: Maybe<ZonosPageInfo>;
-  /**  Total count of export jobs.  */
+  /** Total count of export jobs. */
   totalCount: Scalars['Int'];
 };
 
 export type ZonosExportJobEdge = {
   __typename?: 'ExportJobEdge';
-  /**  Cursor for pagination.  */
+  /** Cursor for pagination. */
   cursor: Maybe<Scalars['String']>;
-  /**  The export job at the end of the edge.  */
+  /** The export job at the end of the edge. */
   node: ZonosExportJob;
 };
 
@@ -4098,8 +4417,15 @@ export type ZonosExportJobStatus =
   | 'PROCESSING';
 
 export type ZonosExportJobsFilter = {
-  /**  Filters export jobs by their status.  */
+  /** Filters export jobs by their status. */
   status?: InputMaybe<ZonosExportJobStatus>;
+};
+
+export type ZonosFailedSyncJobRecord = {
+  /** ID of the catalog item inclusive price that failed to sync. */
+  catalogItemInclusivePriceId: Scalars['ID'];
+  /** Error that caused the sync to fail. */
+  errorMessage: Scalars['String'];
 };
 
 /** Represents a fee amount on a `LandedCost` quote */
@@ -4129,10 +4455,61 @@ export type ZonosFee = {
   type: ZonosLandedCostFeeType;
 };
 
-/**
- * A `FulfillmentCenter` services a specified organization and is responsible for receiving/managing inventory and
- * shipping orders to customers. A `fulfillmentCenter` may support specific carriers and will service specified `shippingZones`.
- */
+export type ZonosFeeInput = {
+  /** `Fee` price amount. */
+  amount: Scalars['Decimal'];
+  /** Currency the `Fee` amount is in. @deprecated Use currencyCode instead. */
+  currency?: InputMaybe<ZonosCurrencyCode>;
+  /** Currency the `Fee` amount is in. */
+  currencyCode?: InputMaybe<ZonosCurrencyCode>;
+  /** Human-readable description of this `Fee`. */
+  description?: InputMaybe<Scalars['String']>;
+  /** Exchange rate information for foreign currency `Fee` amounts. */
+  exchangeRate?: InputMaybe<Scalars['ID']>;
+  /** Human-readable formula indicating how this `Fee` was calculated. */
+  formula: Scalars['String'];
+  /** `Item` this `Fee` amount applies to. */
+  item?: InputMaybe<Scalars['ID']>;
+  /** Human-readable description of the `Fee`. */
+  note?: InputMaybe<Scalars['String']>;
+  /** `Party` responsible for receiving payment on this `Fee`. */
+  payee?: InputMaybe<Scalars['ID']>;
+  /** `Party` responsible for rendering payment on this `Fee`. */
+  payor?: InputMaybe<Scalars['ID']>;
+  /** Type of fee. @deprecated Use feeType instead */
+  type?: InputMaybe<ZonosLandedCostFeeType>;
+};
+
+export type ZonosFeeRuleLocaleType =
+  | 'DOMESTIC'
+  | 'EITHER'
+  | 'INTERNATIONAL';
+
+export type ZonosFieldFormat = {
+  __typename?: 'FieldFormat';
+  /** The field label */
+  label: Scalars['String'];
+  /** The field pattern */
+  pattern: Scalars['String'];
+  /** The field status */
+  status: ZonosFieldStatus;
+};
+
+export type ZonosFieldFormatCreateInput = {
+  /** The field label */
+  label: Scalars['String'];
+  /** The field pattern */
+  pattern: Scalars['String'];
+  /** The field status */
+  status: ZonosFieldStatus;
+};
+
+export type ZonosFieldStatus =
+  | 'HIDDEN'
+  | 'REQUIRED'
+  | 'VISIBLE';
+
+/** A `FulfillmentCenter` services a specified organization and is responsible for receiving/managing inventory and shipping orders to customers. A `fulfillmentCenter` may support specific carriers and will service specified `shippingZones`. */
 export type ZonosFulfillmentCenter = {
   __typename?: 'FulfillmentCenter';
   /** When this FulfillmentCenter was created. */
@@ -4150,16 +4527,30 @@ export type ZonosFulfillmentCenter = {
   /** The `Party` to use for the FulfillmentCenter */
   party: ZonosParty;
   /** the type of fulfillmentCenter. you can have only ONE PRIMARY fulfillmentCenter */
-  type: Maybe<ZonosFulfillmentCenterType>;
+  type: ZonosFulfillmentCenterType;
   /** When this FulfillmentCenter was most recently updated. */
   updatedAt: Scalars['DateTime'];
   /** The user who most recently updated the FulfillmentCenter. */
   updatedBy: Scalars['ID'];
 };
 
+export type ZonosFulfillmentCenterFilter = {
+  /** Type of FulfillmentCenter. You can have only one PRIMARY FulfillmentCenter. */
+  type?: InputMaybe<ZonosFulfillmentCenterType>;
+};
+
 export type ZonosFulfillmentCenterType =
+  | 'CONSOLIDATION_CENTER'
   | 'PRIMARY'
   | 'STANDARD';
+
+export type ZonosFulfillmentItem = {
+  __typename?: 'FulfillmentItem';
+  /** `Item` from the original `Order`. */
+  item: ZonosItem;
+  /** The quantity of the `Item` that has not been fulfilled yet. */
+  quantity: Scalars['Int'];
+};
 
 export type ZonosGeneralCarrierAccountFilter = {
   /** The `CarrierAccountApiUsage` for the account */
@@ -4347,6 +4738,16 @@ export type ZonosHsCodeProvidedValidation = {
   type: ZonosHsCodeType;
 };
 
+export type ZonosHsCodeSource =
+  /** HS code (all digits) sourced via the Zonos Classify API (includes Classify on the fly) */
+  | 'CLASSIFY'
+  /** Zonos fallback HS code, this is the default HS code used when no other HS code is available */
+  | 'FALLBACK'
+  /** HS code provided by the user or from a catalog was corrected or completed by Classify due to partial correctness or short length. */
+  | 'HYBRID'
+  /** HS code is user provided from Zonos Catalog, their own catalog, or directly by from the user & successfully validated by Classify */
+  | 'USER_PROVIDED';
+
 export type ZonosHsCodeType =
   | 'CHAPTER'
   | 'EXPORT'
@@ -4386,9 +4787,180 @@ export type ZonosHsCodeValidationSummary = {
   hsCodeProvidedValidation: Array<ZonosHsCodeProvidedValidation>;
 };
 
+export type ZonosInclusivePriceBreakdown = {
+  __typename?: 'InclusivePriceBreakdown';
+  duties: Scalars['Decimal'];
+  fees: Scalars['Decimal'];
+  taxes: Scalars['Decimal'];
+  total: Scalars['Decimal'];
+};
+
+export type ZonosInclusivePriceCalculateJobFilter = {
+  /** Current status of the BulkJob */
+  status?: InputMaybe<ZonosInclusivePriceCalculateJobStatus>;
+};
+
+/** Current status of the inclusivePriceCalculateJob. */
+export type ZonosInclusivePriceCalculateJobStatus =
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'COMPLETED_WITH_ERRORS'
+  | 'FAILED'
+  | 'IN_PROGRESS';
+
+export type ZonosInclusivePriceConnection = {
+  __typename?: 'InclusivePriceConnection';
+  edges: Array<ZonosInclusivePriceEdge>;
+  pageInfo: ZonosPageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosInclusivePriceCountryHistoryFilter = {
+  countries?: InputMaybe<Array<ZonosCountryCode>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export type ZonosInclusivePriceEdge = {
+  __typename?: 'InclusivePriceEdge';
+  cursor: Scalars['String'];
+  node: ZonosCatalogItemInclusivePrice;
+};
+
+export type ZonosInclusivePriceFilter = {
+  /** Filter inclusive prices by country. */
+  country?: InputMaybe<ZonosCountryCode>;
+  /** Filter inclusive prices by catalog item. */
+  itemKeys?: InputMaybe<Array<Scalars['String']>>;
+  /** Filter inclusive prices by status */
+  status?: InputMaybe<ZonosCatalogItemInclusivePriceStatus>;
+};
+
+export type ZonosInclusivePriceHistoryFilter = {
+  countries?: InputMaybe<Array<ZonosCountryCode>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export type ZonosInclusivePriceHistoryUploadError = {
+  __typename?: 'InclusivePriceHistoryUploadError';
+  message: Scalars['String'];
+};
+
 export type ZonosInclusivePriceStatus =
   | 'ACTIVE'
   | 'INACTIVE';
+
+export type ZonosInclusivePriceSyncJob = {
+  __typename?: 'InclusivePriceSyncJob';
+  /** Country code for the sync job. */
+  country: ZonosCountryCode;
+  /** Creation date of the job. */
+  createdAt: Scalars['DateTime'];
+  /** ID of the user who created the job. */
+  createdBy: Scalars['ID'];
+  /**
+   * List of catalog item ids that failed to sync. @deprecated
+   * @deprecated Use failedItemKeys instead
+   */
+  failedCatalogItemIds: Maybe<Array<Scalars['ID']>>;
+  /** Count of inclusive prices that have failed to sync. */
+  failedCount: Scalars['Int'];
+  /** List of catalog item inclusive prices that failed to sync. */
+  failedItemKeys: Maybe<Array<Scalars['String']>>;
+  /** Unique identifier of the InclusivePriceSyncJob. */
+  id: Scalars['ID'];
+  /** ID of the associated organization. */
+  organizationId: Scalars['ID'];
+  /** Current status of the job. */
+  status: ZonosInclusivePriceSyncJobStatus;
+  /** Count of inclusive prices that have been synced. */
+  syncedCount: Scalars['Int'];
+  /** Total count of inclusive prices that will be synced. */
+  totalCount: Scalars['Int'];
+  /** Last update date of the job. */
+  updatedAt: Scalars['DateTime'];
+  /** ID of the user who last updated the job. */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosInclusivePriceSyncJobDetail = {
+  __typename?: 'InclusivePriceSyncJobDetail';
+  /** Catalog item inclusive price associated with the catalog item and sync job */
+  inclusivePrice: ZonosCatalogItemInclusivePrice;
+  /** Item key of the catalog item associated with the catalog item inclusive price and sync job */
+  itemKey: Scalars['String'];
+};
+
+export type ZonosInclusivePriceSyncJobDetailsConnection = {
+  __typename?: 'InclusivePriceSyncJobDetailsConnection';
+  /** A list of inclusive price sync job edges. */
+  edges: Array<ZonosInclusivePriceSyncJobDetailsEdge>;
+  /** Information for pagination. */
+  pageInfo: ZonosPageInfo;
+  /** Total count of price sync jobs. */
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosInclusivePriceSyncJobDetailsEdge = {
+  __typename?: 'InclusivePriceSyncJobDetailsEdge';
+  /** Cursor for pagination. */
+  cursor: Scalars['String'];
+  /** The price sync job at the end of the edge. */
+  node: ZonosInclusivePriceSyncJobDetail;
+};
+
+export type ZonosInclusivePriceSyncJobDetailsFilter = {
+  /** Filters inclusive price sync job details by inclusive price sync job id. */
+  inclusivePriceSyncJobId: Scalars['ID'];
+  /** Filters inclusive price sync job details by the provided item keys. */
+  itemKeys?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type ZonosInclusivePriceSyncJobEdge = {
+  __typename?: 'InclusivePriceSyncJobEdge';
+  /** Cursor for pagination. */
+  cursor: Scalars['String'];
+  /** The price sync job at the end of the edge. */
+  node: ZonosInclusivePriceSyncJob;
+};
+
+export type ZonosInclusivePriceSyncJobStatus =
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'COMPLETED_WITH_ERRORS'
+  | 'FAILED'
+  | 'INITIALIZED'
+  | 'IN_PROGRESS';
+
+export type ZonosInclusivePriceSyncJobUpdateInput = {
+  /** Catalog Item Inclusive Price IDs that failed during the sync job. */
+  failedSyncJobRecords?: InputMaybe<Array<ZonosFailedSyncJobRecord>>;
+  /** ID of the inclusive price sync job to update. */
+  id: Scalars['ID'];
+  /** New status of the job. */
+  status: ZonosInclusivePriceSyncJobStatus;
+};
+
+export type ZonosInclusivePriceSyncJobsActionableFilter = {
+  /** The country of the actionable inclusive price sync job */
+  countries?: InputMaybe<Array<ZonosCountryCode>>;
+};
+
+export type ZonosInclusivePriceSyncJobsConnection = {
+  __typename?: 'InclusivePriceSyncJobsConnection';
+  /** A list of inclusive price sync job edges. */
+  edges: Array<ZonosInclusivePriceSyncJobEdge>;
+  /** Information for pagination. */
+  pageInfo: ZonosPageInfo;
+  /** Total count of price sync jobs. */
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosInclusivePriceSyncJobsFilter = {
+  /** Filters inclusive price sync jobs by the country. */
+  countries?: InputMaybe<Array<ZonosCountryCode>>;
+  /** Filters inclusive price sync jobs by their status. */
+  status?: InputMaybe<ZonosInclusivePriceSyncJobStatus>;
+};
 
 /** International Commercial Terms */
 export type ZonosIncotermCode =
@@ -4402,49 +4974,17 @@ export type ZonosIncotermCode =
   /** Free On Board */
   | 'FOB';
 
-/** Represents the fields that all Invoice types will share */
-export type ZonosInvoice = {
-  /** The total amount due for this invoice */
-  amountDue: Scalars['Decimal'];
-  /** The currency the invoice amount is represented in */
-  currencyCode: ZonosCurrencyCode;
-  /** The date payment is due for this `CarrierInvoice` */
-  dueDate: Scalars['DateTime'];
-  /** ID from the Node interface */
-  id: Scalars['ID'];
-  /** The creation date of this `CarrierInvoice` by the carrier */
-  invoiceDate: Scalars['DateTime'];
-  /** The invoice number of this `CarrierInvoice` */
-  invoiceNumber: Scalars['String'];
-  /** The URL where we pull the invoice from */
-  invoiceUrl: Maybe<Scalars['String']>;
-  /** Whether the object is in live or test */
-  mode: ZonosMode;
-  /** The status of the payment for this invoice */
-  status: ZonosInvoiceStatus;
-  /** Timestamp for when status changed */
-  statusTransitions: Array<ZonosInvoiceStatusTransition>;
-};
-
 export type ZonosInvoiceCarrier =
   | 'APC'
   | 'ASENDIA'
   | 'BOX_C'
+  | 'BROAD_REACH'
   | 'DHL'
   | 'DHL_ECOM'
   | 'EPOST'
   | 'FEDEX'
   | 'LANDMARK'
   | 'UPS';
-
-export type ZonosInvoiceFilter = {
-  /** Represents a range of dates, before, or after the due date */
-  dueDateBetween?: InputMaybe<ZonosDateTimeRange>;
-  /** Represents a range of dates, before, or after the invoice date */
-  invoiceDateBetween?: InputMaybe<ZonosDateTimeRange>;
-  /** The status of payment for a `CarrierInvoice` */
-  status?: InputMaybe<ZonosInvoiceStatus>;
-};
 
 /** Enum value representing all of languages that are supported for creating invoice PDFs */
 export type ZonosInvoiceLanguageCode =
@@ -4525,39 +5065,26 @@ export type ZonosInvoiceLanguageCode =
   /** Chinese Traditional (Taiwan) */
   | 'ZH_TW';
 
-/** Statuses that a `CarrierInvoice` can go through */
+export type ZonosInvoiceProcessor =
+  | 'STRIPE';
+
+export type ZonosInvoiceProcessorDetail = {
+  __typename?: 'InvoiceProcessorDetail';
+  /** The URL of the processor hosted Invoice */
+  hostedInvoiceUrl: Scalars['String'];
+  /** The external processor invoice identifier */
+  id: Scalars['String'];
+  /** The external processor invoice reference number */
+  referenceNumber: Scalars['String'];
+};
+
+/** Statuses that an `Invoice` can go through */
 export type ZonosInvoiceStatus =
   | 'RECEIVED'
   | 'RECONCILED'
   | 'VOIDED';
 
-export type ZonosInvoiceStatusTransition = {
-  __typename?: 'InvoiceStatusTransition';
-  /** DateTime indicating when this status change occurred */
-  changedAt: Scalars['DateTime'];
-  /** Text describing this status change */
-  note: Maybe<Scalars['String']>;
-  /** Status of this `CarrierInvoice` at the associated DateTime */
-  status: ZonosInvoiceStatus;
-};
-
-export type ZonosInvoiceUploadUrl = {
-  __typename?: 'InvoiceUploadUrl';
-  /** The carrier that the invoice was billed from */
-  carrier: ZonosInvoiceCarrier;
-  /** The name to give the invoice object */
-  fileName: Scalars['String'];
-  /** The shared prefix to give the invoice object key */
-  prefix: Scalars['String'];
-  /** The presigned upload URL used to store the invoice object */
-  url: Scalars['String'];
-};
-
-/**
- * An `Item` represents the input for a shopping cart `Item` to be quoted for Landed Cost, Shipment Rating,
- * etc. `Item` is not intended to be stored and used long-term for things like the catalog; it is
- * purely a method for moving data around.
- */
+/** An `Item` represents the input for a shopping cart `Item` to be quoted for Landed Cost, Shipment Rating, etc. `Item` is not intended to be stored and used long-term for things like the catalog; it is purely a method for moving data around. */
 export type ZonosItem = {
   __typename?: 'Item';
   /** `Item` price amount. */
@@ -4664,6 +5191,8 @@ export type ZonosItemCreateWorkflowInput = {
   dutyTaxFeeConfiguration?: InputMaybe<ZonosDutyTaxFeeConfiguration>;
   /** HS code for this `Item`. */
   hsCode?: InputMaybe<Scalars['String']>;
+  /** HS code source for this `Item`. */
+  hsCodeSource?: InputMaybe<ZonosItemValueSource>;
   /** Optional URL to an image that represents this `Item`. */
   imageUrl?: InputMaybe<Scalars['String']>;
   /** Determines whether or not an item can be physically shipped. */
@@ -4709,6 +5238,8 @@ export type ZonosItemInput = {
   dutyTaxFeeConfiguration?: InputMaybe<ZonosDutyTaxFeeConfiguration>;
   /** HS code for this `Item`. */
   hsCode?: InputMaybe<Scalars['String']>;
+  /** HS code source for this `Item`. */
+  hsCodeSource?: InputMaybe<ZonosItemValueSource>;
   /** Optional URL to an image that represents this `Item`. */
   imageUrl?: InputMaybe<Scalars['String']>;
   /** Determines whether or not an item can be physically shipped. */
@@ -4725,7 +5256,9 @@ export type ZonosItemInput = {
   provinceOfOrigin?: InputMaybe<Scalars['String']>;
   /** Quantity of this specific `Item` being represented. */
   quantity: Scalars['Int'];
-  /** ID of the root with which this Item is associated. */
+  /** References any object that is joined with the item */
+  referenceId?: InputMaybe<Scalars['ID']>;
+  /** depricated: ID of the root with which this Item is associated. */
   rootId?: InputMaybe<Scalars['ID']>;
   /** SKU of the `Item`. */
   sku?: InputMaybe<Scalars['String']>;
@@ -4834,7 +5367,7 @@ export type ZonosItemRestrictionInput = {
   /** Human readable item description */
   description?: InputMaybe<Scalars['String']>;
   /** HS code for this item. */
-  hsCode: Scalars['String'];
+  hsCode?: InputMaybe<Scalars['String']>;
   /** External id for consumers mapping if desired */
   itemId?: InputMaybe<Scalars['String']>;
 };
@@ -4865,7 +5398,7 @@ export type ZonosItemRestrictionResultConnection = {
   /** Field edges */
   edges: Maybe<Array<Maybe<ZonosItemRestrictionResultEdge>>>;
   /** Field pageInfo */
-  pageInfo: Maybe<ZonosPageInfo>;
+  pageInfo: ZonosPageInfo;
 };
 
 /** ItemRestrictionResult Edge */
@@ -4923,6 +5456,8 @@ export type ZonosItemUpdateInput = {
   dutyTaxFeeConfiguration?: InputMaybe<ZonosDutyTaxFeeConfiguration>;
   /** HS code for this `Item`. @deprecated */
   hsCode?: InputMaybe<Scalars['String']>;
+  /** HS code source for this `Item`. */
+  hsCodeSource?: InputMaybe<ZonosItemValueSource>;
   /** ID of `Item` to update. */
   id?: InputMaybe<Scalars['ID']>;
   /** Optional URL to an image that represents this `Item`. @deprecated */
@@ -4954,10 +5489,21 @@ export type ZonosItemUpdateInput = {
 export type ZonosItemValueSource =
   | 'API_REQUEST'
   | 'CATALOG'
-  | 'ORGANIZATION_SETTING';
+  | 'CLASSIFY'
+  | 'FALLBACK'
+  | 'HYBRID'
+  | 'ORGANIZATION_SETTING'
+  | 'USER_PROVIDED';
 
 export type ZonosItemsUpdateInput = {
   items: Array<ZonosItemUpdateInput>;
+};
+
+export type ZonosKeyValueFilterInput = {
+  /** The key of the attribute. */
+  key?: InputMaybe<Scalars['String']>;
+  /** The value of the attribute. */
+  value?: InputMaybe<Scalars['String']>;
 };
 
 export type ZonosLabel = {
@@ -5115,6 +5661,10 @@ export type ZonosLabelSettings = {
   createdAt: Scalars['DateTime'];
   /** The user who created the LabelSettings */
   createdBy: Scalars['ID'];
+  /** A customDeclaration object to be used when creating labels */
+  customDeclarationStatements: Array<ZonosCustomDeclarationStatement>;
+  /** The default alternate return address to be used when creating labels */
+  declaredValue: Scalars['Decimal'];
   /** `DescriptionOverride` gives the option to override descriptions displayed on labels, customs documents, or both */
   descriptionOverride: Maybe<ZonosDescriptionOverride>;
   /** Unique identifier for this `LabelSettings` object */
@@ -5125,6 +5675,8 @@ export type ZonosLabelSettings = {
   labelSize: Maybe<ZonosLabelSize>;
   /** The ID of the `Organization` these LabelSettings belong to */
   organization: Scalars['ID'];
+  /** Default `ServiceLevel` to use when creating labels. */
+  serviceLevel: Maybe<ZonosServiceLevel>;
   /** Indicates who will be responsible for paying the shipping charges */
   shippingPayment: Maybe<ZonosShippingPaymentType>;
   /** When the LabelSettings were most recently updated */
@@ -5134,12 +5686,18 @@ export type ZonosLabelSettings = {
 };
 
 export type ZonosLabelSettingsUpdateInput = {
+  /** A customDeclaration object to be used when creating labels */
+  customDeclarationStatements?: InputMaybe<Array<ZonosCustomDeclarationInput>>;
+  /** The amount of the declared value to be used when creating labels */
+  declaredValue?: InputMaybe<Scalars['Decimal']>;
   /** `DescriptionOverride` gives the option to override descriptions displayed on labels, customs documents, or both */
   descriptionOverride?: InputMaybe<ZonosDescriptionOverrideInput>;
   /** Indicates the default file type used when creating labels */
   labelFileType?: InputMaybe<ZonosLabelFileType>;
   /** Indicates the default size to use when creating labels */
   labelSize?: InputMaybe<ZonosLabelSize>;
+  /** ID of the `ServiceLevel` to use as the default */
+  serviceLevel?: InputMaybe<Scalars['ID']>;
   /** Indicates who will be responsible for paying the shipping charges */
   shippingPayment?: InputMaybe<ZonosShippingPaymentType>;
 };
@@ -5180,11 +5738,7 @@ export type ZonosLabelVoidInput = {
   note?: InputMaybe<Scalars['String']>;
 };
 
-/**
- * A `LandedCost` represents the result of a landed cost calculation. `LandedCost` quotes belong to a `Root`
- * resource and additionally include a `ShipmentRating` resource with additional details about the shipping
- * costs
- */
+/** A `LandedCost` represents the result of a landed cost calculation. `LandedCost` quotes belong to a `Root` resource and additionally include a `ShipmentRating` resource with additional details about the shipping costs */
 export type ZonosLandedCost = {
   __typename?: 'LandedCost';
   /** Amount totals for duties, taxes, fees */
@@ -5235,6 +5789,8 @@ export type ZonosLandedCost = {
 /** The subtotals that make up a landed cost. */
 export type ZonosLandedCostAmountSubtotals = {
   __typename?: 'LandedCostAmountSubtotals';
+  /** Total amount of all discounts. */
+  discounts: Maybe<Scalars['Decimal']>;
   /** Total amount of all duties. */
   duties: Scalars['Decimal'];
   /** Total amount of all fees. */
@@ -5279,6 +5835,29 @@ export type ZonosLandedCostConnection = {
   totalCount: Maybe<Scalars['Int']>;
 };
 
+export type ZonosLandedCostCreateInput = {
+  /** Currency to use for the landed cost subtotals. */
+  currencyCode: ZonosCurrencyCode;
+  /** A list of `DeMinimis` thresholds and what values they apply to. */
+  deMinimis?: InputMaybe<Array<ZonosDeMinimisInput>>;
+  /** A list of duties assessed for this `LandedCost`. */
+  duties?: InputMaybe<Array<ZonosDutyInput>>;
+  /** End use for `Items` included in this quote. */
+  endUse: ZonosLandedCostEndUse;
+  /** A list of `Fee`s assessed for this `LandedCost`. */
+  fees?: InputMaybe<Array<ZonosFeeInput>>;
+  /** quote type */
+  quoteType?: InputMaybe<ZonosLandedCostQuoteType>;
+  /** `Root` resource ID that this `LandedCost` belongs to. */
+  rootId: Scalars['ID'];
+  /** `ShipmentRating` that contains shipping cost and other related details for this `LandedCost`. */
+  shipmentRating: Scalars['ID'];
+  /** Indicates what method Zonos should use to calculate the `TariffRate`s for this quote. */
+  tariffRate: ZonosLandedCostTariffRate;
+  /** A list of taxes assessed for this `LandedCost`. */
+  taxes?: InputMaybe<Array<ZonosTaxInput>>;
+};
+
 export type ZonosLandedCostEdge = {
   __typename?: 'LandedCostEdge';
   cursor: Maybe<Scalars['String']>;
@@ -5306,6 +5885,7 @@ export type ZonosLandedCostFeeType =
   | 'INCLUSIVE_PRICING'
   | 'ITEM'
   | 'OTHER'
+  | 'PARTNER_REV_SHARE'
   | 'SHIPPING'
   | 'TAX'
   | 'ZONOS_ACCESS_FEE'
@@ -5316,7 +5896,7 @@ export type ZonosLandedCostFeeType =
   | 'ZONOS_TRANSACTION';
 
 export type ZonosLandedCostFilter = {
-  /** Return `LandedCost` resources created after a given  (inclusive) */
+  /** Return `LandedCost` resources created after a given (inclusive) */
   createdAtAfter?: InputMaybe<Scalars['DateTime']>;
   /** Return `LandedCost` resources created before a given date (inclusive) */
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
@@ -5324,15 +5904,16 @@ export type ZonosLandedCostFilter = {
   shipToCountry?: InputMaybe<ZonosCountryCode>;
 };
 
+/** any enum added here also needs to be added in orderService legacy. bounce orderDgs add logic to feeContext accordingly and landedCostBillingRuleContext */
 export type ZonosLandedCostGuaranteeCode =
+  /** Zonos covers any landed cost discrepancies and this quote has inclusive price items in it. */
+  | 'INCLUSIVE_PRICE'
   /** No guarantee */
   | 'NOT_APPLICABLE'
+  | 'POSTAL_DDP'
+  | 'POSTAL_DDP_INCLUSIVE_PRICE'
   /** Zonos covers any landed cost discrepancies */
   | 'ZONOS';
-
-export type ZonosLandedCostGuaranteeType =
-  | 'DISABLED'
-  | 'ENABLED';
 
 export type ZonosLandedCostInclusivePrice = {
   __typename?: 'LandedCostInclusivePrice';
@@ -5360,10 +5941,18 @@ export type ZonosLandedCostMethod =
   | 'DAP_FORCED'
   /** Provide both a DDP and DAP quote */
   | 'DDP_AND_DAP'
-  /** Only provide a DDP  */
+  /** Only provide a DDP */
   | 'DDP_FORCED'
   /** provide a DDP quote but return a DAP quote if DDP is not allowed */
   | 'DDP_PREFERRED';
+
+export type ZonosLandedCostQuoteType =
+  /** this quote is for auditing purpose */
+  | 'AUDITING'
+  /** Regular checkout quote. */
+  | 'CHECKOUT'
+  /** this quote is an inclusive quote associated with a catalogItem */
+  | 'INCLUSIVE_PRICE';
 
 /** Represents the tax remittance values required by specific entities. */
 export type ZonosLandedCostRemittance = {
@@ -5374,23 +5963,6 @@ export type ZonosLandedCostRemittance = {
   description: Scalars['String'];
   /** A note on where to remit the tax remittance. */
   note: Scalars['String'];
-};
-
-export type ZonosLandedCostSettings = {
-  __typename?: 'LandedCostSettings';
-  createdAt: Maybe<Scalars['DateTime']>;
-  createdBy: Maybe<Scalars['String']>;
-  defaultCountryOfOrigin: Maybe<ZonosCountryCode>;
-  defaultCustomsDescription: Maybe<Scalars['String']>;
-  defaultHarmonizedCode: Maybe<Scalars['String']>;
-  disableDiscountedFee: Scalars['Boolean'];
-  id: Scalars['String'];
-  landedCostGuarantee: Maybe<ZonosLandedCostGuaranteeType>;
-  minimumHsCodeLength: Maybe<Scalars['Int']>;
-  mode: ZonosMode;
-  organization: Scalars['String'];
-  updatedAt: Maybe<Scalars['DateTime']>;
-  updatedBy: Maybe<Scalars['String']>;
 };
 
 export type ZonosLandedCostTariffRate =
@@ -5424,6 +5996,8 @@ export type ZonosLandedCostWorkFlowInput = {
   endUse: ZonosLandedCostEndUse;
   /** @Deprecated use calculationMethod */
   method?: InputMaybe<ZonosIncotermCode>;
+  /** Id of the landed cost associated with a source LCG transaction. This is provided only when changes are required to an LCG transaction that would require a re-calculation of duties, taxes and fees. The source landed cost must fall within the guarantee window (default: 90 days) and have the same parties and currencies as the re-calculated landed cost. */
+  sourceLandedCostId?: InputMaybe<Scalars['String']>;
   /** Indicates what method Zonos should use to calculate the tariff rates for this quote */
   tariffRate: ZonosLandedCostTariffRate;
 };
@@ -5738,6 +6312,84 @@ export type ZonosManualClassification = {
   shipToCountry: Maybe<ZonosCountryCode>;
 };
 
+export type ZonosManualClassificationBulkJob = {
+  __typename?: 'ManualClassificationBulkJob';
+  /** The list of Country Codes where we will make manual classifications */
+  classifyToCountries: Array<ZonosCountryCode>;
+  /** When this `Manual Classification Request Bulk Job` was created. */
+  createdAt: Scalars['DateTime'];
+  /** The user who created the Manual Classification Request Bulk Job. */
+  createdBy: Scalars['ID'];
+  /** The number of rows that errored out during import */
+  errorCount: Scalars['Int'];
+  /** Unsuccessful rows and their error messages */
+  errorMessages: Array<ZonosManualClassificationRequestUploadError>;
+  /** The hour allotment for the manual classifications in the bulk job */
+  hourAllotment: Maybe<Scalars['Int']>;
+  /** The ID of the ManualClassificationRequest BulkJob */
+  id: Scalars['ID'];
+  /** The number of manual classification requests that have been invalidated */
+  invalidatedCount: Scalars['Int'];
+  /** The manual classification associated with a bulk job */
+  manualClassifications: Maybe<ZonosManualClassificationConnection>;
+  /** The uploaded customer created name of the manual classification request bulk job usually the filename */
+  name: Scalars['String'];
+  /** The unique identifier associated with an organization. */
+  organizationId: Scalars['ID'];
+  /** The number of rows that have been successfully manually classified */
+  processedCount: Scalars['Int'];
+  /** Current status of the BulkJob */
+  status: ZonosManualClassificationBulkJobStatus;
+  /** The total number of rows in a CSV upload */
+  totalCount: Scalars['Int'];
+};
+
+
+export type ZonosManualClassificationBulkJobManualClassificationsArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
+};
+
+export type ZonosManualClassificationBulkJobConnection = {
+  __typename?: 'ManualClassificationBulkJobConnection';
+  edges: Array<ZonosManualClassificationBulkJobEdge>;
+  pageInfo: ZonosPageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosManualClassificationBulkJobEdge = {
+  __typename?: 'ManualClassificationBulkJobEdge';
+  cursor: Maybe<Scalars['String']>;
+  node: ZonosManualClassificationBulkJob;
+};
+
+export type ZonosManualClassificationBulkJobInitializeResponse = {
+  __typename?: 'ManualClassificationBulkJobInitializeResponse';
+  manualClassificationBulkJob: ZonosManualClassificationBulkJob;
+  uploadUrl: Scalars['String'];
+};
+
+export type ZonosManualClassificationBulkJobStatus =
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'ERROR'
+  | 'INITIALIZED'
+  | 'MANUALLY_CLASSIFIED'
+  | 'PROCESSING';
+
+export type ZonosManualClassificationBulkJobUrlResponse = {
+  __typename?: 'ManualClassificationBulkJobUrlResponse';
+  exportUrl: Scalars['String'];
+  manualClassificationBulkJob: ZonosManualClassificationBulkJob;
+};
+
+export type ZonosManualClassificationBulkJobsFilter = {
+  /** Current status of the BulkJob */
+  status: ZonosManualClassificationBulkJobStatus;
+};
+
 export type ZonosManualClassificationConnection = {
   __typename?: 'ManualClassificationConnection';
   edges: Array<ZonosManualClassificationEdge>;
@@ -5859,6 +6511,12 @@ export type ZonosManualClassificationRequestStatus =
   | 'PENDING'
   | 'RESERVED';
 
+export type ZonosManualClassificationRequestUploadError = {
+  __typename?: 'ManualClassificationRequestUploadError';
+  message: Scalars['String'];
+  rowNumber: Scalars['Int'];
+};
+
 export type ZonosManualClassificationRequestsFilter = {
   /** Filters requests created after a specific date. */
   createdAfter?: InputMaybe<Scalars['DateTime']>;
@@ -5941,6 +6599,15 @@ export type ZonosManualClassificationSettingUpdateInput = {
   status?: InputMaybe<ZonosManualClassificationSettingStatus>;
 };
 
+export type ZonosManualClassificationStageUploadInput = {
+  /** The list of Country Codes where we will make manual classifications */
+  classifyToCountries?: InputMaybe<Array<ZonosCountryCode>>;
+  /** The fileName of the Bulk Job */
+  fileName: Scalars['String'];
+  /** The hour allotment for the manual classifications in the bulk job */
+  hourAllotment?: InputMaybe<Scalars['Int']>;
+};
+
 export type ZonosManualClassificationStatus =
   | 'ACTIVE'
   | 'ARCHIVED';
@@ -5976,9 +6643,13 @@ export type ZonosManualClassificationsFilter = {
   visibilityStatus?: InputMaybe<ZonosProvidedHsCodeVisibilityStatus>;
 };
 
+/** They type of match found on the party screening. */
 export type ZonosMatchType =
+  /** The field matched exactly with the potential denied party. */
   | 'EXACT_MATCH'
+  /** The field partially matched with the potential denied party. */
   | 'NO_MATCH'
+  /** The field partially matched with the potential denied party. */
   | 'PARTIAL_MATCH';
 
 export type ZonosMetadata = {
@@ -6006,22 +6677,28 @@ export type ZonosMultiFactorAuthSetting =
 
 export type ZonosMutation = {
   __typename?: 'Mutation';
+  /** Create a `CarrierBillingInvoice` */
+  carrierBillingInvoiceCreate: Array<Maybe<ZonosCarrierBillingInvoice>>;
+  /** Void an existing `CarrierBillingInvoice` */
+  carrierBillingInvoiceVoid: Maybe<ZonosCarrierBillingInvoice>;
   /** Create a `CarrierInvoiceAccountNumberMapping` */
   carrierInvoiceAccountNumberMappingCreate: Array<Maybe<ZonosCarrierInvoiceAccountNumberMapping>>;
   /** Delete a `CarrierInvoiceAccountNumberMapping` */
   carrierInvoiceAccountNumberMappingDelete: ZonosResult;
   /** Update a `CarrierInvoiceAccountNumberMapping` */
   carrierInvoiceAccountNumberMappingUpdate: Array<Maybe<ZonosCarrierInvoiceAccountNumberMapping>>;
-  /** Create a `CarrierInvoice` */
-  carrierInvoiceCreate: Array<Maybe<ZonosCarrierInvoice>>;
   /** Reconcile a `CarrierInvoiceLineItem` by manually billing a specified amount */
   carrierInvoiceLineItemBillingCreate: Array<ZonosReconciliation>;
   /** Reconcile a `CarrierInvoiceLineItem` by checking for existing billing records or transactions */
   carrierInvoiceLineItemReconcile: Array<ZonosReconciliation>;
-  /** Update an existing `CarrierInvoiceLineItem` */
-  carrierInvoiceLineItemUpdate: Array<Maybe<ZonosCarrierInvoiceLineItem>>;
-  /** Generate upload URLs for carrier invoice objects that will share a common `prefix` */
-  carrierInvoiceUploadUrlGenerate: Array<ZonosInvoiceUploadUrl>;
+  /** Create A new cart for a group of items */
+  cartCreate: ZonosCart;
+  /** Update a cart with new items or remove items */
+  cartUpdate: ZonosCart;
+  /** Use the current state of the cart in the workflow. */
+  cartWorkflow: ZonosCart;
+  /** Update the CartonizationSettings for the callers organization */
+  cartonizationSettingsUpdate: ZonosCartonizationSettings;
   /** Creates a `Carton` from a workflow request */
   cartonizeWorkflow: Maybe<Array<Maybe<ZonosCarton>>>;
   /** Creates `Carton's` from a workflow request */
@@ -6030,16 +6707,17 @@ export type ZonosMutation = {
   catalogItemCreate: Array<ZonosCatalogItem>;
   /** Delete one or many `CatalogItem`. */
   catalogItemDelete: ZonosResult;
-  /**  Creates a new catalog item delete job.  */
+  /** Creates a new catalog item delete job. */
   catalogItemDeleteJobCreate: ZonosDeleteJob;
-  /**  Creates a new catalog item export job for the given catalog item IDs.  */
+  /** Creates a new catalog item export job for the given catalog item IDs. */
   catalogItemExportByIds: ZonosExportJob;
-  /**  Creates a new catalog item export job and will send an email to the caller when complete. */
+  /** Creates a new catalog item export job and will send an email to the caller when complete. */
   catalogItemExportJobCreate: ZonosExportJob;
   /** Update one or many `CatalogItem`. */
   catalogItemUpdate: Array<ZonosCatalogItem>;
   /** Allows an API consumer to calculate a new `Classification` using the provided inputs. */
   classificationsCalculate: Array<ZonosClassification>;
+  classificationsCalculateWithAugmentation: Array<ZonosClassification>;
   /** Creates the `collectInvoiceFeeConfiguration` for the calling tokens `Organization` */
   collectInvoiceFeeConfigurationCreate: ZonosCollectInvoiceFeeConfiguration;
   /** Creates a fee for an existing CollectInvoiceFeeConfiguration */
@@ -6062,6 +6740,7 @@ export type ZonosMutation = {
   /** Generate upload URLs for `CollectInvoice` objects that will share a common `Prefix` */
   collectSubmissionUploadUrlGenerate: Array<ZonosCollectSubmissionUploadUrl>;
   customerInvoiceFilesCreate: Array<Maybe<ZonosCustomerInvoiceFile>>;
+  customsDescriptionsCombineAndCreate: Array<ZonosCustomsDescription>;
   customsDescriptionsCreate: Array<ZonosCustomsDescription>;
   /** Creates `CustomsDocument`s from existing files and attaches them to a `Shipment` or `CustomsSpec` */
   customsDocumentCreate: Array<ZonosCustomsDocument>;
@@ -6084,26 +6763,45 @@ export type ZonosMutation = {
   /** Create new `Items`. */
   itemsCreate: Array<ZonosItem>;
   labelCreateWorkflow: Array<ZonosLabel>;
+  /** Create a new `CustomDeclarationStatement` object */
+  labelSettingsCustomDeclarationCreate: ZonosLabelSettings;
+  /** Delete an existing `CustomDeclarationStatement` object */
+  labelSettingsCustomDeclarationDelete: ZonosLabelSettings;
   /** Updates the `LabelSettings` associated with the calling `Organization`s token */
   labelSettingsUpdate: ZonosLabelSettings;
   /** Allows an API consumer to calculate a new `LandedCost` quote */
   landedCostCalculateWorkflow: Maybe<Array<Maybe<ZonosLandedCost>>>;
+  /** Allows an API consumer to create a new `LandedCost` object. */
+  landedCostCreate: Maybe<ZonosLandedCost>;
+  /** Add a note on an order */
+  orderAddNote: Maybe<ZonosOrder>;
   /** Add a tracking number to an order */
   orderAddTrackingNumber: Maybe<ZonosOrder>;
   /** Cancel an order */
   orderCancel: ZonosOrder;
   /** Create an order from a landed cost quote */
   orderCreate: Maybe<ZonosOrder>;
+  /** Delete a note on an order */
+  orderDeleteNote: Maybe<ZonosOrder>;
   /** Create an order from a legacy Zonos order */
   orderLink: Maybe<Array<Maybe<ZonosOrder>>>;
-  /** Refund an order */
+  /**
+   * Refund an order
+   * @deprecated Use OrderRefundCreate
+   */
   orderRefund: ZonosOrder;
+  /** Create a new OrderRefund */
+  orderRefundCreate: ZonosOrderRefund;
   /** Remove a tracking number from an order */
   orderRemoveTrackingNumber: Maybe<ZonosOrder>;
   /** Update the accountOrderNumber of an order */
   orderUpdateAccountOrderNumber: ZonosOrder;
   /** Update the amount subtotals of an order */
   orderUpdateAmountSubtotals: Array<ZonosOrder>;
+  /** Update a note on an order */
+  orderUpdateNote: Maybe<ZonosOrder>;
+  /** Update the destination or payor party information on an order */
+  orderUpdateParty: Maybe<ZonosOrder>;
   /** Allows an API consumer to create a new `PackagingOption`s */
   packagingOptionCreate: Maybe<Array<Maybe<ZonosPackagingOption>>>;
   /** Allows an API consumer to delete an existing `PackagingOption` */
@@ -6117,13 +6815,15 @@ export type ZonosMutation = {
   pddpCountrySpecUpdate: Maybe<Array<ZonosPddpCountrySpec>>;
   /** Updates the `PddpSettings` associated with the calling `Organization`s token */
   pddpSettingsUpdate: ZonosPddpSettings;
-  /** Create and sumbit a PDDP submission. */
+  /** Create and submit a PDDP submission. */
   pddpSubmissionCreate: Array<ZonosPddpSubmission>;
   rootCreate: Maybe<ZonosRoot>;
+  shipmentBulkCreate: Array<ZonosShipmentBulkCreateResult>;
   /** Creates a new `ShipmentConsolidation` from the given input. */
   shipmentConsolidationCreate: ZonosShipmentConsolidation;
   /** Updates a `ShipmentConsolidation` by adding a shipment, changing the status, or both. */
   shipmentConsolidationUpdate: ZonosShipmentConsolidation;
+  /** @deprecated Use `shipmentCreateWorkflow` instead. */
   shipmentCreate: Maybe<ZonosShipment>;
   shipmentCreateWorkflow: Maybe<ZonosShipment>;
   /** Allows an API consumer to calculate possible `ShipmentRating`s based on the organization's configured settings. */
@@ -6131,6 +6831,23 @@ export type ZonosMutation = {
   /** Allows an API consumer to create a `shipmentRating`. */
   shipmentRatingCreateWorkflow: Maybe<ZonosShipmentRating>;
   shipmentStatusUpdate: Maybe<ZonosShipment>;
+  shipmentsCreateFromOrder: Array<ZonosShipment>;
+  /** Creates a new `Webhook`. */
+  webhookCreate: Maybe<ZonosWebhook>;
+  /** Deletes an existing `Webhook`. */
+  webhookDelete: Maybe<ZonosResult>;
+  /** Updates an existing `Webhook`. */
+  webhookUpdate: Maybe<ZonosWebhook>;
+};
+
+
+export type ZonosMutationCarrierBillingInvoiceCreateArgs = {
+  input: Array<ZonosCarrierBillingInvoiceCreateInput>;
+};
+
+
+export type ZonosMutationCarrierBillingInvoiceVoidArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -6149,11 +6866,6 @@ export type ZonosMutationCarrierInvoiceAccountNumberMappingUpdateArgs = {
 };
 
 
-export type ZonosMutationCarrierInvoiceCreateArgs = {
-  input: Array<ZonosCarrierInvoiceCreateInput>;
-};
-
-
 export type ZonosMutationCarrierInvoiceLineItemBillingCreateArgs = {
   input: Array<ZonosCarrierInvoiceLineItemBillingCreateInput>;
 };
@@ -6164,13 +6876,23 @@ export type ZonosMutationCarrierInvoiceLineItemReconcileArgs = {
 };
 
 
-export type ZonosMutationCarrierInvoiceLineItemUpdateArgs = {
-  input: Array<ZonosCarrierInvoiceLineItemUpdateInput>;
+export type ZonosMutationCartCreateArgs = {
+  input: ZonosCartCreateInput;
 };
 
 
-export type ZonosMutationCarrierInvoiceUploadUrlGenerateArgs = {
-  input: ZonosCarrierInvoiceUploadUrlInput;
+export type ZonosMutationCartUpdateArgs = {
+  input: ZonosCartUpdateInput;
+};
+
+
+export type ZonosMutationCartWorkflowArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type ZonosMutationCartonizationSettingsUpdateArgs = {
+  input: ZonosCartonizationSettingsUpdateInput;
 };
 
 
@@ -6205,6 +6927,11 @@ export type ZonosMutationCatalogItemUpdateArgs = {
 
 
 export type ZonosMutationClassificationsCalculateArgs = {
+  input: Array<ZonosClassificationCalculateInput>;
+};
+
+
+export type ZonosMutationClassificationsCalculateWithAugmentationArgs = {
   input: Array<ZonosClassificationCalculateInput>;
 };
 
@@ -6266,6 +6993,11 @@ export type ZonosMutationCollectSubmissionUploadUrlGenerateArgs = {
 
 export type ZonosMutationCustomerInvoiceFilesCreateArgs = {
   input: Array<ZonosCustomerInvoiceFileCreateInput>;
+};
+
+
+export type ZonosMutationCustomsDescriptionsCombineAndCreateArgs = {
+  input: ZonosCustomsDescriptionCombineAndCreateInput;
 };
 
 
@@ -6334,6 +7066,16 @@ export type ZonosMutationLabelCreateWorkflowArgs = {
 };
 
 
+export type ZonosMutationLabelSettingsCustomDeclarationCreateArgs = {
+  input: ZonosLabelSettingsUpdateInput;
+};
+
+
+export type ZonosMutationLabelSettingsCustomDeclarationDeleteArgs = {
+  input: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
 export type ZonosMutationLabelSettingsUpdateArgs = {
   input: ZonosLabelSettingsUpdateInput;
 };
@@ -6341,6 +7083,16 @@ export type ZonosMutationLabelSettingsUpdateArgs = {
 
 export type ZonosMutationLandedCostCalculateWorkflowArgs = {
   input: ZonosLandedCostWorkFlowInput;
+};
+
+
+export type ZonosMutationLandedCostCreateArgs = {
+  input: ZonosLandedCostCreateInput;
+};
+
+
+export type ZonosMutationOrderAddNoteArgs = {
+  input: ZonosOrderNoteCreateInput;
 };
 
 
@@ -6359,12 +7111,22 @@ export type ZonosMutationOrderCreateArgs = {
 };
 
 
+export type ZonosMutationOrderDeleteNoteArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type ZonosMutationOrderLinkArgs = {
   input: Array<ZonosOrderLinkInput>;
 };
 
 
 export type ZonosMutationOrderRefundArgs = {
+  input: ZonosOrderRefundInput;
+};
+
+
+export type ZonosMutationOrderRefundCreateArgs = {
   input: ZonosOrderRefundInput;
 };
 
@@ -6381,6 +7143,16 @@ export type ZonosMutationOrderUpdateAccountOrderNumberArgs = {
 
 export type ZonosMutationOrderUpdateAmountSubtotalsArgs = {
   input: Array<ZonosOrderUpdateAmountSubtotalsInput>;
+};
+
+
+export type ZonosMutationOrderUpdateNoteArgs = {
+  input: ZonosOrderNoteUpdateInput;
+};
+
+
+export type ZonosMutationOrderUpdatePartyArgs = {
+  input: ZonosOrderUpdatePartyInput;
 };
 
 
@@ -6429,6 +7201,11 @@ export type ZonosMutationPddpSubmissionCreateArgs = {
 };
 
 
+export type ZonosMutationShipmentBulkCreateArgs = {
+  input: ZonosShipmentBulkCreateInput;
+};
+
+
 export type ZonosMutationShipmentConsolidationCreateArgs = {
   input: ZonosShipmentConsolidationCreateInput;
 };
@@ -6461,6 +7238,26 @@ export type ZonosMutationShipmentRatingCreateWorkflowArgs = {
 
 export type ZonosMutationShipmentStatusUpdateArgs = {
   input: ZonosShipmentStatusUpdateInput;
+};
+
+
+export type ZonosMutationShipmentsCreateFromOrderArgs = {
+  input: ZonosShipmentsCreateFromOrderInput;
+};
+
+
+export type ZonosMutationWebhookCreateArgs = {
+  input: ZonosWebhookCreateInput;
+};
+
+
+export type ZonosMutationWebhookDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type ZonosMutationWebhookUpdateArgs = {
+  input: ZonosWebhookUpdateInput;
 };
 
 export type ZonosNode = {
@@ -6524,17 +7321,22 @@ export type ZonosOrder = {
   metadata: Maybe<Array<Maybe<ZonosOrderMetadata>>>;
   /** Specifies whether the Order is in live or test mode. */
   mode: ZonosMode;
+  /** The notes associated with an order`. */
+  notes: Maybe<Array<Maybe<ZonosOrderNote>>>;
   /** The `Organization` associated with the Order. */
   organization: Scalars['ID'];
   /** The relevant party contact information for the `Order`. */
   parties: Maybe<Array<ZonosParty>>;
   /** The reference information that is included in the `Order`. */
   references: Maybe<Array<ZonosOrderReference>>;
+  /** A List of refunds on the order */
+  refunds: Maybe<Array<ZonosOrderRefund>>;
   /** List of remittances */
   remittance: Maybe<Array<Maybe<ZonosRemittance>>>;
   root: Maybe<ZonosRoot>;
   /** The `shipmentRatings` that are included in the `Order`. */
   shipmentRatings: Maybe<Array<ZonosShipmentRating>>;
+  shipments: Array<ZonosShipment>;
   /** The status of the `Order`. */
   status: ZonosOrderStatus;
   /** Timestamp for when the status changed. */
@@ -6545,11 +7347,15 @@ export type ZonosOrder = {
   updatedAt: Scalars['DateTime'];
   /** The user who most recently updated the Order. */
   updatedBy: Scalars['ID'];
+  /** The Zonos order id is an ID that is shorter and easier to use than the UUID */
+  zonosOrderId: Maybe<Scalars['String']>;
 };
 
 export type ZonosOrderAddTrackingNumberInput = {
   /** The ID of the `Order` to update */
   id: Scalars['ID'];
+  /** Boolean to not send sync back to legacy */
+  syncToLegacy?: InputMaybe<Scalars['Boolean']>;
   /** The main tracking number for the `order`. */
   trackingNumbers: Array<Scalars['String']>;
 };
@@ -6564,12 +7370,12 @@ export type ZonosOrderConnection = {
   /** Field edges */
   edges: Maybe<Array<Maybe<ZonosOrderEdge>>>;
   /** Field pageInfo */
-  pageInfo: Maybe<ZonosPageInfo>;
+  pageInfo: ZonosPageInfo;
 };
 
 export type ZonosOrderCreateInput = {
   /** The order number from the `organization`. */
-  accountOrderNumber: Scalars['String'];
+  accountOrderNumber?: InputMaybe<Scalars['String']>;
   /** The ID of the billing `party`. */
   billTo?: InputMaybe<Scalars['ID']>;
   currencyCode: ZonosCurrencyCode;
@@ -6579,12 +7385,14 @@ export type ZonosOrderCreateInput = {
   landedCostId: Scalars['ID'];
   /** Other `Order` details. */
   metadata?: InputMaybe<Array<InputMaybe<ZonosOrderMetadataInput>>>;
+  /** The reference information associated to the order. */
+  references?: InputMaybe<Array<InputMaybe<ZonosOrderReferenceInput>>>;
   /** The `id` of the destination `party` if different from the landedCost destination party. */
   shipTo?: InputMaybe<Scalars['ID']>;
+  /** Optional field for details to create `Shipment` objects associated with this `Order`. */
+  shipmentDetails?: InputMaybe<Array<ZonosOrderShipmentDetailInput>>;
   /** The source platform of the order. */
   source?: InputMaybe<Scalars['String']>;
-  /** The tracking numbers for the `order`. */
-  trackingNumbers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 /** Order Edge */
@@ -6594,6 +7402,14 @@ export type ZonosOrderEdge = {
   cursor: Maybe<Scalars['String']>;
   /** Field node */
   node: Maybe<ZonosOrder>;
+};
+
+export type ZonosOrderFulfillmentProgressResult = {
+  __typename?: 'OrderFulfillmentProgressResult';
+  /** List of `Shipment` objects from an `Order` that were fulfilled. Only contains shipments that do not have a status = VOIDED. */
+  fulfilled: Array<ZonosShipment>;
+  /** List of `FulfillmentItem` objects that relate to an `Order`. Indicates the original `Item` and the quantity that has yet to be fulfilled. */
+  notFulfilled: Array<ZonosFulfillmentItem>;
 };
 
 export type ZonosOrderLinkInput = {
@@ -6620,6 +7436,52 @@ export type ZonosOrderMetadataInput = {
   value: Scalars['String'];
 };
 
+export type ZonosOrderNote = {
+  __typename?: 'OrderNote';
+  /** When this `Order Note` was created. */
+  createdAt: Scalars['DateTime'];
+  /** The user who created the Order Note. */
+  createdBy: Scalars['ID'];
+  /** When this `Order Note` was deleted. */
+  deletedAt: Maybe<Scalars['DateTime']>;
+  /** The user who deleted the Order Note. */
+  deletedBy: Maybe<Scalars['ID']>;
+  /** The ID of the `Order Note`. */
+  id: Scalars['ID'];
+  /** Note text */
+  note: Scalars['String'];
+  /** The type of note */
+  type: ZonosOrderNoteType;
+  /** When this `Order Note` was most recently updated. */
+  updatedAt: Scalars['DateTime'];
+  /** The user who most recently updated the Order Note. */
+  updatedBy: Scalars['ID'];
+};
+
+export type ZonosOrderNoteCreateInput = {
+  /** Note text */
+  note: Scalars['String'];
+  /** The ID of the `Order` to create a note for */
+  orderId: Scalars['ID'];
+  /** The type of note` */
+  type: ZonosOrderNoteType;
+};
+
+/** the Type on an `Order Note` */
+export type ZonosOrderNoteType =
+  | 'COMMENT'
+  | 'NOTIFICATION_SENT'
+  | 'ORDER_CHANGE'
+  | 'SHIPMENT'
+  | 'STATUS';
+
+export type ZonosOrderNoteUpdateInput = {
+  /** The ID of the `Order Note` to update */
+  id: Scalars['ID'];
+  /** Note text */
+  note: Scalars['String'];
+};
+
 /** Reference information provided by Zonos about the order. */
 export type ZonosOrderReference = {
   __typename?: 'OrderReference';
@@ -6627,16 +7489,61 @@ export type ZonosOrderReference = {
   value: Maybe<Scalars['String']>;
 };
 
-export type ZonosOrderRefundInput = {
-  /** The amount to refund */
+/** Order reference Information input */
+export type ZonosOrderReferenceInput = {
+  key?: InputMaybe<Scalars['String']>;
+  value?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosOrderRefund = {
+  __typename?: 'OrderRefund';
+  /** The total amount of the refund subtotals */
   amount: Scalars['Decimal'];
-  /** The currency the refund amount is in */
+  /** When this `OrderRefund` was created. */
+  createdAt: Scalars['DateTime'];
+  /** The user who created the `OrderRefund`. */
+  createdBy: Scalars['ID'];
+  /** The currency of the refund amount and subtotals. */
+  currencyCode: ZonosCurrencyCode;
+  /** A unique identifier for the `OrderRefund`. */
+  id: Scalars['ID'];
+  /** A description for the refund */
+  note: Maybe<Scalars['String']>;
+  /** `Order` that this `OrderRefund` belongs to */
+  order: ZonosOrder;
+  /** The subtotal amounts and types for the refund */
+  subtotals: Array<ZonosOrderRefundSubtotal>;
+};
+
+export type ZonosOrderRefundInput = {
+  /** The currency the refund totals are in */
   currencyCode: ZonosCurrencyCode;
   /** The `ID` of the `Order` to refund */
   id: Scalars['ID'];
   /** A description for the refund */
   note?: InputMaybe<Scalars['String']>;
+  /** The subtotal amounts and types for the refund */
+  subtotals?: InputMaybe<Array<ZonosOrderRefundSubtotalInput>>;
 };
+
+export type ZonosOrderRefundSubtotal = {
+  __typename?: 'OrderRefundSubtotal';
+  /** Amount for this subtotal type for the refund */
+  amount: Scalars['Decimal'];
+  /** Refund subtotal type */
+  type: ZonosOrderRefundSubtotalType;
+};
+
+export type ZonosOrderRefundSubtotalInput = {
+  amount: Scalars['Decimal'];
+  type: ZonosOrderRefundSubtotalType;
+};
+
+/** The type for the refund subtotal */
+export type ZonosOrderRefundSubtotalType =
+  | 'DUTY_TAX_FEE'
+  | 'ITEM'
+  | 'SHIPPING';
 
 export type ZonosOrderRemoveTrackingNumberInput = {
   /** The ID of the `Order` to update */
@@ -6645,12 +7552,66 @@ export type ZonosOrderRemoveTrackingNumberInput = {
   trackingNumbers: Array<Scalars['String']>;
 };
 
+export type ZonosOrderShipmentCartonInput = {
+  /** Unit of measurement for the dimensions of this carton. Default value is INCH. */
+  dimensionalUnit?: InputMaybe<ZonosDimensionalUnitCode>;
+  /** Height of the carton. */
+  height: Scalars['Decimal'];
+  /** Item details of the items packaged inside the carton. */
+  items: Array<ZonosOrderShipmentCartonItemInput>;
+  /** Length of the carton. */
+  length: Scalars['Decimal'];
+  /** Tracking number associated with this carton. */
+  trackingNumber?: InputMaybe<Scalars['String']>;
+  /** Weight of the carton. */
+  weight: Scalars['Decimal'];
+  /** Unit of measurement for the weight of this carton. Default value is POUND. */
+  weightUnit?: InputMaybe<ZonosWeightUnitCode>;
+  /** Width of this carton. */
+  width: Scalars['Decimal'];
+};
+
+export type ZonosOrderShipmentCartonItemInput = {
+  /** The country of origin for the `Item`. */
+  countryOfOrigin?: InputMaybe<ZonosCountryCode>;
+  /** HS code of the `Item`. */
+  hsCode?: InputMaybe<Scalars['String']>;
+  /** The reference to the item being included in the carton. Can be SKU, Product ID, or the `Item.id`. */
+  itemReference: Scalars['String'];
+  /** The quantity of the `Item` that is packaged inside this carton. Default value is 1. */
+  quantity?: InputMaybe<Scalars['Int']>;
+};
+
+export type ZonosOrderShipmentCreateInput = {
+  /** Optional `FulfillmentCenter` ID. If not provided, the ORIGIN `Party` on the `Order` will be used. */
+  fulfillmentCenter?: InputMaybe<Scalars['ID']>;
+  /** Optional `ServiceLevel` ID or code. If not provided, the `ServiceLevel` on the `Order.landedCost` will be used. */
+  serviceLevel?: InputMaybe<Scalars['String']>;
+  /** Details about the cartons included in this Shipment. */
+  shipmentCartons: Array<ZonosShipmentCartonInput>;
+  /** Optional master tracking number referring to the entire Shipment. */
+  trackingNumber?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosOrderShipmentDetailInput = {
+  /** ID of the `FulfillmentCenter` the shipment is being shipped from. If not provided, the PRIMARY `FulfilmentCenter` will be used. */
+  fulfillmentCenter?: InputMaybe<Scalars['ID']>;
+  /** Identifier for the `ServiceLevel` to be used to create the `Shipment`. Can be the `id` or `code` and must be associated with a valid `ServiceLevel`. If not provided, the `ServiceLevel` on the `LandedCost.shipmentRating` for the Order will be used. */
+  serviceLevel?: InputMaybe<Scalars['String']>;
+  /** List of inputs with details about the packages inside the `Shipment` being created. */
+  shipmentCartons: Array<ZonosOrderShipmentCartonInput>;
+  /** Optional master tracking number for the `Shipment` being created. */
+  trackingNumber?: InputMaybe<Scalars['String']>;
+};
+
 /** Assigned status for `Order` */
 export type ZonosOrderStatus =
   | 'CANCELED'
   | 'COMPLETED'
   | 'FRAUD_HOLD'
+  | 'IN_TRANSIT_TO_CONSOLIDATION_CENTER'
   | 'OPEN'
+  | 'PARTIALLY_SHIPPED'
   | 'PAYMENT_FAILED'
   | 'PAYMENT_PENDING';
 
@@ -6675,6 +7636,8 @@ export type ZonosOrderUpdateAccountOrderNumberInput = {
   accountOrderNumber: Scalars['String'];
   /** The ID of the `Order` to update */
   id: Scalars['ID'];
+  /** Boolean to not send sync back to legacy */
+  syncToLegacy?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ZonosOrderUpdateAmountSubtotalsInput = {
@@ -6682,11 +7645,20 @@ export type ZonosOrderUpdateAmountSubtotalsInput = {
   orderId: Scalars['ID'];
 };
 
+export type ZonosOrderUpdatePartyInput = {
+  /** The ID of the `Order` to update */
+  id: Scalars['ID'];
+  /** The new `id` of the destination or payor `party` to use for the order. */
+  partyId: Scalars['ID'];
+};
+
 export type ZonosOrdersFilter = {
   /** Return the `Order` resource with the given accountOrderNumber */
   accountOrderNumber?: InputMaybe<Scalars['String']>;
   /** Return `Order` resources created within a given date range */
   between?: InputMaybe<ZonosDateTimeRange>;
+  /** Return `Order` resources created within a given status */
+  status?: InputMaybe<ZonosOrderStatus>;
   /** Return `Order` resources created within a given store ID */
   storeId?: InputMaybe<Scalars['String']>;
 };
@@ -6851,6 +7823,8 @@ export type ZonosParty = {
 };
 
 export type ZonosPartyCreateInput = {
+  /** If provided all fields from the existing party will be copied to the new party, except for any non-null fields explicitly provided in the input */
+  existingPartyId?: InputMaybe<Scalars['ID']>;
   location?: InputMaybe<ZonosLocationCreateInput>;
   person?: InputMaybe<ZonosPersonCreateInput>;
   referenceId?: InputMaybe<Scalars['ID']>;
@@ -6883,20 +7857,32 @@ export type ZonosPartyScreenInput = {
   person?: InputMaybe<ZonosDeniedPartyPersonInput>;
 };
 
+/** The match found on the party screening. */
 export type ZonosPartyScreenMatch = {
   __typename?: 'PartyScreenMatch';
+  /** The administrative area code match type. */
   administrativeAreaCode: Maybe<ZonosMatchType>;
+  /** The company match type. */
   companyName: Maybe<ZonosMatchType>;
+  /** The country code match type. */
   countryCode: Maybe<ZonosMatchType>;
+  /** The denied party that was matched. */
   deniedParty: Maybe<ZonosDeniedParty>;
+  /** The line1 match type. */
   line1: Maybe<ZonosMatchType>;
+  /** The line2 match type. */
   line2: Maybe<ZonosMatchType>;
+  /** The locality/city match type. */
   locality: Maybe<ZonosMatchType>;
+  /** The contact name match type. */
   name: Maybe<ZonosMatchType>;
+  /** The postal code match type. */
   postalCode: Maybe<ZonosMatchType>;
+  /** The score of the matched denied party. */
   scores: Maybe<ZonosScreeningScores>;
 };
 
+/** The screening result for a party. */
 export type ZonosPartyScreening = {
   __typename?: 'PartyScreening';
   /** Indicates the type of action required for the party screening */
@@ -6909,6 +7895,7 @@ export type ZonosPartyScreening = {
   id: Scalars['ID'];
   /** The fields that had an match with a potential denied party */
   matches: Array<ZonosPartyScreenMatch>;
+  /** The mode of the party screening */
   mode: ZonosMode;
   /** Party that was used to query the API */
   party: ZonosParty;
@@ -6964,8 +7951,11 @@ export type ZonosPaymentsSettings = {
   endOfDayBehavior: Maybe<ZonosEndOfDayBehavior>;
   /** How often payouts occur, in days. */
   frequencyDays: Maybe<Scalars['Int']>;
-  /** A unique identifier for the PaymentsSettings. */
-  id: Scalars['String'];
+  /**
+   * A unique identifier for the PaymentsSettings.
+   * @deprecated Not needed, we will find the object associated to the passed in credential's organization.
+   */
+  id: Maybe<Scalars['String']>;
   /** Specifies which system to use for billing Lcg Fees */
   lcgBillingMethod: Maybe<ZonosLcgBillingMethod>;
   /** The minimum balance required to trigger a payout, in USD. */
@@ -7141,13 +8131,15 @@ export type ZonosPddpSubmission = ZonosNode & {
   /** The ID of the `Order` this submission is associated with */
   orderId: Scalars['ID'];
   /** The origin postal operator, UPU Code */
-  originPost: Scalars['String'];
+  originPost: Maybe<Scalars['String']>;
   /** The PDDP transaction identifier */
-  pddpTransactionIdentifier: Scalars['String'];
+  pddpTransactionIdentifier: Maybe<Scalars['String']>;
   /** The ID of the associated `Shipment` */
   shipmentId: Scalars['ID'];
   /** The tracking number of the submission */
   trackingNumber: Scalars['String'];
+  /** Type of PDDP */
+  type: Maybe<ZonosPddpType>;
 };
 
 /** A collection of PDDP submissions and related information to aid in pagination */
@@ -7243,6 +8235,10 @@ export type ZonosPddpSubmissionLogFilter = {
   pddpSubmission?: InputMaybe<Scalars['String']>;
 };
 
+export type ZonosPddpType =
+  | 'CANADA_POST'
+  | 'IPC';
+
 export type ZonosPerson = {
   __typename?: 'Person';
   companyName: Maybe<Scalars['String']>;
@@ -7269,15 +8265,6 @@ export type ZonosPersonCreateInput = {
   phone?: InputMaybe<Scalars['String']>;
 };
 
-export type ZonosPriceBreakdown = {
-  __typename?: 'PriceBreakdown';
-  duties: Maybe<Scalars['Decimal']>;
-  fees: Maybe<Scalars['Decimal']>;
-  shipping: Maybe<Scalars['Decimal']>;
-  taxes: Maybe<Scalars['Decimal']>;
-  total: Maybe<Scalars['Decimal']>;
-};
-
 export type ZonosPropertyType =
   | 'COMMERCIAL'
   | 'RESIDENTAL'
@@ -7287,11 +8274,7 @@ export type ZonosProvidedHsCodeVisibilityStatus =
   | 'NOT_VISIBLE'
   | 'VISIBLE';
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQuery = {
   __typename?: 'Query';
   /** Returns a `Carrier` resource by ID. */
@@ -7300,32 +8283,37 @@ export type ZonosQuery = {
   carrierAccount: Maybe<ZonosCarrierAccount>;
   /** Returns all the information tied to the `Carrier` that a specified organization uses. */
   carrierAccounts: Maybe<Array<Maybe<ZonosCarrierAccount>>>;
-  /** Returns  a `Carrier` based on a `string` code. */
+  /** Retrieve a `CarrierBillingInvoice` by ID */
+  carrierBillingInvoice: Maybe<ZonosCarrierBillingInvoice>;
+  /** Retrieve a `CarrierBillingInvoiceConnection` based on a `CarrierBillingInvoiceFilter` criteria */
+  carrierBillingInvoices: ZonosCarrierBillingInvoiceConnection;
+  /** Returns a `Carrier` based on a `string` code. */
   carrierByCode: Maybe<ZonosCarrier>;
-  /** Retrieve a `CarrierInvoice` by ID */
-  carrierInvoice: Maybe<ZonosCarrierInvoice>;
   /** Retrieve a `CarrierInvoiceAccountNumberMapping` by ID */
   carrierInvoiceAccountNumberMapping: Maybe<ZonosCarrierInvoiceAccountNumberMapping>;
   /** Retrieve `CarrierInvoiceAccountNumberMappingConnection`s based on a `CarrierInvoiceAccountNumberMappingFilter` criteria */
   carrierInvoiceAccountNumberMappings: ZonosCarrierInvoiceAccountNumberMappingConnection;
-  carrierInvoiceLineItems: ZonosCarrierInvoiceLineItemConnection;
-  /** Retrieve a `CarrierInvoiceConnection` based on a `CarrierInvoiceFilter` criteria */
-  carrierInvoices: Maybe<ZonosCarrierInvoiceConnection>;
   /** Returns a list of `Carrier` resources by ID. */
   carriers: Maybe<Array<Maybe<ZonosCarrier>>>;
+  /** Returns an `Cart` resource by ID. */
+  cart: Maybe<ZonosCart>;
   /** Returns a `Carton` resource by `ID` */
   carton: Maybe<ZonosCarton>;
+  /** Query for the CartonizationSettings associated with the callers organization */
+  cartonizationSettings: ZonosCartonizationSettings;
   /** Returns a list of `Carton` objects that apply to a `root` */
   cartons: Maybe<Array<Maybe<ZonosCarton>>>;
+  /** Returns a list of `Item` resources. */
+  carts: ZonosCartConnection;
   /** Returns a `CatalogItem` by ID. */
   catalogItem: Maybe<ZonosCatalogItem>;
-  /**  Retrieves a catalog item delete job by its ID.  */
+  /** Retrieves a catalog item delete job by its ID. */
   catalogItemDeleteJob: Maybe<ZonosDeleteJob>;
-  /**  Retrieves a list of catalog item delete jobs.  */
+  /** Retrieves a list of catalog item delete jobs. */
   catalogItemDeleteJobs: Maybe<ZonosDeleteJobsConnection>;
-  /**  Retrieves a catalog item export job by its ID.  */
+  /** Retrieves a catalog item export job by its ID. */
   catalogItemExportJob: Maybe<ZonosExportJob>;
-  /**  Retrieves a list of catalog item export jobs.  */
+  /** Retrieves a list of catalog item export jobs. */
   catalogItemExportJobs: Maybe<ZonosExportJobConnection>;
   /** Returns a list of `CatalogItem`. */
   catalogItems: Maybe<ZonosCatalogItemConnection>;
@@ -7347,12 +8335,16 @@ export type ZonosQuery = {
   /** Query a `CollectUploadEvent` object by ID */
   collectUploadEvent: ZonosCollectUploadEvent;
   collectUploadEvents: ZonosCollectUploadEventConnection;
+  /** Get the field labels for a country */
+  countryFieldLabel: ZonosCountryFieldLabel;
   /** Returns a `CurrencyFormat` resource by CurrencyCode */
   currencyFormat: Maybe<ZonosCurrencyFormat>;
   /** Query for a CustomsDocument by ID */
   customsDocument: Maybe<ZonosCustomsDocument>;
   /** Query for a paginated connection of CustomsDocuments */
   customsDocuments: ZonosCustomsDocumentConnection;
+  /** Query for any `CustomsDocument` objects associated with the given reference ID. */
+  customsDocumentsByReferenceId: Array<ZonosCustomsDocument>;
   /** Retrieve a `CustomsSpec` by ID */
   customsSpec: Maybe<ZonosCustomsSpec>;
   /** Retrieve a list of `CustomsSpec` objects */
@@ -7362,7 +8354,7 @@ export type ZonosQuery = {
   /** Returns a `FulfillmentCenter` object by ID. */
   fulfillmentCenter: Maybe<ZonosFulfillmentCenter>;
   /** Returns a list of `FulfillmentCenter` objects for an `Organization` */
-  fulfillmentCenters: Maybe<Array<Maybe<ZonosFulfillmentCenter>>>;
+  fulfillmentCenters: Maybe<Array<ZonosFulfillmentCenter>>;
   getPerson: Maybe<ZonosPerson>;
   /** Returns `HelloSettings` associated with the current token's `Organization` */
   helloSettings: Maybe<ZonosHelloSettings>;
@@ -7370,6 +8362,7 @@ export type ZonosQuery = {
   hsCodeFragments: Array<ZonosHsCodeFragment>;
   /** Returns an `Item` resource by ID. */
   item: Maybe<ZonosItem>;
+  itemRestriction: Maybe<ZonosItemRestriction>;
   itemRestrictionResult: Maybe<ZonosItemRestrictionResult>;
   itemRestrictionResults: Maybe<ZonosItemRestrictionResultConnection>;
   /** Returns a list of `Item` resources. */
@@ -7386,6 +8379,8 @@ export type ZonosQuery = {
   landedCosts: Maybe<ZonosLandedCostConnection>;
   location: Maybe<ZonosLocation>;
   order: Maybe<ZonosOrder>;
+  /** Finds all items for an `Order` that are shipped and not yet shipped. */
+  orderFulfillmentProgress: ZonosOrderFulfillmentProgressResult;
   orders: Maybe<ZonosOrderConnection>;
   /** Returns a `PackagingOption` resource by `ID` */
   packagingOption: Maybe<ZonosPackagingOption>;
@@ -7454,74 +8449,62 @@ export type ZonosQuery = {
   /** Returns a list of `ShippingZone` resources for an organization. */
   shippingZones: Maybe<Array<Maybe<ZonosShippingZone>>>;
   taxIds: Maybe<Array<Maybe<ZonosTaxId>>>;
+  /** Returns a `Webhook` resource by `ID`. */
+  webhook: Maybe<ZonosWebhook>;
+  /** Returns a `WebhookLog` resource by `ID`. */
+  webhookLog: Maybe<ZonosWebhookLog>;
+  /** Returns a list of `WebhookLog` resources. */
+  webhookLogs: ZonosWebhookLogConnection;
+  /** Returns a list of `Webhook` resources. */
+  webhooks: ZonosWebhookConnection;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierAccountArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierAccountsArgs = {
   filter: InputMaybe<ZonosCarrierAccountsFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryCarrierBillingInvoiceArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
+export type ZonosQueryCarrierBillingInvoicesArgs = {
+  after: InputMaybe<Scalars['String']>;
+  filter: InputMaybe<ZonosCarrierBillingInvoiceFilter>;
+  first: InputMaybe<Scalars['Int']>;
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierByCodeArgs = {
   code: Scalars['String'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
-export type ZonosQueryCarrierInvoiceArgs = {
-  id: Scalars['ID'];
-};
-
-
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierInvoiceAccountNumberMappingArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarrierInvoiceAccountNumberMappingsArgs = {
   after: InputMaybe<Scalars['String']>;
   filter: InputMaybe<ZonosCarrierInvoiceAccountNumberMappingFilter>;
@@ -7529,69 +8512,40 @@ export type ZonosQueryCarrierInvoiceAccountNumberMappingsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
-export type ZonosQueryCarrierInvoiceLineItemsArgs = {
-  after: InputMaybe<Scalars['String']>;
-  before: InputMaybe<Scalars['String']>;
-  filter: InputMaybe<ZonosCarrierInvoiceLineItemFilter>;
-  first: InputMaybe<Scalars['Int']>;
-  last: InputMaybe<Scalars['Int']>;
-};
-
-
-/**
- * interface Node {
- *     id: ID!
- * }
- */
-export type ZonosQueryCarrierInvoicesArgs = {
-  after: InputMaybe<Scalars['String']>;
-  before: InputMaybe<Scalars['String']>;
-  filter: InputMaybe<ZonosCarrierInvoiceFilter>;
-  first: InputMaybe<Scalars['Int']>;
-  last: InputMaybe<Scalars['Int']>;
-};
-
-
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCarriersArgs = {
   filter: InputMaybe<ZonosCarriersFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryCartArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryCartonArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCartonsArgs = {
   filter: InputMaybe<ZonosCartonsFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryCartsArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
+  first: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemArgs = {
   id: InputMaybe<Scalars['ID']>;
   productId: InputMaybe<Scalars['String']>;
@@ -7599,21 +8553,13 @@ export type ZonosQueryCatalogItemArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemDeleteJobArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemDeleteJobsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7623,21 +8569,13 @@ export type ZonosQueryCatalogItemDeleteJobsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemExportJobArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemExportJobsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7647,11 +8585,7 @@ export type ZonosQueryCatalogItemExportJobsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCatalogItemsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7661,21 +8595,13 @@ export type ZonosQueryCatalogItemsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryClassificationArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryClassificationsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7685,31 +8611,19 @@ export type ZonosQueryClassificationsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCollectInvoiceArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCollectSubmissionArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCollectSubmissionsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7719,21 +8633,13 @@ export type ZonosQueryCollectSubmissionsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCollectUploadEventArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCollectUploadEventsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7743,31 +8649,25 @@ export type ZonosQueryCollectUploadEventsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryCountryFieldLabelArgs = {
+  countryCode: ZonosCountryCode;
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryCurrencyFormatArgs = {
   input: ZonosCurrencyCode;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCustomsDocumentArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCustomsDocumentsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7777,21 +8677,19 @@ export type ZonosQueryCustomsDocumentsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryCustomsDocumentsByReferenceIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryCustomsSpecArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryCustomsSpecsArgs = {
   after: InputMaybe<Scalars['String']>;
   filter: InputMaybe<ZonosCustomsSpecFilter>;
@@ -7799,71 +8697,55 @@ export type ZonosQueryCustomsSpecsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryExchangeRateArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryFulfillmentCenterArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryFulfillmentCentersArgs = {
+  filter: InputMaybe<ZonosFulfillmentCenterFilter>;
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryGetPersonArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryHsCodeFragmentsArgs = {
   filter: ZonosHsCodeFragmentsFilter;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryItemArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryItemRestrictionArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryItemRestrictionResultArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryItemRestrictionResultsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7872,32 +8754,20 @@ export type ZonosQueryItemRestrictionResultsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryItemsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLabelArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLabelRequestLogsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7907,11 +8777,7 @@ export type ZonosQueryLabelRequestLogsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLabelsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7921,21 +8787,13 @@ export type ZonosQueryLabelsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLandedCostArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLandedCostsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -7945,31 +8803,25 @@ export type ZonosQueryLandedCostsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryLocationArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryOrderArgs = {
   orderId: Scalars['String'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
+export type ZonosQueryOrderFulfillmentProgressArgs = {
+  orderId: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
 export type ZonosQueryOrdersArgs = {
   after: InputMaybe<Scalars['String']>;
   filter: InputMaybe<ZonosOrdersFilter>;
@@ -7977,31 +8829,19 @@ export type ZonosQueryOrdersArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPackagingOptionArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPackagingOptionsArgs = {
   filter: InputMaybe<ZonosPackagingOptionsFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPackagingOptionsConnectionArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8011,51 +8851,31 @@ export type ZonosQueryPackagingOptionsConnectionArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPartiesArgs = {
   input: InputMaybe<ZonosPartyFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPartiesFindAllByIdArgs = {
   input: Array<Scalars['ID']>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPartyArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPartyScreeningArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPartyScreeningsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8065,21 +8885,13 @@ export type ZonosQueryPartyScreeningsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpCountrySpecArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpCountrySpecsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8088,31 +8900,19 @@ export type ZonosQueryPddpCountrySpecsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpSubmissionArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpSubmissionLogArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpSubmissionLogsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8122,11 +8922,7 @@ export type ZonosQueryPddpSubmissionLogsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryPddpSubmissionsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8136,102 +8932,62 @@ export type ZonosQueryPddpSubmissionsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryReconciliationArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelAreaArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelAreasArgs = {
   filter: InputMaybe<ZonosServiceLevelAreasFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelRateChartArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelRateChartsArgs = {
   filter: InputMaybe<ZonosServiceLevelRateChartsFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryServiceLevelsArgs = {
   carrier: InputMaybe<Scalars['String']>;
   filter: InputMaybe<ZonosServiceLevelFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentConsolidationArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentConsolidationsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8241,21 +8997,13 @@ export type ZonosQueryShipmentConsolidationsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentRatingArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentRatingsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8265,11 +9013,7 @@ export type ZonosQueryShipmentRatingsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShipmentsArgs = {
   after: InputMaybe<Scalars['String']>;
   before: InputMaybe<Scalars['String']>;
@@ -8279,83 +9023,83 @@ export type ZonosQueryShipmentsArgs = {
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingProfileArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingProfileRateChartArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingProfileRateChartsArgs = {
   filter: InputMaybe<ZonosShippingProfileRateChartsFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingProfilesArgs = {
   filter: InputMaybe<ZonosShippingProfilesFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingStoreSettingsArgs = {
   storeId: Scalars['Int'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingZoneArgs = {
   id: Scalars['ID'];
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryShippingZonesArgs = {
   filter: InputMaybe<ZonosShippingZonesFilter>;
 };
 
 
-/**
- * interface Node {
- *     id: ID!
- * }
- */
+/** interface Node { id: ID! } */
 export type ZonosQueryTaxIdsArgs = {
   filter: InputMaybe<ZonosTaxIdFilterInput>;
+};
+
+
+/** interface Node { id: ID! } */
+export type ZonosQueryWebhookArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
+export type ZonosQueryWebhookLogArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** interface Node { id: ID! } */
+export type ZonosQueryWebhookLogsArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
+  filter: InputMaybe<ZonosWebhookLogsFilterInput>;
+  first: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
+};
+
+
+/** interface Node { id: ID! } */
+export type ZonosQueryWebhooksArgs = {
+  after: InputMaybe<Scalars['String']>;
+  before: InputMaybe<Scalars['String']>;
+  filter: InputMaybe<ZonosWebhooksFilterInput>;
+  first: InputMaybe<Scalars['Int']>;
+  last: InputMaybe<Scalars['Int']>;
 };
 
 export type ZonosQueueDataMigrationInput = {
@@ -8399,25 +9143,22 @@ export type ZonosRemittance = {
   note: Scalars['String'];
 };
 
-/**
- * A `RestrictedItem represent an item that has been restricted.
- * 3 ways an item can be restricted: via catalog's restricted countries, a rule, or itemRestriction API.
- */
+/** A `RestrictedItem represent an item that has been restricted. 3 ways an item can be restricted: via catalog's restricted countries, a rule, or itemRestriction API. */
 export type ZonosRestrictedItem = {
   __typename?: 'RestrictedItem';
   /** The action taken on the restricted item. */
   action: ZonosRestrictedItemAction;
-  /** `CatalogItem` if the restriction was due to catalog  */
+  /** `CatalogItem` if the restriction was due to catalog */
   catalogItem: Maybe<ZonosCatalogItem>;
   /** `RestrictedItem` ID, prefixed with `restricted_item_`. */
   id: Scalars['ID'];
   /** `Item` that was restricted. */
   item: ZonosItem;
-  /** `itemRestrictions` if the restriction was due to restricted item result  */
+  /** `itemRestrictions` if the restriction was due to restricted item result */
   itemRestrictions: Maybe<ZonosItemRestrictionResult>;
   /** the reason this item was restricted */
   reason: Scalars['String'];
-  /** `Rule` if the restriction was due to a rule  */
+  /** `Rule` if the restriction was due to a rule */
   rule: Maybe<ZonosRule>;
 };
 
@@ -8432,6 +9173,12 @@ export type ZonosRestrictedItemAction =
 export type ZonosResult =
   | 'FAILURE'
   | 'SUCCESS';
+
+export type ZonosResultMessage = {
+  __typename?: 'ResultMessage';
+  message: Maybe<Scalars['String']>;
+  result: ZonosResult;
+};
 
 /** A `Root` serves as a wrapper for various resources, such as `LandedCost` and `ShipmentRating` */
 export type ZonosRoot = {
@@ -8475,6 +9222,14 @@ export type ZonosRootsFilter = {
   createdAtBefore?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type ZonosRoundingMethod =
+  | 'CUSTOM'
+  | 'HUNDREDTH'
+  | 'NONE'
+  | 'TENTH'
+  | 'THOUSANDTH'
+  | 'WHOLE';
+
 export type ZonosRule = {
   __typename?: 'Rule';
   id: Scalars['ID'];
@@ -8489,18 +9244,18 @@ export type ZonosScreenPartyInput = {
   person?: InputMaybe<ZonosDeniedPartyPersonInput>;
 };
 
+/** The screening scores for the party screening. */
 export type ZonosScreeningScores = {
   __typename?: 'ScreeningScores';
+  /** The score for the party screening's location. */
   location: Maybe<Scalars['Decimal']>;
+  /** The score for the party screening's name. */
   name: Maybe<Scalars['Decimal']>;
+  /** The overall score for the party screening's name and location combined. */
   overall: Maybe<Scalars['Decimal']>;
 };
 
-/**
- * A `ServiceLevel` is a predefined service provided by a `Carrier` to a given country or region.
- * `ServiceLevel` will impact time in transit and the associated shipment rating.
- * `ServiceLevel` eligibility may be impacted by product attributes, such as value and dimensions.
- */
+/** A `ServiceLevel` is a predefined service provided by a `Carrier` to a given country or region. `ServiceLevel` will impact time in transit and the associated shipment rating. `ServiceLevel` eligibility may be impacted by product attributes, such as value and dimensions. */
 export type ZonosServiceLevel = {
   __typename?: 'ServiceLevel';
   /** Enumerated value that specifies whether a ServiceLevel is available to all customers or is specifically contracted */
@@ -8534,10 +9289,7 @@ export type ZonosServiceLevel = {
   updatedBy: Scalars['ID'];
 };
 
-/**
- * A `serviceLevelArea` object is a grouping of countries, regions, or zip codes that can be associated with a `serviceLevel`.
- * Usage of this will only happen in conjunction with rate charts.
- */
+/** A `serviceLevelArea` object is a grouping of countries, regions, or zip codes that can be associated with a `serviceLevel`. Usage of this will only happen in conjunction with rate charts. */
 export type ZonosServiceLevelArea = {
   __typename?: 'ServiceLevelArea';
   /** The search pattern of an administrative area or region code of the country. */
@@ -8606,10 +9358,7 @@ export type ZonosServiceLevelFilter = {
   code?: InputMaybe<Scalars['String']>;
 };
 
-/**
- * A ServiceLevelRateChart would apply to a specific service level.
- * The ServiceLevelRateChart would be used before a external carrier API.
- */
+/** A ServiceLevelRateChart would apply to a specific service level. The ServiceLevelRateChart would be used before a external carrier API. */
 export type ZonosServiceLevelRateChart = {
   __typename?: 'ServiceLevelRateChart';
   /** When this ServiceLevelRateChart was created. */
@@ -8647,8 +9396,12 @@ export type ZonosShipment = ZonosNode & {
   createdBy: Scalars['ID'];
   customsDocuments: Array<ZonosCustomsDocument>;
   customsSpec: Maybe<ZonosCustomsSpec>;
+  /** The declared value (insurance) of the shipment */
+  declaredValue: Maybe<Scalars['Decimal']>;
   /** Exemption code for shipments requiring an ITN */
   exemption: Maybe<Scalars['String']>;
+  /** The `FulfillmentCenter` that was used to fulfill the Shipment. */
+  fulfillmentCenter: Maybe<ZonosFulfillmentCenter>;
   /** A unique identifier for the shipment */
   id: Scalars['ID'];
   /** ITN that was applied on the label request */
@@ -8657,18 +9410,30 @@ export type ZonosShipment = ZonosNode & {
   order: Maybe<ZonosOrder>;
   /** All of the `Party`s involved with this Shipment */
   parties: Array<ZonosParty>;
+  pddpSubmission: Maybe<ZonosPddpSubmission>;
   /** The `ServiceLevel` utilized by the `Carrier` for this Shipment */
   serviceLevel: ZonosServiceLevel;
   /** A list of `ShipmentCarton`s related to this Shipment */
   shipmentCartons: Array<ZonosShipmentCarton>;
+  /** The `ShipmentConsolidation` this Shipment belongs to */
+  shipmentConsolidation: Maybe<ZonosShipmentConsolidation>;
+  /** The scheduled shipment date for this `Shipment` */
+  shipmentDate: Maybe<Scalars['DateTime']>;
+  /** Indicates whether the Shipment is international or domestic */
+  shipmentType: ZonosShipmentType;
   /** A list of `ShipmentSpecialService`s to apply to this Shipment */
   specialServices: Maybe<Array<ZonosShipmentSpecialService>>;
   /** The status of the shipment */
-  status: Maybe<ZonosShipmentStatusType>;
+  status: ZonosShipmentStatusType;
   /** A list of statuses of the shipment */
   statusTransitions: Array<ZonosShipmentStatusTransition>;
-  /** An optional master tracking */
+  /**
+   * An optional master tracking
+   * @deprecated Use `trackingDetails` field instead.
+   */
   tracking: Maybe<ZonosTracking>;
+  /** All tracking details associated with this Shipment */
+  trackingDetails: Array<ZonosTracking>;
 };
 
 export type ZonosShipmentAmountType =
@@ -8678,6 +9443,23 @@ export type ZonosShipmentAmountType =
   | 'INSURANCE'
   | 'PUBLISHED_RATE'
   | 'SURCHARGE';
+
+export type ZonosShipmentBulkCreateError = {
+  __typename?: 'ShipmentBulkCreateError';
+  /** Name of the `Carrier` that threw the error during label creation. Will be null if error did not occur during label processing. */
+  carrierName: Maybe<Scalars['String']>;
+  /** Error message that was returned during Shipment or Label processing. */
+  errorMessage: Maybe<Scalars['String']>;
+  /** ID of the `Order` that threw the error during Shipment or Label processing. */
+  orderId: Scalars['ID'];
+};
+
+export type ZonosShipmentBulkCreateInput = {
+  /** A list of IDs or accountOrderNumber(s) associated with the `Order`(s) to create `Shipment`(s) and `Label`(s) for. Maximum size of 50. */
+  orderReferenceIds: Array<Scalars['ID']>;
+};
+
+export type ZonosShipmentBulkCreateResult = ZonosShipment | ZonosShipmentBulkCreateError;
 
 export type ZonosShipmentCarton = ZonosNode & {
   __typename?: 'ShipmentCarton';
@@ -8765,10 +9547,7 @@ export type ZonosShipmentConnection = {
   totalCount: Maybe<Scalars['Int']>;
 };
 
-/**
- * ShipmentConsolidation is used to consolidate shipments to send to a carrier. For UPS, this would facilitate the Worldwide Economy
- * master carton functionality.
- */
+/** ShipmentConsolidation is used to consolidate shipments to send to a carrier. For UPS, this would facilitate the Worldwide Economy master carton functionality. */
 export type ZonosShipmentConsolidation = {
   __typename?: 'ShipmentConsolidation';
   /** Timestamp of when this ShipmentConsolidation was initially created. */
@@ -8843,6 +9622,8 @@ export type ZonosShipmentConsolidationUpdateInput = {
 };
 
 export type ZonosShipmentCreateInput = {
+  /** The declared value (insurance) of the shipment */
+  declaredValue?: InputMaybe<Scalars['Decimal']>;
   /** Exemption code for shipments requiring an ITN */
   exemption?: InputMaybe<Scalars['String']>;
   /** A flag to say if a `CustomSpec` should be generated from this Shipment */
@@ -8853,7 +9634,7 @@ export type ZonosShipmentCreateInput = {
   itnNumber?: InputMaybe<Scalars['String']>;
   /** The optional label specifications for the `Label` to be generated */
   labelSpec?: InputMaybe<ZonosLabelSpecInput>;
-  /** The ID of the `Order` this Shipment belongs to */
+  /** The ID or accountOrderNumber of the `Order` this Shipment belongs to */
   orderId: Scalars['ID'];
   /** The list of `Party`s related to this Shipment, if different than all the parties on the `Order` */
   parties?: InputMaybe<Array<Scalars['ID']>>;
@@ -8863,6 +9644,8 @@ export type ZonosShipmentCreateInput = {
   shipmentCartons?: InputMaybe<Array<ZonosShipmentCartonInput>>;
   /** ID of the `ShipmentConsolidation` this Shipment will belong to */
   shipmentConsolidationId?: InputMaybe<Scalars['ID']>;
+  /** A specified date for a future shipment */
+  shipmentDate?: InputMaybe<Scalars['DateTime']>;
   /** A list of `ShipmentSpecialService`s to apply to this Shipment */
   specialServices?: InputMaybe<Array<ZonosShipmentSpecialService>>;
   /** The optional tracking number related to the shipment */
@@ -8870,22 +9653,36 @@ export type ZonosShipmentCreateInput = {
 };
 
 export type ZonosShipmentCreateWorkflowInput = {
+  /** The declared value (insurance) of the shipment */
+  declaredValue?: InputMaybe<Scalars['Decimal']>;
   /** Exemption code for shipments requiring an ITN */
   exemption?: InputMaybe<Scalars['String']>;
+  /** Optional ID of the `FulfillmentCenter` this Shipment is being fulfilled from. */
+  fulfillmentCenter?: InputMaybe<Scalars['ID']>;
+  /** Boolean value to indicate if a `CustomSpec` should be generated from this `Shipment` */
+  generateCustoms?: InputMaybe<Scalars['Boolean']>;
+  /** Boolean value to indicate if a `Label` should be generated for the `ShipmentCarton`(s) in this `Shipment` */
+  generateLabel?: InputMaybe<Scalars['Boolean']>;
   /** ITN to apply on the label request */
   itnNumber?: InputMaybe<Scalars['String']>;
-  /** ID of the `Order` this Shipment will belong to. Required if no `Party` or `Carton` objects are present. */
+  /** The optional label specifications for the `Label` to be generated */
+  labelSpec?: InputMaybe<ZonosLabelSpecInput>;
+  /** ID or accountOrderNumber of the `Order` this Shipment will belong to. Required if no `Party` or `Carton` objects are present. */
   orderId?: InputMaybe<Scalars['ID']>;
   /** ID or `code` of the `ServiceLevel` to be used for this Shipment. */
   serviceLevel?: InputMaybe<Scalars['String']>;
   /** Special service details to apply at the ShipmentCarton level */
   shipmentCartonSpecialServices?: InputMaybe<ZonosShipmentCartonSpecialServiceDetailInput>;
+  /** Optional field to specify `ShipmentCarton` objects associated with the Shipment. */
+  shipmentCartons?: InputMaybe<Array<ZonosShipmentCartonInput>>;
   /** ID of the `ShipmentConsolidation` this Shipment will belong to */
   shipmentConsolidationId?: InputMaybe<Scalars['ID']>;
+  /** A specified date for a future shipment */
+  shipmentDate?: InputMaybe<Scalars['DateTime']>;
   /** A list of `ShipmentSpecialService`s to apply to this Shipment */
   specialServices?: InputMaybe<Array<ZonosShipmentSpecialService>>;
-  /** The optional tracking number related to the shipment */
-  trackingNumber?: InputMaybe<Scalars['String']>;
+  /** Tracking numbers associated with this Shipment */
+  trackingNumbers?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type ZonosShipmentEdge = {
@@ -8901,6 +9698,8 @@ export type ZonosShipmentFilter = {
   serviceLevelId?: InputMaybe<Scalars['String']>;
   /** A date range to filter Shipment objects by their ship date */
   shipDate?: InputMaybe<ZonosDateTimeRange>;
+  /** The type of Shipment */
+  shipmentType?: InputMaybe<ZonosShipmentType>;
   /** The tracking number associated with the Shipment */
   trackingNumber?: InputMaybe<Scalars['String']>;
 };
@@ -8928,10 +9727,7 @@ export type ZonosShipmentRating = {
   maxTransitAt: Maybe<Scalars['DateTime']>;
   /** The ISO-8601 timestamp of when the delivery could first be delivered */
   minTransitAt: Maybe<Scalars['DateTime']>;
-  /**
-   * For shipments that contain multiple fulfillment warehouses the multipleShipFromRatings will contain the individual `ShipmentRating` calculations.
-   * The aggregated totals will be reflected on the parent object. In these cases the shipFrom location will be null.
-   */
+  /** For shipments that contain multiple fulfillment warehouses the multipleShipFromRatings will contain the individual `ShipmentRating` calculations. The aggregated totals will be reflected on the parent object. In these cases the shipFrom location will be null. */
   multipleShipFromRatings: Maybe<Array<Maybe<ZonosShipmentRating>>>;
   /** The `Organization` associated with the ShipmentRating */
   organization: Scalars['ID'];
@@ -8978,6 +9774,8 @@ export type ZonosShipmentRatingCalculateQuoterWorkflowInput = {
 };
 
 export type ZonosShipmentRatingCalculateWorkflowInput = {
+  /** Specifies what profiles to be used for rating. ZONE is the default and will only return rates for profiles in the corresponding `ShippingZone` */
+  rateType?: InputMaybe<ZonosShipmentRatingRateType>;
   /** Container for special service details to apply to the `ShipmentRating` */
   specialServiceDetail?: InputMaybe<ZonosShipmentRatingSpecialServiceDetail>;
 };
@@ -9049,6 +9847,12 @@ export type ZonosShipmentRatingFilter = {
   serviceLevel?: InputMaybe<Scalars['ID']>;
 };
 
+export type ZonosShipmentRatingRateType =
+  /** Will return rates for all profiles, regardless of `ShippingZone` association that are associated with valid service levels. */
+  | 'LABEL_ENABLED'
+  /** Will only return rates for profiles in the `ShippingZone` for the origin and destination locations. */
+  | 'ZONE';
+
 export type ZonosShipmentRatingSignatureOptionType =
   /** An adult signature is required */
   | 'ADULT'
@@ -9115,6 +9919,14 @@ export type ZonosShipmentStatusTransition = {
 export type ZonosShipmentStatusType =
   /** Default status */
   | 'CREATED'
+  /** Shipment was delivered */
+  | 'DELIVERED'
+  /** Shipment was delivered to the consolidation center */
+  | 'DELIVERED_TO_CONSOLIDATION_CENTER'
+  /** Shipment is in transit to the destination */
+  | 'IN_TRANSIT'
+  /** Shipment is in transit to the consolidation center */
+  | 'IN_TRANSIT_TO_CONSOLIDATION_CENTER'
   /** Shipment was canceled */
   | 'VOIDED';
 
@@ -9131,16 +9943,20 @@ export type ZonosShipmentType =
   | 'DOMESTIC'
   | 'INTERNATIONAL';
 
+export type ZonosShipmentsCreateFromOrderInput = {
+  /** The ID of the `Order` to create and associate shipments with. */
+  orderId: Scalars['ID'];
+  /** List of inputs containing Shipment details. */
+  shipments: Array<ZonosOrderShipmentCreateInput>;
+};
+
 export type ZonosShippingPaymentType =
   /** The shipper will be responsible for paying shipping charges. Default value. */
   | 'SENDER'
   /** A third party will be responsible for paying shipping charges */
   | 'THIRD_PARTY';
 
-/**
- * A ShippingProfile object is used to map a `ServiceLevel` to an `Organization`. Allowing the Organization to adjust
- * the display name and apply rate charts to the service level.
- */
+/** A ShippingProfile object is used to map a `ServiceLevel` to an `Organization`. Allowing the Organization to adjust the display name and apply rate charts to the service level. */
 export type ZonosShippingProfile = {
   __typename?: 'ShippingProfile';
   /** When this ShippingProfile was created. */
@@ -9161,12 +9977,8 @@ export type ZonosShippingProfile = {
   organization: Scalars['ID'];
   /** The `ServiceLevel` associated with the ShippingProfile. */
   serviceLevel: ZonosServiceLevel;
-  /** The shipping percent increase */
-  shippingPercentIncrease: Maybe<Scalars['Decimal']>;
   /** The `ShippingProfileRateCharts` that apply to this profile. */
   shippingRates: Maybe<Array<ZonosShippingProfileRateChart>>;
-  /** The shipping value increase */
-  shippingValueIncrease: Maybe<Scalars['Decimal']>;
   /** `TransitTime` breakdown that applies to the ShippingProfile. */
   transitTime: Maybe<ZonosTransitTime>;
   /** When this ShippingProfile was most recently updated. */
@@ -9175,17 +9987,14 @@ export type ZonosShippingProfile = {
   updatedBy: Scalars['ID'];
 };
 
-/**
- * A `ShippingProfileRateChart` would apply to a specific shipping profile.
- * The `ShippingProfileRateChart` would be used before any `ServiceLevelRateChart` as well as any external carrier API.
- */
+/** A `ShippingProfileRateChart` would apply to a specific shipping profile. The `ShippingProfileRateChart` would be used before any `ServiceLevelRateChart` as well as any external carrier API. */
 export type ZonosShippingProfileRateChart = {
   __typename?: 'ShippingProfileRateChart';
   /** When this ShippingProfileRateChart was created. */
   createdAt: Scalars['DateTime'];
   /** The user who created the ShippingProfileRateChart. */
   createdBy: Scalars['ID'];
-  /** The dimensional weight factor to be used for the supplied rates.  */
+  /** The dimensional weight factor to be used for the supplied rates. */
   dimensionalWeightFactor: Scalars['Decimal'];
   /** The `shipFrom` `countryCode` that applies to filter by. */
   fromCountryCode: Maybe<ZonosCountryCode>;
@@ -9211,8 +10020,10 @@ export type ZonosShippingProfileRateChartsFilter = {
 };
 
 export type ZonosShippingProfilesFilter = {
-  /** The ID of the `ServiceLevel`. */
-  serviceLevel: Scalars['ID'];
+  /** The ID or `code` of the `Carrier`. */
+  carrier?: InputMaybe<Scalars['ID']>;
+  /** The ID or `code` of the `ServiceLevel`. */
+  serviceLevel?: InputMaybe<Scalars['ID']>;
 };
 
 /** A Shipping rate that is based on either weight our currency amount */
@@ -9272,21 +10083,29 @@ export type ZonosShippingRateWeight = {
 
 export type ZonosShippingSettings = {
   __typename?: 'ShippingSettings';
+  /** When these `shippingSettings` were created. */
   createdAt: Scalars['DateTime'];
+  /** The user who created these `shippingSettings`. */
   createdBy: Scalars['String'];
+  /** A rough estimate of item weight when calculating shipping, if no per-item weights are provided. */
   defaultWeightMultiplier: Scalars['Decimal'];
+  /** A unique identifier for the ShippingSettings. */
   id: Scalars['String'];
+  /** Specifies whether the ShippingSettings is in live or test mode. */
   mode: ZonosMode;
+  /** The `Organization` associated with the ShippingSettings. */
   organization: Scalars['String'];
+  /** ID of the `Preferred Packaging Option` for this `Organization`. */
+  preferredPackagingOptionId: Maybe<Scalars['ID']>;
+  /** When these `ShippingSettings` were most recently updated. */
   updatedAt: Scalars['DateTime'];
+  /** The user who most recently updated the ShippingSettings. */
   updatedBy: Scalars['String'];
 };
 
 /** A `ShippingStoreSettings` object represents store-specific settings for shipping related processes. */
 export type ZonosShippingStoreSettings = {
   __typename?: 'ShippingStoreSettings';
-  /** An additional fee that can be added to `ShippingRate`s */
-  additionalFee: Maybe<Scalars['Decimal']>;
   /** When ShippingStoreSettings was created. */
   createdAt: Scalars['DateTime'];
   /** The user who created the ShippingStoreSettings. */
@@ -9307,8 +10126,6 @@ export type ZonosShippingStoreSettings = {
   landedCostPrepay: Maybe<Scalars['String']>;
   /** Pickup time */
   pickupTime: Maybe<Scalars['DateTime']>;
-  /** Shipping percent increase */
-  shippingPercentIncrease: Maybe<Scalars['Decimal']>;
   /** The ID of the store these settings apply to */
   storeId: Scalars['Int'];
   /** The stores Tax Payer Identification (TIN) number */
@@ -9375,6 +10192,62 @@ export type ZonosStageUploadResult = {
   url: Scalars['String'];
 };
 
+export type ZonosStoreFeeRule = {
+  __typename?: 'StoreFeeRule';
+  /** The carrier associated with the StoreFeeRule */
+  carrierId: Maybe<Scalars['Int']>;
+  /** When this StoreFeeRule was created. */
+  createdAt: Scalars['DateTime'];
+  /** When this StoreFeeRule was deleted. */
+  deletedAt: Maybe<Scalars['DateTime']>;
+  /** The formula that implements the StoreFeeRule */
+  formula: Maybe<Scalars['String']>;
+  /** A unique identifier for the StoreFeeRule. */
+  id: Scalars['Int'];
+  /** The conditions in which the StoreFeeRule will apply */
+  ifStatement: Scalars['String'];
+  /** The label of the StoreFeeRule */
+  label: Maybe<Scalars['String']>;
+  /** The localeType of the StoreFeeRule */
+  localeType: Maybe<ZonosFeeRuleLocaleType>;
+  /** A note to describe the StoreFeeRule */
+  note: Maybe<Scalars['String']>;
+  /** The organization associated with the StoreFeeRule */
+  organizationId: Scalars['String'];
+  /** The processing group associated with the StoreFeeRule */
+  processingGroup: Maybe<Scalars['Int']>;
+  /** The service level associated with the StoreFeeRule */
+  serviceLevelId: Maybe<Scalars['Int']>;
+  /** The country an item ships from that implements the StoreFeeRule */
+  shipFromCountry: Maybe<ZonosCountryCode>;
+  /** The country an item ships to that implements the StoreFeeRule */
+  shipToCountry: Maybe<ZonosCountryCode>;
+  /** The id of the store associated with the StoreFeeRule */
+  storeId: Scalars['Int'];
+  /** Whether of not the StoreFeeRule is can be taxed */
+  taxable: Maybe<Scalars['Boolean']>;
+  /** The following step after the StoreFeeRule is applied */
+  then: Scalars['String'];
+  /** The type of the StoreFeeRule */
+  type: Maybe<ZonosStoreFeeRuleType>;
+  /** When this StoreFeeRule was most recently updated */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type ZonosStoreFeeRuleFilter = {
+  /** Return `StoreFeeRule` resources by the associated organization Id. */
+  organizationId?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosStoreFeeRuleType =
+  | 'CUSTOM'
+  | 'NEGOTIABLE'
+  | 'NON_NEGOTIABLE'
+  | 'REQUIRED_CUSTOM'
+  | 'REQUIRED_NEGOTIABLE'
+  | 'REQUIRED_NON_NEGOTIABLE'
+  | 'TRANSITORY';
+
 /** An implementation of `ReconciliationCharge` that represents a charge submitted by Zonos to Stripe */
 export type ZonosStripeSubscriptionCharge = ZonosReconciliationCharge & {
   __typename?: 'StripeSubscriptionCharge';
@@ -9433,7 +10306,7 @@ export type ZonosTaxId = {
   createdBy: Maybe<Scalars['ID']>;
   effectiveAt: Maybe<Scalars['DateTime']>;
   expiresAt: Maybe<Scalars['DateTime']>;
-  id: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   method: ZonosTaxMethodType;
   mode: Maybe<ZonosMode>;
   organization: Maybe<Scalars['ID']>;
@@ -9448,18 +10321,6 @@ export type ZonosTaxIdFilterInput = {
   administrativeAreaCodes?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   countryCodes?: InputMaybe<Array<InputMaybe<ZonosCountryCode>>>;
   taxIdType?: InputMaybe<Array<InputMaybe<ZonosTaxIdType>>>;
-};
-
-export type ZonosTaxIdInput = {
-  administrativeAreaCodes?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  allowLowValueOrders?: InputMaybe<Scalars['Boolean']>;
-  countryCode: ZonosCountryCode;
-  effectiveAt?: InputMaybe<Scalars['DateTime']>;
-  expiresAt?: InputMaybe<Scalars['DateTime']>;
-  method: ZonosTaxMethodType;
-  sendEmails?: InputMaybe<Scalars['Boolean']>;
-  taxIdNumber: Scalars['String'];
-  type: ZonosTaxIdType;
 };
 
 export type ZonosTaxIdType =
@@ -9498,10 +10359,43 @@ export type ZonosTaxIdType =
   /** VAT on E-Commerce */
   | 'VOEC';
 
+export type ZonosTaxInput = {
+  /** `Tax` price amount. */
+  amount: Scalars['Decimal'];
+  /** Currency the `Tax` amount is in. @deprecated use currencyCode instead. */
+  currency?: InputMaybe<ZonosCurrencyCode>;
+  /** Currency the `Tax` amount is in. */
+  currencyCode?: InputMaybe<ZonosCurrencyCode>;
+  /** Human-readable description of this `Tax`. */
+  description?: InputMaybe<Scalars['String']>;
+  /** Exchange rate information for foreign currency `Tax` amounts. */
+  exchangeRate?: InputMaybe<Scalars['ID']>;
+  /** Human readable formula indicating how this `Tax` was calculated. */
+  formula: Scalars['String'];
+  /** `Item` this `Tax` amount applies to. */
+  item?: InputMaybe<Scalars['ID']>;
+  /** Additional note for this `Tax`. */
+  note?: InputMaybe<Scalars['String']>;
+  /** `Party` responsible for receiving payment on this `Tax` amount. */
+  payee?: InputMaybe<Scalars['ID']>;
+  /** `Party` responsible for rendering payment on this `Tax` amount. */
+  payor?: InputMaybe<Scalars['ID']>;
+  /** Type of `Tax`. */
+  type?: InputMaybe<ZonosLandedCostFeeType>;
+};
+
 export type ZonosTaxMethodType =
   | 'CONSIGNMENT'
   | 'DEFAULT'
-  | 'DOMESTIC';
+  | 'DOMESTIC'
+  | 'DOMESTIC_LCG'
+  | 'SELLER_OF_RECORD';
+
+export type ZonosThirdPartyAccountType =
+  | 'DHL'
+  | 'FEDEX'
+  | 'UPS'
+  | 'USPS';
 
 export type ZonosTracking = ZonosNode & {
   __typename?: 'Tracking';
@@ -9583,20 +10477,26 @@ export type ZonosUpdateDashboardSettingsInput = {
 
 export type ZonosUpdatePaymentsSettingsInput = {
   /** The day of the week payouts occur. */
-  dayOfWeek: ZonosDay;
+  dayOfWeek?: InputMaybe<ZonosDay>;
   /** Whether orders should be considered "end of day" for payout. */
-  endOfDayBehavior: ZonosEndOfDayBehavior;
+  endOfDayBehavior?: InputMaybe<ZonosEndOfDayBehavior>;
   /** How often payouts occur, in days. */
-  frequencyDays: Scalars['Int'];
-  /** A unique identifier for the PaymentsSettings. */
-  id: Scalars['String'];
+  frequencyDays?: InputMaybe<Scalars['Int']>;
+  /** Specifies which system to use for billing Lcg Fees */
+  lcgBillingMethod?: InputMaybe<ZonosLcgBillingMethod>;
   /** The minimum balance required to trigger a payout, in USD. */
-  minimum: Scalars['Int'];
+  minimum?: InputMaybe<Scalars['Int']>;
+  /** Specifies which system to use for billing order complete fees */
+  orderCompleteBillingMethod?: InputMaybe<ZonosOrderCompleteBillingMethod>;
+  /** Specifies which system to use for billing order transaction fees */
+  orderTransactionBillingMethod?: InputMaybe<ZonosOrderTransactionBillingMethod>;
 };
 
 export type ZonosUpdateShippingSettingsInput = {
-  defaultWeightMultiplier: Scalars['Decimal'];
-  id: Scalars['String'];
+  /** A rough estimate of item weight when calculating shipping, if no per-item weights are provided. */
+  defaultWeightMultiplier?: InputMaybe<Scalars['Decimal']>;
+  /** ID of the `Preferred Packaging Option` for this `Organization`. */
+  preferredPackagingOptionId?: InputMaybe<Scalars['ID']>;
 };
 
 export type ZonosUploadErrors = {
@@ -9662,6 +10562,139 @@ export type ZonosWcoVersion =
   | 'WCO_2062'
   | 'WCO_2067'
   | 'WCO_2072';
+
+export type ZonosWebhook = {
+  __typename?: 'Webhook';
+  /** When this Webhook was created. */
+  createdAt: Scalars['DateTime'];
+  /** The user who created the Webhook. */
+  createdBy: Scalars['ID'];
+  /** A unique identifier for the Webhook. */
+  id: Scalars['ID'];
+  /** Whether this Webhook is in live or test mode */
+  mode: ZonosMode;
+  /** The `Organization` associated with the Webhook. */
+  organizationId: Scalars['ID'];
+  /** The query that will be sent in the webhook request. */
+  query: Scalars['String'];
+  /** Client secret key to validate request authentication */
+  secret: Scalars['String'];
+  /** The status of the Webhook. */
+  status: ZonosWebhookStatus;
+  /** The type of Webhook. */
+  type: ZonosWebhookType;
+  /** When this Webhook was most recently updated. */
+  updatedAt: Scalars['DateTime'];
+  /** The user who most recently updated the Webhook. */
+  updatedBy: Scalars['ID'];
+  /** The url to send the Webhook to. */
+  url: Scalars['String'];
+};
+
+/** An auto-generated type for paginating through multiple `Webhook`s. */
+export type ZonosWebhookConnection = {
+  __typename?: 'WebhookConnection';
+  /** A list of `edges`. */
+  edges: Array<ZonosWebhookEdge>;
+  /** Pagination information about the connection. */
+  pageInfo: ZonosPageInfo;
+  /** The total count of the items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+export type ZonosWebhookCreateInput = {
+  /** The status of the webhook. */
+  status: ZonosWebhookStatus;
+  /** The type of Webhook. */
+  type: ZonosWebhookType;
+  /** The url to send the Webhook to. */
+  url: Scalars['String'];
+};
+
+/** An auto-generated type used in pagination. */
+export type ZonosWebhookEdge = {
+  __typename?: 'WebhookEdge';
+  /** A string used to identify this object in the current pagination connection. */
+  cursor: Maybe<Scalars['String']>;
+  /** The object located at this `Edge`. */
+  node: Maybe<ZonosWebhook>;
+};
+
+export type ZonosWebhookLog = {
+  __typename?: 'WebhookLog';
+  /** When this Webhook was created. */
+  createdAt: Scalars['DateTime'];
+  /** A unique identifier for the WebhookLog. */
+  id: Scalars['ID'];
+  /** Whether this WebhookLog is in live or test mode */
+  mode: ZonosMode;
+  /** The `Organization` associated with the Webhook. */
+  organizationId: Scalars['ID'];
+  /** The request body sent to the webhook url. */
+  request: Scalars['String'];
+  /** The http response status code. */
+  responseStatus: Maybe<Scalars['Int']>;
+  /** The type of webhook. */
+  type: ZonosWebhookType;
+  /** The url to send the webhook to. */
+  url: Scalars['String'];
+  /** The webhook that this log is associated with. */
+  webhook: Maybe<ZonosWebhook>;
+};
+
+/** An auto-generated type for paginating through multiple `WebhookLog`s. */
+export type ZonosWebhookLogConnection = {
+  __typename?: 'WebhookLogConnection';
+  /** A list of `edges`. */
+  edges: Array<ZonosWebhookLogEdge>;
+  /** Pagination information about the connection. */
+  pageInfo: ZonosPageInfo;
+};
+
+/** An auto-generated type used in pagination. */
+export type ZonosWebhookLogEdge = {
+  __typename?: 'WebhookLogEdge';
+  /** A string used to identify this object in the current pagination connection. */
+  cursor: Maybe<Scalars['String']>;
+  /** The object located at this `Edge`. */
+  node: Maybe<ZonosWebhookLog>;
+};
+
+export type ZonosWebhookLogsFilterInput = {
+  /** Filter by the webhook type. */
+  type?: InputMaybe<ZonosWebhookType>;
+};
+
+export type ZonosWebhookStatus =
+  | 'DISABLED'
+  | 'ENABLED';
+
+export type ZonosWebhookType =
+  | 'INCLUSIVE_PRICE_SYNC_READY'
+  | 'IP_SETTING_STATUS_CHANGED'
+  /** Any change on this Enum must also be applied on webhook-client/src/main/java/com/zonos/webhookclient/wrappers/WebhookType.java */
+  | 'ORDER_CANCELED'
+  | 'ORDER_CREATED'
+  | 'ORDER_STATUS_CHANGED'
+  | 'ORDER_UPDATED'
+  | 'SHIPMENT_CANCELED'
+  | 'SHIPMENT_CREATED';
+
+export type ZonosWebhookUpdateInput = {
+  /** The unique identifier for the Webhook. */
+  id: Scalars['ID'];
+  /** The status of the webhook. */
+  status?: InputMaybe<ZonosWebhookStatus>;
+  /** The type of webhook. */
+  type?: InputMaybe<ZonosWebhookType>;
+  /** The url to send the webhook to. */
+  url?: InputMaybe<Scalars['String']>;
+};
+
+export type ZonosWebhooksFilterInput = {
+  /** Filter by the webhook type. */
+  type?: InputMaybe<ZonosWebhookType>;
+};
 
 export type ZonosWeightUnitCode =
   | 'GRAM'
@@ -9766,12 +10799,6 @@ export type ZonosFullLandedCostMutationVariables = Exact<{
   landedCostCalculateWorkflowInput: ZonosLandedCostWorkFlowInput;
   partyCreateWorkflowInput: Array<ZonosPartyCreateWorkflowInput> | ZonosPartyCreateWorkflowInput;
 }>;
-export type ZonosLandedCostOnlyMutationVariables = Exact<{
-  itemCreateWorkflowInput: Array<ZonosItemCreateWorkflowInput> | ZonosItemCreateWorkflowInput;
-  landedCostCalculateWorkflowInput: ZonosLandedCostWorkFlowInput;
-  partyCreateWorkflowInput: Array<ZonosPartyCreateWorkflowInput> | ZonosPartyCreateWorkflowInput;
-  shipmentRatingCreateWorkflowInput: Array<ZonosShipmentRatingCreateWorkflowInput> | ZonosShipmentRatingCreateWorkflowInput;
-}>;
 
 
 export type ZonosFullLandedCostMutation = (
@@ -9819,6 +10846,13 @@ export type ZonosFullLandedCostMutation = (
   )>>> }
 );
 
+export type ZonosLandedCostOnlyMutationVariables = Exact<{
+  partyCreateWorkflowInput: Array<ZonosPartyCreateWorkflowInput> | ZonosPartyCreateWorkflowInput;
+  itemCreateWorkflowInput: Array<ZonosItemCreateWorkflowInput> | ZonosItemCreateWorkflowInput;
+  landedCostCalculateWorkflowInput: ZonosLandedCostWorkFlowInput;
+  shipmentRatingCreateWorkflowInput: ZonosShipmentRatingCreateWorkflowInput;
+}>;
+
 
 export type ZonosLandedCostOnlyMutation = (
   { __typename?: 'Mutation' }
@@ -9828,42 +10862,42 @@ export type ZonosLandedCostOnlyMutation = (
     & { location: Maybe<(
       { __typename?: 'Location' }
       & Pick<ZonosLocation, 'administrativeArea' | 'administrativeAreaCode' | 'countryCode' | 'line1' | 'locality' | 'postalCode'>
-      )> }
-    )>, itemCreateWorkflow: Array<(
+    )> }
+  )>, itemCreateWorkflow: Array<(
     { __typename?: 'Item' }
     & Pick<ZonosItem, 'amount' | 'countryOfOrigin' | 'description' | 'hsCode' | 'id' | 'productId' | 'quantity'>
     & { restriction: Maybe<(
       { __typename?: 'RestrictedItem' }
       & Pick<ZonosRestrictedItem, 'id'>
-      )> }
-    )>, cartonizeWorkflow: Maybe<Array<Maybe<(
+    )> }
+  )>, cartonizeWorkflow: Maybe<Array<Maybe<(
     { __typename?: 'Carton' }
     & Pick<ZonosCarton, 'id'>
-    )>>>, shipmentRatingCreateWorkflow: Array<(
+  )>>>, shipmentRatingCreateWorkflow: Maybe<(
     { __typename?: 'ShipmentRating' }
     & Pick<ZonosShipmentRating, 'id'>
-    )>, landedCostCalculateWorkflow: Maybe<Array<Maybe<(
+  )>, landedCostCalculateWorkflow: Maybe<Array<Maybe<(
     { __typename?: 'LandedCost' }
     & Pick<ZonosLandedCost, 'currencyCode' | 'id' | 'method' | 'rootId'>
     & { amountSubtotals: Maybe<(
       { __typename?: 'LandedCostAmountSubtotals' }
       & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'taxes'>
-      )>, deMinimis: Array<(
+    )>, deMinimis: Array<(
       { __typename?: 'DeMinimis' }
       & Pick<ZonosDeMinimis, 'threshold' | 'type'>
-      )>, remittance: Array<(
+    )>, remittance: Array<(
       { __typename?: 'LandedCostRemittance' }
       & Pick<ZonosLandedCostRemittance, 'amount'>
-      )>, shipmentRating: (
+    )>, shipmentRating: (
       { __typename?: 'ShipmentRating' }
       & Pick<ZonosShipmentRating, 'displayName' | 'id' | 'maxTransitAt' | 'minTransitAt'>
       & { shippingProfile: Maybe<(
         { __typename?: 'ShippingProfile' }
         & Pick<ZonosShippingProfile, 'customServiceLevelCode' | 'landedCostMethod'>
-        )> }
-      ) }
-    )>>> }
-  );
+      )> }
+    ) }
+  )>>> }
+);
 
 
 export const CatalogItemDocument = `
@@ -9946,8 +10980,8 @@ export const ClassificationsCalculateDocument = `
   }
 }
     `;
-export const LandedCostOnlyDocument = `
-    mutation fullLandedCost($itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!, $shipmentRatingCreateWorkflowInput: [ShipmentRatingCreateWorkflowInput!]!) {
+export const FullLandedCostDocument = `
+    mutation fullLandedCost($itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!) {
   partyCreateWorkflow(input: $partyCreateWorkflowInput) {
     id
     location {
@@ -9975,7 +11009,7 @@ export const LandedCostOnlyDocument = `
   cartonizeWorkflow {
     id
   }
-  shipmentRatingCreateWorkflow(input: $shipmentRatingCreateWorkflowInput) {
+  shipmentRatingCalculateWorkflow {
     id
   }
   landedCostCalculateWorkflow(input: $landedCostCalculateWorkflowInput) {
@@ -10007,9 +11041,10 @@ export const LandedCostOnlyDocument = `
       }
     }
   }
-}    `;
-export const FullLandedCostDocument = `
-    mutation fullLandedCost($itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!) {
+}
+    `;
+export const LandedCostOnlyDocument = `
+    mutation landedCostOnly($partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!, $itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!, $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!, $shipmentRatingCreateWorkflowInput: ShipmentRatingCreateWorkflowInput!) {
   partyCreateWorkflow(input: $partyCreateWorkflowInput) {
     id
     location {
@@ -10037,7 +11072,7 @@ export const FullLandedCostDocument = `
   cartonizeWorkflow {
     id
   }
-  shipmentRatingCalculateWorkflow {
+  shipmentRatingCreateWorkflow(input: $shipmentRatingCreateWorkflowInput) {
     id
   }
   landedCostCalculateWorkflow(input: $landedCostCalculateWorkflowInput) {

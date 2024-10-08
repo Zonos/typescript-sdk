@@ -3,7 +3,6 @@ import { describe, test } from 'vitest';
 import { mockedFetch } from 'src/test-utils/_mockedFetch';
 import type { IResponseError } from 'src/types';
 import type {
-  ZonosFullLandedCostMutationVariables,
   ZonosLandedCostOnlyMutation,
   ZonosLandedCostOnlyMutationVariables,
 } from 'src/types/generated/graphql.customer.types';
@@ -11,7 +10,7 @@ import { zonosClient } from 'src/zonosClient';
 
 const credentialToken = 'test_token';
 
-describe('fullLandedCost data', () => {
+describe('landedCostOnly data', () => {
   const data: ZonosLandedCostOnlyMutation = {
     cartonizeWorkflow: [
       {
@@ -57,20 +56,9 @@ describe('fullLandedCost data', () => {
         type: 'DESTINATION',
       },
     ],
-    shipmentRatingCreateWorkflow: [
-      {
-        id: 'shipment_rating_e85628d6-8c44-4a7d-a1a7-3c45b7fcf52b',
-      },
-      {
-        id: 'shipment_rating_ee3c88e0-5810-4f87-9633-7b59b6b96705',
-      },
-      {
-        id: 'shipment_rating_345ad473-cfc3-4fd1-ba09-d04c167079db',
-      },
-      {
-        id: 'shipment_rating_3f235c88-ec20-4f47-850c-951e1ec24e6a',
-      },
-    ],
+    shipmentRatingCreateWorkflow: {
+      id: 'shipment_rating_e85628d6-8c44-4a7d-a1a7-3c45b7fcf52b',
+    },
   };
 
   const variables: ZonosLandedCostOnlyMutationVariables = {
@@ -124,7 +112,7 @@ describe('fullLandedCost data', () => {
   };
 
   test('zonosClient', async () => {
-    const { errors, json } = await zonosClient.fullLandedCost({
+    const { errors, json } = await zonosClient.landedCostOnly({
       credentialToken,
       customFetch: async () => mockedFetch({ response: { data } }),
       variables,
@@ -134,8 +122,8 @@ describe('fullLandedCost data', () => {
   });
 });
 
-describe('fullLandedCost error', () => {
-  const variables: ZonosFullLandedCostMutationVariables = {
+describe('landedCostOnly error', () => {
+  const variables: ZonosLandedCostOnlyMutationVariables = {
     itemCreateWorkflowInput: [
       {
         amount: 3,
@@ -177,6 +165,12 @@ describe('fullLandedCost error', () => {
         type: 'DESTINATION',
       },
     ],
+    shipmentRatingCreateWorkflowInput: {
+      amount: 20,
+      currencyCode: 'USD',
+      displayName: 'Custom shipping',
+      serviceLevelCode: 'custom:custom',
+    },
   };
 
   const error = {
@@ -194,7 +188,7 @@ describe('fullLandedCost error', () => {
     });
 
   test('zonosClient', async () => {
-    const { errors, json } = await zonosClient.fullLandedCost({
+    const { errors, json } = await zonosClient.landedCostOnly({
       credentialToken,
       customFetch,
       variables,

@@ -3,6 +3,7 @@ import type {
   ZonosCatalogItemQueryVariables,
   ZonosClassificationsCalculateMutationVariables,
   ZonosFullLandedCostMutationVariables,
+  ZonosLandedCostOnlyMutationVariables,
 } from './types/generated/graphql.customer.types';
 
 /**
@@ -144,58 +145,58 @@ export const zonosClient = {
    * shipmentRatingCreateWorkflow
    * landedCostCalculateWorkflow
    * @example
-   * const variables: ZonosFullLandedCostMutationVariables = {
-   *   partyCreateWorkflowInput: [
-   *     {
-   *       location: {
-   *         administrativeArea: '',
-   *         administrativeAreaCode: 'QC',
-   *         countryCode: 'CA',
-   *         line1: '4398 St Laurent av',
-   *         line2: ' ',
-   *         locality: 'Montreal',
-   *         postalCode: 'H2W 1Z5',
+   * ZonosLandedCostOnlyMutationVariables = {
+   *     itemCreateWorkflowInput: [
+   *       {
+   *         amount: 3,
+   *         countryOfOrigin: 'CN',
+   *         currencyCode: 'USD',
+   *         description: 'Backpack',
+   *         hsCode: '4202.92',
+   *         productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
+   *         quantity: 1,
    *       },
-   *       type: 'ORIGIN',
+   *     ],
+   *     landedCostCalculateWorkflowInput: {
+   *       calculationMethod: 'DDP',
+   *       endUse: 'NOT_FOR_RESALE',
+   *       tariffRate: 'ZONOS_PREFERRED',
    *     },
-   *     {
-   *       location: {
-   *         administrativeArea: '',
-   *         administrativeAreaCode: '',
-   *         countryCode: 'GB',
-   *         line1: 'location line 1',
-   *         locality: '',
-   *         postalCode: 'SW1W 0NY',
+   *     partyCreateWorkflowInput: [
+   *       {
+   *         location: {
+   *           administrativeArea: '',
+   *           administrativeAreaCode: 'QC',
+   *           countryCode: 'CA',
+   *           line1: '4398 St Laurent av',
+   *           line2: ' ',
+   *           locality: 'Montreal',
+   *           postalCode: 'H2W 1Z5',
+   *         },
+   *         type: 'ORIGIN',
    *       },
-   *       type: 'DESTINATION',
-   *     },
-   *   ],
-   *   shipmentRatingCreateWorkflowInput: {
-   *     amount: 20,
-   *     currencyCode: 'USD',
-   *     displayName: 'USPS Priority Express International',
-   *     serviceLevelCode: 'usps.priority_express_international',
-   *   },
-   *   itemCreateWorkflowInput: [
-   *     {
-   *       amount: 3,
-   *       countryOfOrigin: 'CN',
+   *       {
+   *         location: {
+   *           administrativeArea: '',
+   *           administrativeAreaCode: '',
+   *           countryCode: 'GB',
+   *           line1: 'location line 1',
+   *           locality: '',
+   *           postalCode: 'SW1W 0NY',
+   *         },
+   *         type: 'DESTINATION',
+   *       },
+   *     ],
+   *     shipmentRatingCreateWorkflowInput: {
+   *       amount: 20,
    *       currencyCode: 'USD',
-   *       description: 'Backpack',
-   *       hsCode: '4202.92',
-   *       productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
-   *       quantity: 1,
+   *       displayName: 'custom:custom',
+   *       serviceLevelCode: 'custom:custom',
    *     },
-   *   ],
-   *   landedCostCalculateWorkflowInput: {
-   *     calculationMethod: 'DDP',
-   *     endUse: 'NOT_FOR_RESALE',
-   *     tariffRate: 'ZONOS_PREFERRED',
-   *   },
-   * };
+   *   };
    *
    * const { errors: clientErrors, json: clientJson } =
-   *   await zonosClient.fullLandedCost({
+   *   await zonosClient.landedCostOnly({
    *     credentialToken: 'test_token',
    *     variables,
    *   });
@@ -205,10 +206,10 @@ export const zonosClient = {
     customFetch?: typeof fetch;
     customUrl?: string;
     headers?: HeadersInit;
-    variables: ZonosFullLandedCostMutationVariables;
+    variables: ZonosLandedCostOnlyMutationVariables;
   }) =>
     zonosClientRequest({
       ...params,
-      operationName: 'fullLandedCost',
+      operationName: 'landedCostOnly',
     }),
 };

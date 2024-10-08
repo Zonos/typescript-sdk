@@ -11,7 +11,7 @@
     "graphql-tag": "^2.x"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "publishConfig": {
     "@zonos:registry": "https://registry.npmjs.org"

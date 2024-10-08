@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 export const landedCostOnly = gql`
-  mutation fullLandedCost(
+  mutation landedCostOnly(
     $partyCreateWorkflowInput: [PartyCreateWorkflowInput!]!
     $itemCreateWorkflowInput: [ItemCreateWorkflowInput!]!
     $landedCostCalculateWorkflowInput: LandedCostWorkFlowInput!
