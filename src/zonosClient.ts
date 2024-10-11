@@ -145,7 +145,7 @@ export const zonosClient = {
    * shipmentRatingCreateWorkflow
    * landedCostCalculateWorkflow
    * @example
-   * ZonosLandedCostOnlyMutationVariables = {
+   * const variables: ZonosLandedCostOnlyMutationVariables = {
    *     itemCreateWorkflowInput: [
    *       {
    *         amount: 3,
