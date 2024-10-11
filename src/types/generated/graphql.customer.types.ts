@@ -27,6 +27,10 @@ export type ZonosAddressMatchThreshold =
   | 'EXACT_ROAD'
   | 'EXACT_UNIT';
 
+export type ZonosAdjustmentSource =
+  | 'API_REQUEST'
+  | 'PROMO_CODE';
+
 export type ZonosAlcoholRecipientType =
   | 'CONSUMER'
   | 'LICENSEE';
@@ -497,6 +501,18 @@ export type ZonosCarrierCredentialTypeCode =
   | 'SITE_ID'
   | 'USER_ID';
 
+export type ZonosCarrierDocumentSubmission = {
+  __typename?: 'CarrierDocumentSubmission';
+  /** The carrier the `CustomsDocument` will be uploaded to. */
+  carrier: ZonosCustomsDocumentCarrier;
+  /** The date and time when the CarrierDocumentSubmission was created */
+  createdAt: Scalars['DateTime'];
+  /** External ID of the document provided by the carrier upon upload. */
+  externalId: Scalars['String'];
+  /** A unique ID associated with the CarrierDocumentSubmission */
+  id: Scalars['ID'];
+};
+
 /** Carrier Edge */
 export type ZonosCarrierEdge = {
   __typename?: 'CarrierEdge';
@@ -800,6 +816,7 @@ export type ZonosCartAdjustmentInput = {
 export type ZonosCartAdjustmentType =
   | 'CART_TOTAL'
   | 'ITEM'
+  | 'PROMO_CODE'
   | 'SHIPPING';
 
 /** An auto-generated type for paginating through multiple `Cart`s. */
@@ -1021,6 +1038,11 @@ export type ZonosCartonizationSettingsUpdateInput = {
 };
 
 export type ZonosCartonizeInput = {
+  /** The id of the `root` that will own the carton */
+  rootId: Scalars['ID'];
+};
+
+export type ZonosCartonizeWorkflowInput = {
   /** The id of the `root` that will own the carton */
   rootId: Scalars['ID'];
 };
@@ -3609,6 +3631,8 @@ export type ZonosCustomsDescriptionsCreateInput = {
 
 export type ZonosCustomsDocument = {
   __typename?: 'CustomsDocument';
+  /** Contains details about what carrier this document was submitted to. */
+  carrierSubmission: Maybe<ZonosCarrierDocumentSubmission>;
   /** The date and time when the CustomsDocument was created */
   createdAt: Scalars['DateTime'];
   /** The type of CustomsDocument i.e. CERTIFICATE_OF_ORIGIN, COMMERCIAL_INVOICE */
@@ -3687,7 +3711,8 @@ export type ZonosCustomsDocumentGenerateInput = {
 export type ZonosCustomsDocumentType =
   | 'CERTIFICATE_OF_ORIGIN'
   | 'COMMERCIAL_INVOICE'
-  | 'OTHER';
+  | 'OTHER'
+  | 'PRO_FORMA_INVOICE';
 
 /** A `CustomsItem` is the product of a `CustomsSpec` and includes improved item data */
 export type ZonosCustomsItem = {
@@ -6633,6 +6658,12 @@ export type ZonosManualClassificationValidateResponse = {
 };
 
 export type ZonosManualClassificationsFilter = {
+  /** Filters manual classifications created after a specific date. */
+  createdAfter?: InputMaybe<Scalars['DateTime']>;
+  /** Filters manual classifications created before a specific date. */
+  createdBefore?: InputMaybe<Scalars['DateTime']>;
+  /** Filters based on the user who performed the manual classification */
+  createdBy?: InputMaybe<Scalars['ID']>;
   /** Filters classifications associated with a specific item key. */
   itemKey?: InputMaybe<Scalars['String']>;
   /** Filters classifications intended for a specific ship-to country. */
@@ -6893,6 +6924,11 @@ export type ZonosMutationCartWorkflowArgs = {
 
 export type ZonosMutationCartonizationSettingsUpdateArgs = {
   input: ZonosCartonizationSettingsUpdateInput;
+};
+
+
+export type ZonosMutationCartonizeWorkflowArgs = {
+  input: InputMaybe<ZonosCartonizeWorkflowInput>;
 };
 
 
@@ -7354,8 +7390,6 @@ export type ZonosOrder = {
 export type ZonosOrderAddTrackingNumberInput = {
   /** The ID of the `Order` to update */
   id: Scalars['ID'];
-  /** Boolean to not send sync back to legacy */
-  syncToLegacy?: InputMaybe<Scalars['Boolean']>;
   /** The main tracking number for the `order`. */
   trackingNumbers: Array<Scalars['String']>;
 };
@@ -7636,8 +7670,6 @@ export type ZonosOrderUpdateAccountOrderNumberInput = {
   accountOrderNumber: Scalars['String'];
   /** The ID of the `Order` to update */
   id: Scalars['ID'];
-  /** Boolean to not send sync back to legacy */
-  syncToLegacy?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ZonosOrderUpdateAmountSubtotalsInput = {
@@ -9455,6 +9487,8 @@ export type ZonosShipmentBulkCreateError = {
 };
 
 export type ZonosShipmentBulkCreateInput = {
+  /** Optional ID of the FulfillmentCenter to be used for bulk printing of labels. If not provided, the PRIMARY FulfillmentCenter of the caller will be used. */
+  fulfillmentCenter?: InputMaybe<Scalars['ID']>;
   /** A list of IDs or accountOrderNumber(s) associated with the `Order`(s) to create `Shipment`(s) and `Label`(s) for. Maximum size of 50. */
   orderReferenceIds: Array<Scalars['ID']>;
 };
