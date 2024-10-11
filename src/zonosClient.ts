@@ -3,6 +3,7 @@ import type {
   ZonosCatalogItemQueryVariables,
   ZonosClassificationsCalculateMutationVariables,
   ZonosFullLandedCostMutationVariables,
+  ZonosLandedCostOnlyMutationVariables,
 } from './types/generated/graphql.customer.types';
 
 /**
@@ -124,8 +125,7 @@ export const zonosClient = {
    *     credentialToken: 'test_token',
    *     variables,
    *   });
-   */
-  fullLandedCost: async (params: {
+   */ fullLandedCost: async (params: {
     credentialToken: string;
     customFetch?: typeof fetch;
     customUrl?: string;
@@ -135,5 +135,81 @@ export const zonosClient = {
     zonosClientRequest({
       ...params,
       operationName: 'fullLandedCost',
+    }),
+  /**
+   * @description
+   * This mutation is the workflow that comprises of 6 different mutations:
+   * partyCreateWorkflow (destination, payor, and origin)
+   * itemCreateWorkflow
+   * cartonizationWorkflow
+   * shipmentRatingCreateWorkflow
+   * landedCostCalculateWorkflow
+   * @example
+   * const variables: ZonosLandedCostOnlyMutationVariables = {
+   *     itemCreateWorkflowInput: [
+   *       {
+   *         amount: 3,
+   *         countryOfOrigin: 'CN',
+   *         currencyCode: 'USD',
+   *         description: 'Backpack',
+   *         hsCode: '4202.92',
+   *         productId: 'e89861c0-f04e-11ee-bc4f-4b0822420556',
+   *         quantity: 1,
+   *       },
+   *     ],
+   *     landedCostCalculateWorkflowInput: {
+   *       calculationMethod: 'DDP',
+   *       endUse: 'NOT_FOR_RESALE',
+   *       tariffRate: 'ZONOS_PREFERRED',
+   *     },
+   *     partyCreateWorkflowInput: [
+   *       {
+   *         location: {
+   *           administrativeArea: '',
+   *           administrativeAreaCode: 'QC',
+   *           countryCode: 'CA',
+   *           line1: '4398 St Laurent av',
+   *           line2: ' ',
+   *           locality: 'Montreal',
+   *           postalCode: 'H2W 1Z5',
+   *         },
+   *         type: 'ORIGIN',
+   *       },
+   *       {
+   *         location: {
+   *           administrativeArea: '',
+   *           administrativeAreaCode: '',
+   *           countryCode: 'GB',
+   *           line1: 'location line 1',
+   *           locality: '',
+   *           postalCode: 'SW1W 0NY',
+   *         },
+   *         type: 'DESTINATION',
+   *       },
+   *     ],
+   *     shipmentRatingCreateWorkflowInput: {
+   *       amount: 20,
+   *       currencyCode: 'USD',
+   *       displayName: 'custom:custom',
+   *       serviceLevelCode: 'custom:custom',
+   *     },
+   *   };
+   *
+   * const { errors: clientErrors, json: clientJson } =
+   *   await zonosClient.landedCostOnly({
+   *     credentialToken: 'test_token',
+   *     variables,
+   *   });
+   */
+  landedCostOnly: async (params: {
+    credentialToken: string;
+    customFetch?: typeof fetch;
+    customUrl?: string;
+    headers?: HeadersInit;
+    variables: ZonosLandedCostOnlyMutationVariables;
+  }) =>
+    zonosClientRequest({
+      ...params,
+      operationName: 'landedCostOnly',
     }),
 };

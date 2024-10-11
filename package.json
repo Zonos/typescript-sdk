@@ -1,6 +1,6 @@
 {
   "name": "@zonos/typescript-sdk",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Streamline international ecommerce with the Zonos TypeScript SDK",
   "repository": "git@github.com:Zonos/typescript-sdk.git",
   "license": "MIT",
@@ -11,11 +11,12 @@
     "graphql-tag": "^2.x"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "publishConfig": {
     "@zonos:registry": "https://registry.npmjs.org"
   },
+  "packageManager": "pnpm@8.15.8",
   "devDependencies": {
     "graphql": "^16.8.1",
     "graphql-request": "^4.3.0",
