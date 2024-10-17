@@ -1117,6 +1117,8 @@ export type ZonosCatalogItem = {
   provinceOfOrigin: Maybe<Scalars['String']>;
   /** A list of restricted country code */
   restrictedCountries: Maybe<Array<Maybe<ZonosCountryCode>>>;
+  /** The suggested retail amount */
+  retailAmount: Maybe<Scalars['Decimal']>;
   /** SKU of this `CatalogItem`. */
   sku: Maybe<Scalars['String']>;
   /** Source of `CatalogItem`. */
@@ -1320,6 +1322,8 @@ export type ZonosCatalogItemInclusivePrice = {
   organizationId: Scalars['String'];
   /** the preferred amount */
   preferred: ZonosInclusivePriceBreakdown;
+  /** The suggested retail amount */
+  retailAmount: Maybe<Scalars['Decimal']>;
   /** Ship to country */
   shipToCountry: ZonosCountryCode;
   /** Whether this price has been sync to a merchant catalog */
@@ -1385,6 +1389,8 @@ export type ZonosCatalogItemInput = {
   provinceOfOrigin?: InputMaybe<Scalars['String']>;
   /** A list of restricted country code */
   restrictedCountries?: InputMaybe<Array<InputMaybe<ZonosCountryCode>>>;
+  /** The suggested retail amount */
+  retailAmount?: InputMaybe<Scalars['Decimal']>;
   /** SKU of this `CatalogItem`. */
   sku?: InputMaybe<Scalars['String']>;
 };
@@ -10862,7 +10868,7 @@ export type ZonosFullLandedCostMutation = (
     & Pick<ZonosLandedCost, 'currencyCode' | 'id' | 'method' | 'rootId'>
     & { amountSubtotals: Maybe<(
       { __typename?: 'LandedCostAmountSubtotals' }
-      & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'taxes'>
+      & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'landedCostTotal' | 'items' | 'taxes'>
     )>, deMinimis: Array<(
       { __typename?: 'DeMinimis' }
       & Pick<ZonosDeMinimis, 'threshold' | 'type'>
@@ -10915,7 +10921,7 @@ export type ZonosLandedCostOnlyMutation = (
     & Pick<ZonosLandedCost, 'currencyCode' | 'id' | 'method' | 'rootId'>
     & { amountSubtotals: Maybe<(
       { __typename?: 'LandedCostAmountSubtotals' }
-      & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'taxes'>
+      & Pick<ZonosLandedCostAmountSubtotals, 'duties' | 'fees' | 'shipping' | 'landedCostTotal' | 'items' | 'taxes'>
     )>, deMinimis: Array<(
       { __typename?: 'DeMinimis' }
       & Pick<ZonosDeMinimis, 'threshold' | 'type'>
@@ -11051,6 +11057,8 @@ export const FullLandedCostDocument = `
       duties
       fees
       shipping
+      landedCostTotal
+      items
       taxes
     }
     currencyCode
@@ -11114,6 +11122,8 @@ export const LandedCostOnlyDocument = `
       duties
       fees
       shipping
+      landedCostTotal
+      items
       taxes
     }
     currencyCode
