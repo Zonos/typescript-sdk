@@ -29,7 +29,44 @@ describe('fullLandedCost data', () => {
         restriction: null,
       },
     ],
-    landedCostCalculateWorkflow: null,
+    landedCostCalculateWorkflow: [
+      {
+        amountSubtotals: {
+          duties: 0,
+          fees: 8.39,
+          items: 99.34,
+          landedCostTotal: 20.31,
+          shipping: 99.55,
+          taxes: 11.92,
+        },
+        currencyCode: 'USD',
+        deMinimis: [
+          {
+            threshold: 'BELOW',
+            type: 'DUTY',
+          },
+          {
+            threshold: 'ABOVE',
+            type: 'TAX',
+          },
+        ],
+        id: 'landed_cost_33232e5e-1c5e-44cd-8dad-b90047f5d77b',
+        method: 'DDP',
+        remittance: [],
+        rootId:
+          'zonos_internal_federated_request_8f272e76-d40b-4eb4-ad86-e284d49e8756',
+        shipmentRating: {
+          displayName: 'USPS Priority',
+          id: 'shipment_rating_aa865b31-1649-4697-8d3a-5edde01275f2',
+          maxTransitAt: null,
+          minTransitAt: null,
+          shippingProfile: {
+            customServiceLevelCode: 'USPS_PRIORITY_DOMESTIC',
+            landedCostMethod: 'DDP_PREFERRED',
+          },
+        },
+      },
+    ],
     partyCreateWorkflow: [
       {
         id: 'party_22297ddd-aed3-4873-b35c-76f1338fbd5d',

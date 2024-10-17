@@ -45,6 +45,8 @@ export const fullLandedCost = gql`
         duties
         fees
         shipping
+        landedCostTotal
+        items
         taxes
       }
       currencyCode
